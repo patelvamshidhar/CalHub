@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: feedback
+    // Fields:
+    //   - name: string (optional)
+    //   - rating: number (required, 1-5)
+    //   - type: string (required, enum: Bug, Suggestion, Improvement, General Feedback)
+    //   - message: string (required, < 2000 chars)
+    //   - timestamp: timestamp (required)
+    //   - status: string (required, enum: New, Reviewed, Resolved)
+    //
+    // Collection: suggestions
+    // Fields:
+    //   - category: string (required, enum: UI Improvement, New Feature, Calculation Fix)
+    //   - section: string (required, enum: Vehicle, Interest, Land)
+    //   - message: string (required, < 2000 chars)
+    //   - timestamp: timestamp (required)
+    //   - status: string (required, enum: New, Reviewed, Resolved)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "reddyvamshi607@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidFeedback(data) {
+      return data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             data.type in ['Bug', 'Suggestion', 'Improvement', 'General Feedback'] &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 2000 &&
+             data.status in ['New', 'Reviewed', 'Resolved'];
+    }
+
+    function isValidSuggestion(data) {
+      return data.category in ['UI Improvement', 'New Feature', 'Calculation Fix'] &&
+             data.section in ['Vehicle', 'Interest', 'Land'] &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 2000 &&
+             data.status in ['New', 'Reviewed', 'Resolved'];
+    }
+
+    match /feedback/{feedbackId} {
+      allow read: if isAdmin();
+      allow create: if isValidFeedback(request.resource.data);
+      allow update: if isAdmin() && isValidFeedback(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /suggestions/{suggestionId} {
+      allow read: if isAdmin();
+      allow create: if isValidSuggestion(request.resource.data);
+      allow update: if isAdmin() && isValidSuggestion(request.resource.data);
+      allow delete: if isAdmin();
+    }
+    
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+  }
+}

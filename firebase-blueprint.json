@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Feedback": {
+      "title": "User Feedback",
+      "description": "Feedback submitted by users after using the app",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Optional name of the user" },
+        "rating": { "type": "number", "description": "Rating from 1 to 5 stars" },
+        "type": { "type": "string", "enum": ["Bug", "Suggestion", "Improvement", "General Feedback"] },
+        "message": { "type": "string", "description": "Detailed feedback message" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["New", "Reviewed", "Resolved"], "description": "Status of the feedback" }
+      },
+      "required": ["rating", "type", "message", "timestamp", "status"]
+    },
+    "Suggestion": {
+      "title": "User Suggestion",
+      "description": "Suggestions for improvements or new features",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "enum": ["UI Improvement", "New Feature", "Calculation Fix"] },
+        "section": { "type": "string", "enum": ["Vehicle", "Interest", "Land"] },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["New", "Reviewed", "Resolved"] }
+      },
+      "required": ["category", "section", "message", "timestamp", "status"]
+    }
+  },
+  "firestore": {
+    "/feedback/{feedbackId}": {
+      "schema": "Feedback",
+      "description": "Collection of user feedback"
+    },
+    "/suggestions/{suggestionId}": {
+      "schema": "Suggestion",
+      "description": "Collection of user suggestions"
+    }
+  }
+}
