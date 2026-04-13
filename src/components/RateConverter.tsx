@@ -11,18 +11,27 @@ interface RateConverterProps {
 }
 
 export const RateConverter = ({ onBack }: RateConverterProps) => {
-  const [mode, setMode] = useState<'pctToRate' | 'rateToPct'>(() => (localStorage.getItem('rc_mode') as any) || 'pctToRate');
-  const [inputValue, setInputValue] = useState<string>(() => localStorage.getItem('rc_input') || '6');
-  const [rateUnit, setRateUnit] = useState<'rupees' | 'paise'>(() => (localStorage.getItem('rc_unit') as any) || 'paise');
+  const [mode, setMode] = useState<'pctToRate' | 'rateToPct'>('pctToRate');
+  const [inputValue, setInputValue] = useState<string>('');
+  const [rateUnit, setRateUnit] = useState<'rupees' | 'paise'>('paise');
   const [result, setResult] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const calculate = () => {
-    if (!inputValue || isNaN(Number(inputValue))) {
+    if (!inputValue) {
       setResult(null);
+      setError("Please enter a value");
       return;
     }
 
     const val = Number(inputValue);
+    if (isNaN(val)) {
+      setResult(null);
+      setError("Invalid number");
+      return;
+    }
+
+    setError(null);
 
     if (mode === 'pctToRate') {
       const rupees = val / 12;
@@ -45,21 +54,15 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
 
   useEffect(() => {
     // Keep it automatic but also allow manual trigger
-    localStorage.setItem('rc_mode', mode);
-    localStorage.setItem('rc_input', inputValue);
-    localStorage.setItem('rc_unit', rateUnit);
     calculate();
   }, [inputValue, mode, rateUnit]);
 
   const reset = () => {
-    localStorage.removeItem('rc_mode');
-    localStorage.removeItem('rc_input');
-    localStorage.removeItem('rc_unit');
-    
     setMode('pctToRate');
-    setInputValue('6');
+    setInputValue('');
     setRateUnit('paise');
     setResult(null);
+    setError(null);
   };
 
   return (
@@ -71,8 +74,9 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
               <Percent className="h-6 w-6 text-primary" />
               Smart Rate Converter
             </CardTitle>
-            <CardDescription className="mt-1">
-              India Special: <span className="font-bold text-primary">12% = ₹1</span>
+            <CardDescription className="mt-1 flex justify-between items-center">
+              <span>India Special: <span className="font-bold text-primary">12% = ₹1</span></span>
+              <span className="text-[10px] font-bold text-destructive uppercase tracking-tighter">Fields empty on load</span>
             </CardDescription>
           </div>
           
@@ -92,7 +96,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   {mode === 'pctToRate' ? 'Enter Percentage (%)' : 'Enter Rate'}
                 </Label>
                 {mode === 'rateToPct' && (
-                  <div className="flex gap-1 bg-muted p-1 rounded-lg border">
+                  <div className="flex gap-1 bg-muted p-1 rounded-lg border ml-4">
                     <Button 
                       variant={rateUnit === 'paise' ? 'default' : 'ghost'} 
                       size="sm" 
@@ -116,15 +120,17 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                 <Input
                   id="input"
                   type="number"
-                  placeholder={mode === 'pctToRate' ? "e.g. 6" : "e.g. 50"}
+                  placeholder="e.g. 12"
+                  autoComplete="off"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="text-5xl h-24 px-8 font-black border-4 focus-visible:ring-primary text-center rounded-2xl transition-all group-hover:border-primary/50"
+                  className="text-5xl h-24 px-8 font-black border-4 text-center rounded-2xl transition-all group-hover:border-primary/50 focus-visible:ring-primary"
                 />
                 <div className="absolute right-8 top-1/2 -translate-y-1/2 text-muted-foreground font-black text-3xl opacity-30">
                   {mode === 'pctToRate' ? '%' : rateUnit === 'rupees' ? '₹' : 'P'}
                 </div>
               </div>
+              {error && <p className="text-center text-xs font-bold text-destructive">{error}</p>}
             </div>
 
             <div className="flex items-center justify-center">

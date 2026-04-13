@@ -25,26 +25,19 @@ interface LandCalculatorProps {
 
 export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => {
   // Area Calculator State
-  const [length, setLength] = useState<string>(() => localStorage.getItem('lc_length') || '50');
-  const [width, setWidth] = useState<string>(() => localStorage.getItem('lc_width') || '30');
-  const [inputUnit, setInputUnit] = useState<'SQ_FT' | 'SQ_M'>(() => (localStorage.getItem('lc_input_unit') as any) || 'SQ_FT');
+  const [length, setLength] = useState<string>('');
+  const [width, setWidth] = useState<string>('');
+  const [inputUnit, setInputUnit] = useState<'SQ_FT' | 'SQ_M'>('SQ_FT');
 
   // Price Calculator State
-  const [pricePerUnit, setPricePerUnit] = useState<number>(() => {
-    const saved = localStorage.getItem('lc_price');
-    if (saved === null || saved === 'undefined' || saved === 'NaN') return 2000;
-    const num = Number(saved);
-    return isNaN(num) ? 2000 : num;
-  });
-  const [priceUnit, setPriceUnit] = useState<keyof typeof LAND_UNITS>(() => (localStorage.getItem('lc_price_unit') as any) || 'SQ_FT');
+  const [pricePerUnit, setPricePerUnit] = useState<string>('');
+  const [priceUnit, setPriceUnit] = useState<keyof typeof LAND_UNITS>('SQ_FT');
 
   // Toggle State
   const [showSteps, setShowSteps] = useState(false);
-  const [autoCalculate, setAutoCalculate] = useState<boolean>(() => localStorage.getItem('lc_auto') === 'true');
-  const [history, setHistory] = useState<HistoryItem[]>(() => {
-    const saved = localStorage.getItem('lc_history');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [autoCalculate, setAutoCalculate] = useState<boolean>(false);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const [results, setResults] = useState<{
     area: number;
@@ -54,17 +47,26 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
 
   // Calculations
   const calculate = () => {
-    const l = Number(length);
-    const w = Number(width);
-    if (isNaN(l) || isNaN(w) || l <= 0 || w <= 0) {
+    if (!length || !width || !pricePerUnit) {
+      setError("Please enter all required values");
       setResults(null);
       return null;
     }
+
+    const l = Number(length);
+    const w = Number(width);
+    const price = Number(pricePerUnit);
+
+    if (isNaN(l) || isNaN(w) || isNaN(price) || l <= 0 || w <= 0) {
+      setError("Invalid dimensions or price entered");
+      setResults(null);
+      return null;
+    }
+    setError(null);
     const a = l * w;
     const conv = convertLandArea(a, inputUnit);
     
     // Calculate price
-    const price = pricePerUnit;
     let finalArea = conv.sqFt;
     if (priceUnit === 'SQ_FT') finalArea = conv.sqFt;
     if (priceUnit === 'SQ_M') finalArea = conv.sqM;
@@ -84,29 +86,17 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
     if (autoCalculate) {
       calculate();
     }
-    localStorage.setItem('lc_length', length || '50');
-    localStorage.setItem('lc_width', width || '30');
-    localStorage.setItem('lc_input_unit', inputUnit || 'SQ_FT');
-    localStorage.setItem('lc_price', (pricePerUnit ?? 2000).toString());
-    localStorage.setItem('lc_price_unit', priceUnit || 'SQ_FT');
-    localStorage.setItem('lc_auto', (autoCalculate ?? false).toString());
   }, [length, width, inputUnit, pricePerUnit, priceUnit, autoCalculate]);
 
   const reset = () => {
-    localStorage.removeItem('lc_length');
-    localStorage.removeItem('lc_width');
-    localStorage.removeItem('lc_input_unit');
-    localStorage.removeItem('lc_price');
-    localStorage.removeItem('lc_price_unit');
-    localStorage.removeItem('lc_auto');
-
-    setLength('50');
-    setWidth('30');
+    setLength('');
+    setWidth('');
     setInputUnit('SQ_FT');
-    setPricePerUnit(2000);
+    setPricePerUnit('');
     setPriceUnit('SQ_FT');
-    setAutoCalculate(true);
+    setAutoCalculate(false);
     setResults(null);
+    setError(null);
   };
 
   const handleCalculate = () => {
@@ -166,29 +156,38 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
                 <Ruler className="h-6 w-6 text-orange-500" />
                 Land Area Calculator
               </CardTitle>
-              <CardDescription>Calculate plot area and dimensions</CardDescription>
+              <CardDescription className="flex justify-between items-center">
+              <span>Calculate plot area and dimensions</span>
+              <span className="text-[10px] font-bold text-destructive uppercase tracking-tighter">Fields empty on load</span>
+            </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="length" className="font-bold text-xs uppercase tracking-wider">Length</Label>
+                  <Label htmlFor="length" className="font-bold text-xs uppercase tracking-wider">
+                    Length
+                  </Label>
                   <Input
                     id="length"
                     type="number"
-                    value={length ?? ''}
+                    value={length}
                     onChange={(e) => setLength(e.target.value)}
-                    placeholder="Length"
+                    placeholder="e.g. 50"
+                    autoComplete="off"
                     className="h-12 border-2 focus-visible:ring-orange-500"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="width" className="font-bold text-xs uppercase tracking-wider">Width</Label>
+                  <Label htmlFor="width" className="font-bold text-xs uppercase tracking-wider">
+                    Width
+                  </Label>
                   <Input
                     id="width"
                     type="number"
-                    value={width ?? ''}
+                    value={width}
                     onChange={(e) => setWidth(e.target.value)}
-                    placeholder="Width"
+                    placeholder="e.g. 30"
+                    autoComplete="off"
                     className="h-12 border-2 focus-visible:ring-orange-500"
                   />
                 </div>
@@ -219,17 +218,19 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <Label className="font-bold text-xs uppercase tracking-wider">Price Per Unit</Label>
-                  <span className="text-sm font-black text-amber-600">₹{pricePerUnit}</span>
+                  <Label className="font-bold text-xs uppercase tracking-wider">
+                    Price Per Unit
+                  </Label>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="relative">
                     <Input
                       type="number"
-                      value={pricePerUnit ?? ''}
-                      onChange={(e) => setPricePerUnit(e.target.value === '' ? 0 : Number(e.target.value))}
-                      placeholder="Price"
-                      className="h-12 border-2 focus-visible:ring-amber-500 pl-8"
+                      value={pricePerUnit}
+                      onChange={(e) => setPricePerUnit(e.target.value)}
+                      placeholder="e.g. 2000"
+                      autoComplete="off"
+                      className="h-12 border-2 pl-8 focus-visible:ring-amber-500"
                     />
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">{currency}</span>
                   </div>
@@ -249,6 +250,12 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
                   </Select>
                 </div>
               </div>
+
+              {error && (
+                <div className="p-2 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-[10px] font-bold text-center">
+                  {error}
+                </div>
+              )}
 
               <div className="flex items-center justify-between pt-4 border-t">
                 <div className="flex items-center gap-2">

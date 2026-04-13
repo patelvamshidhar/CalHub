@@ -22,28 +22,15 @@ interface InterestCalculatorProps {
 }
 
 export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
-  const [principal, setPrincipal] = useState<string>(() => {
-    const saved = localStorage.getItem('ic_principal');
-    return (saved !== null && saved !== 'undefined' && saved !== 'NaN') ? saved : '10000';
-  });
-  const [rate, setRate] = useState<number>(() => {
-    const saved = localStorage.getItem('ic_rate');
-    if (saved === null || saved === 'undefined' || saved === 'NaN') return 12;
-    const num = Number(saved);
-    return isNaN(num) ? 12 : num;
-  });
-  const [startDate, setStartDate] = useState<string>(() => localStorage.getItem('ic_start') || format(new Date(), 'yyyy-MM-dd'));
-  const [endDate, setEndDate] = useState<string>(() => localStorage.getItem('ic_end') || format(addYears(new Date(), 1), 'yyyy-MM-dd'));
-  const [compounding, setCompounding] = useState<'monthly' | 'yearly'>(() => (localStorage.getItem('ic_comp') as any) || 'yearly');
-  const [autoCalculate, setAutoCalculate] = useState<boolean>(() => {
-    const saved = localStorage.getItem('ic_auto');
-    return saved === null ? true : saved === 'true';
-  });
+  const [principal, setPrincipal] = useState<string>('');
+  const [rate, setRate] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+  const [endDate, setEndDate] = useState<string>(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
+  const [compounding, setCompounding] = useState<'monthly' | 'yearly'>('yearly');
+  const [autoCalculate, setAutoCalculate] = useState<boolean>(false);
   const [showSteps, setShowSteps] = useState(false);
-  const [history, setHistory] = useState<HistoryItem[]>(() => {
-    const saved = localStorage.getItem('ic_history');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const [results, setResults] = useState<{
     siInterest: number;
@@ -57,14 +44,23 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
 
   const calculate = () => {
     const P = Number(principal);
-    const R = rate;
+    const R = Number(rate);
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    if (isNaN(P) || isNaN(R) || !isAfter(end, start)) {
+    if (!principal || !rate) {
+      setError("Please enter all required values");
       setResults(null);
       return;
     }
+
+    if (isNaN(P) || isNaN(R) || !isAfter(end, start)) {
+      setError(isNaN(P) || isNaN(R) ? "Invalid numbers entered" : "End date must be after start date");
+      setResults(null);
+      return;
+    }
+
+    setError(null);
 
     const totalDays = differenceInDays(end, start);
     const T = totalDays / 365; // Time in years
@@ -177,29 +173,17 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
     if (autoCalculate) {
       calculate();
     }
-    localStorage.setItem('ic_principal', principal || '10000');
-    localStorage.setItem('ic_rate', (rate ?? 12).toString());
-    localStorage.setItem('ic_start', startDate || format(new Date(), 'yyyy-MM-dd'));
-    localStorage.setItem('ic_end', endDate || format(addYears(new Date(), 1), 'yyyy-MM-dd'));
-    localStorage.setItem('ic_comp', compounding || 'yearly');
-    localStorage.setItem('ic_auto', (autoCalculate ?? true).toString());
   }, [principal, rate, startDate, endDate, compounding, autoCalculate]);
 
   const reset = () => {
-    localStorage.removeItem('ic_principal');
-    localStorage.removeItem('ic_rate');
-    localStorage.removeItem('ic_start');
-    localStorage.removeItem('ic_end');
-    localStorage.removeItem('ic_comp');
-    localStorage.removeItem('ic_auto');
-    
-    setPrincipal('10000');
-    setRate(12);
+    setPrincipal('');
+    setRate('');
     setStartDate(format(new Date(), 'yyyy-MM-dd'));
     setEndDate(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
     setCompounding('yearly');
-    setAutoCalculate(true);
+    setAutoCalculate(false);
     setResults(null);
+    setError(null);
   };
 
   return (
@@ -211,9 +195,10 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
             <TrendingUp className="h-6 w-6 text-purple-500" />
             Interest Calculator
           </CardTitle>
-          <CardDescription>
-            Calculate Simple and Compound interest with date-based duration
-          </CardDescription>
+            <CardDescription className="flex justify-between items-center">
+              <span>Calculate Simple and Compound interest with date-based duration</span>
+              <span className="text-[10px] font-bold text-destructive uppercase tracking-tighter">Fields empty on load</span>
+            </CardDescription>
         </CardHeader>
 
         <CardContent className="p-6 space-y-8">
@@ -221,13 +206,17 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="principal" className="text-xs font-bold uppercase tracking-wider">Principal Amount (₹)</Label>
+                <Label htmlFor="principal" className="text-xs font-bold uppercase tracking-wider">
+                  Principal Amount (₹)
+                </Label>
                 <div className="relative">
                   <Input
                     id="principal"
                     type="number"
-                    value={principal ?? ''}
+                    value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
+                    placeholder="e.g. 50000"
+                    autoComplete="off"
                     className="text-xl h-12 pl-10 font-black border-2 focus-visible:ring-purple-500"
                   />
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">₹</span>
@@ -236,15 +225,18 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <Label htmlFor="rate" className="text-xs font-bold uppercase tracking-wider">Interest Rate (% P.A.)</Label>
-                  <span className="text-sm font-black text-purple-600">{rate}%</span>
+                  <Label htmlFor="rate" className="text-xs font-bold uppercase tracking-wider">
+                    Interest Rate (% P.A.)
+                  </Label>
                 </div>
                 <div className="relative">
                   <Input
                     id="rate"
                     type="number"
-                    value={rate ?? ''}
-                    onChange={(e) => setRate(e.target.value === '' ? 0 : Number(e.target.value))}
+                    value={rate}
+                    onChange={(e) => setRate(e.target.value)}
+                    placeholder="e.g. 12"
+                    autoComplete="off"
                     className="text-xl h-12 pr-10 font-black border-2 focus-visible:ring-purple-500"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">%</span>
@@ -295,6 +287,16 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
               </div>
             </div>
           </div>
+
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-xs font-bold text-center"
+            >
+              {error}
+            </motion.div>
+          )}
 
           <div className="flex items-center justify-between pt-4 border-t">
             <div className="flex items-center gap-2">

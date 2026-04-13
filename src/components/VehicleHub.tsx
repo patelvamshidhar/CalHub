@@ -17,14 +17,12 @@ interface VehicleHubProps {
 
 export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
   // Fuel Cost Calculator State
-  const [petrolPrice, setPetrolPrice] = useState<string>(() => localStorage.getItem('vh_petrol') || '106.31');
-  const [dieselPrice, setDieselPrice] = useState<string>(() => localStorage.getItem('vh_diesel') || '94.27');
-  const [fuelDistance, setFuelDistance] = useState<string>(() => localStorage.getItem('vh_distance') || '100');
-  const [fuelMileage, setFuelMileage] = useState<string>(() => localStorage.getItem('vh_mileage') || '15');
-  const [history, setHistory] = useState<HistoryItem[]>(() => {
-    const saved = localStorage.getItem('vh_history');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [petrolPrice, setPetrolPrice] = useState<string>('');
+  const [dieselPrice, setDieselPrice] = useState<string>('');
+  const [fuelDistance, setFuelDistance] = useState<string>('');
+  const [fuelMileage, setFuelMileage] = useState<string>('');
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const [results, setResults] = useState<{
     fuelReq: number;
@@ -33,12 +31,19 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
   } | null>(null);
 
   const calculate = () => {
+    if (!fuelDistance || !fuelMileage || !petrolPrice || !dieselPrice) {
+      setError("Please enter all required values");
+      setResults(null);
+      return null;
+    }
+
     const dist = Number(fuelDistance);
     const mil = Number(fuelMileage) || 1;
     const pPrice = Number(petrolPrice);
     const dPrice = Number(dieselPrice);
 
     if (dist > 0 && mil > 0) {
+      setError(null);
       const fr = dist / mil;
       const pt = fr * pPrice;
       const dt = fr * dPrice;
@@ -46,6 +51,7 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
       setResults(res);
       return res;
     }
+    setError("Invalid inputs. Ensure distance and mileage are greater than 0.");
     setResults(null);
     return null;
   };
@@ -88,27 +94,18 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
 
   const clearHistory = () => {
     setHistory([]);
-    localStorage.removeItem('vh_history');
   };
 
   const reset = () => {
-    localStorage.removeItem('vh_petrol');
-    localStorage.removeItem('vh_diesel');
-    localStorage.removeItem('vh_distance');
-    localStorage.removeItem('vh_mileage');
-    
-    setPetrolPrice('106.31');
-    setDieselPrice('94.27');
-    setFuelDistance('100');
-    setFuelMileage('15');
+    setPetrolPrice('');
+    setDieselPrice('');
+    setFuelDistance('');
+    setFuelMileage('');
     setResults(null);
+    setError(null);
   };
 
   useEffect(() => {
-    localStorage.setItem('vh_petrol', petrolPrice);
-    localStorage.setItem('vh_diesel', dieselPrice);
-    localStorage.setItem('vh_distance', fuelDistance);
-    localStorage.setItem('vh_mileage', fuelMileage);
     calculate();
   }, [petrolPrice, dieselPrice, fuelDistance, fuelMileage]);
 
@@ -124,6 +121,7 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-black tracking-tighter uppercase">Fuel Cost Calculator</h2>
             <p className="text-muted-foreground font-medium">Calculate and compare Petrol vs Diesel costs for your trip</p>
+            <p className="text-[10px] font-bold text-destructive uppercase tracking-widest">Fields empty on load</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -141,50 +139,67 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest">Distance (km)</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest">
+                      Distance (km)
+                    </Label>
                     <Input 
                       type="number" 
                       value={fuelDistance} 
                       onChange={(e) => setFuelDistance(e.target.value)}
-                      className="h-12 border-2 font-bold"
+                      placeholder="e.g. 500"
+                      autoComplete="off"
+                      className="h-12 border-2 font-bold focus-visible:ring-primary"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest">Mileage (km/L)</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest">
+                      Mileage (km/L)
+                    </Label>
                     <Input 
                       type="number" 
                       value={fuelMileage} 
                       onChange={(e) => setFuelMileage(e.target.value)}
-                      className="h-12 border-2 font-bold"
+                      placeholder="e.g. 18"
+                      autoComplete="off"
+                      className="h-12 border-2 font-bold focus-visible:ring-primary"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest">Petrol Price (₹/L)</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest">
+                      Petrol Price (₹/L)
+                    </Label>
                     <div className="relative">
                       <Input 
                         type="number" 
                         value={petrolPrice} 
                         onChange={(e) => setPetrolPrice(e.target.value)}
-                        className="h-12 border-2 font-bold pl-8"
+                        placeholder="106.31"
+                        autoComplete="off"
+                        className="h-12 border-2 font-bold pl-8 focus-visible:ring-primary"
                       />
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">₹</span>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest">Diesel Price (₹/L)</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest">
+                      Diesel Price (₹/L)
+                    </Label>
                     <div className="relative">
                       <Input 
                         type="number" 
                         value={dieselPrice} 
                         onChange={(e) => setDieselPrice(e.target.value)}
-                        className="h-12 border-2 font-bold pl-8"
+                        placeholder="94.27"
+                        autoComplete="off"
+                        className="h-12 border-2 font-bold pl-8 focus-visible:ring-primary"
                       />
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">₹</span>
                     </div>
                   </div>
                 </div>
+                {error && <p className="text-[10px] font-bold text-destructive text-center">{error}</p>}
                 <Button onClick={handleCalculate} className="w-full font-bold uppercase tracking-widest text-xs h-10">
                   Calculate & Save
                 </Button>
