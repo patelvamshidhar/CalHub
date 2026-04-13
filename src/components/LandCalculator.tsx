@@ -93,9 +93,20 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
   }, [length, width, inputUnit, pricePerUnit, priceUnit, autoCalculate]);
 
   const reset = () => {
-    setLength('0');
-    setWidth('0');
-    setPricePerUnit(0);
+    localStorage.removeItem('lc_length');
+    localStorage.removeItem('lc_width');
+    localStorage.removeItem('lc_input_unit');
+    localStorage.removeItem('lc_price');
+    localStorage.removeItem('lc_price_unit');
+    localStorage.removeItem('lc_auto');
+
+    setLength('50');
+    setWidth('30');
+    setInputUnit('SQ_FT');
+    setPricePerUnit(2000);
+    setPriceUnit('SQ_FT');
+    setAutoCalculate(true);
+    setResults(null);
   };
 
   const handleCalculate = () => {

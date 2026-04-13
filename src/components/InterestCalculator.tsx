@@ -22,7 +22,10 @@ interface InterestCalculatorProps {
 }
 
 export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
-  const [principal, setPrincipal] = useState<string>(() => localStorage.getItem('ic_principal') || '10000');
+  const [principal, setPrincipal] = useState<string>(() => {
+    const saved = localStorage.getItem('ic_principal');
+    return (saved !== null && saved !== 'undefined' && saved !== 'NaN') ? saved : '10000';
+  });
   const [rate, setRate] = useState<number>(() => {
     const saved = localStorage.getItem('ic_rate');
     if (saved === null || saved === 'undefined' || saved === 'NaN') return 12;
@@ -32,7 +35,10 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
   const [startDate, setStartDate] = useState<string>(() => localStorage.getItem('ic_start') || format(new Date(), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState<string>(() => localStorage.getItem('ic_end') || format(addYears(new Date(), 1), 'yyyy-MM-dd'));
   const [compounding, setCompounding] = useState<'monthly' | 'yearly'>(() => (localStorage.getItem('ic_comp') as any) || 'yearly');
-  const [autoCalculate, setAutoCalculate] = useState<boolean>(() => localStorage.getItem('ic_auto') === 'true');
+  const [autoCalculate, setAutoCalculate] = useState<boolean>(() => {
+    const saved = localStorage.getItem('ic_auto');
+    return saved === null ? true : saved === 'true';
+  });
   const [showSteps, setShowSteps] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('ic_history');
@@ -180,10 +186,19 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
   }, [principal, rate, startDate, endDate, compounding, autoCalculate]);
 
   const reset = () => {
+    localStorage.removeItem('ic_principal');
+    localStorage.removeItem('ic_rate');
+    localStorage.removeItem('ic_start');
+    localStorage.removeItem('ic_end');
+    localStorage.removeItem('ic_comp');
+    localStorage.removeItem('ic_auto');
+    
     setPrincipal('10000');
     setRate(12);
     setStartDate(format(new Date(), 'yyyy-MM-dd'));
     setEndDate(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
+    setCompounding('yearly');
+    setAutoCalculate(true);
     setResults(null);
   };
 

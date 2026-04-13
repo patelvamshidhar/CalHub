@@ -11,9 +11,9 @@ interface RateConverterProps {
 }
 
 export const RateConverter = ({ onBack }: RateConverterProps) => {
-  const [mode, setMode] = useState<'pctToRate' | 'rateToPct'>('pctToRate');
-  const [inputValue, setInputValue] = useState<string>('6');
-  const [rateUnit, setRateUnit] = useState<'rupees' | 'paise'>('paise');
+  const [mode, setMode] = useState<'pctToRate' | 'rateToPct'>(() => (localStorage.getItem('rc_mode') as any) || 'pctToRate');
+  const [inputValue, setInputValue] = useState<string>(() => localStorage.getItem('rc_input') || '6');
+  const [rateUnit, setRateUnit] = useState<'rupees' | 'paise'>(() => (localStorage.getItem('rc_unit') as any) || 'paise');
   const [result, setResult] = useState<string | null>(null);
 
   const calculate = () => {
@@ -45,11 +45,20 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
 
   useEffect(() => {
     // Keep it automatic but also allow manual trigger
+    localStorage.setItem('rc_mode', mode);
+    localStorage.setItem('rc_input', inputValue);
+    localStorage.setItem('rc_unit', rateUnit);
     calculate();
   }, [inputValue, mode, rateUnit]);
 
   const reset = () => {
-    setInputValue('');
+    localStorage.removeItem('rc_mode');
+    localStorage.removeItem('rc_input');
+    localStorage.removeItem('rc_unit');
+    
+    setMode('pctToRate');
+    setInputValue('6');
+    setRateUnit('paise');
     setResult(null);
   };
 

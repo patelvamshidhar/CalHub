@@ -17,10 +17,10 @@ interface VehicleHubProps {
 
 export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
   // Fuel Cost Calculator State
-  const [petrolPrice, setPetrolPrice] = useState<string>('106.31');
-  const [dieselPrice, setDieselPrice] = useState<string>('94.27');
-  const [fuelDistance, setFuelDistance] = useState<string>('100');
-  const [fuelMileage, setFuelMileage] = useState<string>('15');
+  const [petrolPrice, setPetrolPrice] = useState<string>(() => localStorage.getItem('vh_petrol') || '106.31');
+  const [dieselPrice, setDieselPrice] = useState<string>(() => localStorage.getItem('vh_diesel') || '94.27');
+  const [fuelDistance, setFuelDistance] = useState<string>(() => localStorage.getItem('vh_distance') || '100');
+  const [fuelMileage, setFuelMileage] = useState<string>(() => localStorage.getItem('vh_mileage') || '15');
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     const saved = localStorage.getItem('vh_history');
     return saved ? JSON.parse(saved) : [];
@@ -91,6 +91,27 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
     localStorage.removeItem('vh_history');
   };
 
+  const reset = () => {
+    localStorage.removeItem('vh_petrol');
+    localStorage.removeItem('vh_diesel');
+    localStorage.removeItem('vh_distance');
+    localStorage.removeItem('vh_mileage');
+    
+    setPetrolPrice('106.31');
+    setDieselPrice('94.27');
+    setFuelDistance('100');
+    setFuelMileage('15');
+    setResults(null);
+  };
+
+  useEffect(() => {
+    localStorage.setItem('vh_petrol', petrolPrice);
+    localStorage.setItem('vh_diesel', dieselPrice);
+    localStorage.setItem('vh_distance', fuelDistance);
+    localStorage.setItem('vh_mileage', fuelMileage);
+    calculate();
+  }, [petrolPrice, dieselPrice, fuelDistance, fuelMileage]);
+
   return (
     <TooltipProvider>
       <div className="space-y-12 w-full max-w-7xl mx-auto">
@@ -112,6 +133,10 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
                   <Fuel className="h-5 w-5 text-primary" />
                   Trip Parameters
                 </CardTitle>
+                <Button variant="ghost" size="sm" onClick={reset} className="h-8 text-[10px] font-black uppercase tracking-widest gap-1">
+                  <RefreshCcw className="h-3 w-3" />
+                  Reset
+                </Button>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">

@@ -126,7 +126,7 @@ const MainApp = () => {
   const activeTab = getActiveTab();
 
   useEffect(() => {
-    if (interactionCount >= 3 && !hasShownFeedback && activeTab !== 'home') {
+    if (interactionCount >= 20 && !hasShownFeedback && activeTab !== 'home') {
       setIsFeedbackOpen(true);
       setHasShownFeedback(true);
     }
@@ -145,7 +145,7 @@ const MainApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300" onClick={incrementInteraction}>
+    <div className="min-h-screen bg-background transition-colors duration-300">
       {/* Header */}
       <header className="border-b sticky top-0 z-10 bg-background/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
