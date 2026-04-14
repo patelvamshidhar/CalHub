@@ -18,14 +18,24 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Debounce logic
+  const [debouncedValue, setDebouncedValue] = useState(inputValue);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [inputValue]);
+
   const calculate = () => {
-    if (!inputValue) {
+    if (!debouncedValue) {
       setResult(null);
-      setError("Please enter a value to convert");
+      setError("Enter all details to see results");
       return;
     }
 
-    const val = Number(inputValue);
+    const val = Number(debouncedValue);
     if (isNaN(val)) {
       setResult(null);
       setError("Please enter a valid numeric value");
@@ -60,9 +70,8 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
   };
 
   useEffect(() => {
-    // Keep it automatic but also allow manual trigger
     calculate();
-  }, [inputValue, mode, rateUnit]);
+  }, [debouncedValue, mode, rateUnit]);
 
   const reset = () => {
     setMode('pctToRate');
@@ -137,11 +146,20 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   {mode === 'pctToRate' ? '%' : rateUnit === 'rupees' ? '₹' : 'P'}
                 </div>
               </div>
-              {error && <p className="text-center text-xs font-bold text-destructive">{error}</p>}
+              {error && (
+                <p className={`text-center text-[10px] font-black uppercase tracking-widest py-2 rounded-lg border ${error === "Enter all details to see results" ? "text-primary/60 bg-primary/5 border-primary/10" : "text-destructive bg-destructive/5 border-destructive/20"}`}>
+                  {error}
+                </p>
+              )}
             </div>
 
-            <div className="flex items-center justify-center">
-              <div className="bg-muted p-3 rounded-full border-2 shadow-sm">
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-green-600">⚡ Auto Calculation Enabled</span>
+              </div>
+              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tight">Results update automatically as you enter values</p>
+              <div className="bg-muted p-3 rounded-full border-2 shadow-sm mt-2">
                 <ArrowLeftRight className="text-primary h-6 w-6" />
               </div>
             </div>
@@ -188,9 +206,9 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                 ]}
               />
             )}
-            <Button variant="outline" onClick={reset} className="font-bold uppercase tracking-widest gap-2">
-              <RefreshCcw className="h-4 w-4" />
-              Clear
+            <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl border-2">
+              <RefreshCcw className="h-4 w-4 mr-2" />
+              Reset
             </Button>
           </div>
         </CardContent>

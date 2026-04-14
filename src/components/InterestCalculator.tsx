@@ -28,7 +28,6 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
   const [startDate, setStartDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState<string>(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
   const [compounding, setCompounding] = useState<'monthly' | 'yearly'>('yearly');
-  const [autoCalculate, setAutoCalculate] = useState<boolean>(false);
   const [showSteps, setShowSteps] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -43,17 +42,21 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
     ciSteps: CalculationStep[];
   } | null>(null);
 
-  const calculate = () => {
-    if (!principal) {
-      setError("Please enter the principal amount");
-      setResults(null);
-      return;
-    }
+  // Debounce logic
+  const [debouncedValues, setDebouncedValues] = useState({ principal, rate });
 
-    if (!rate) {
-      setError("Please enter the interest rate");
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValues({ principal, rate });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [principal, rate]);
+
+  const calculate = () => {
+    if (!principal || !rate) {
+      setError("Enter all details to see results");
       setResults(null);
-      return;
+      return null;
     }
 
     const P = Number(principal);
@@ -64,19 +67,19 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
     if (isNaN(P) || P <= 0) {
       setError("Principal amount must be a positive number");
       setResults(null);
-      return;
+      return null;
     }
 
     if (isNaN(R) || R < 0) {
       setError("Interest rate cannot be negative");
       setResults(null);
-      return;
+      return null;
     }
 
     if (!isAfter(end, start)) {
       setError("End date must be after the start date");
       setResults(null);
-      return;
+      return null;
     }
 
     setError(null);
@@ -124,7 +127,7 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
       });
     }
 
-    setResults({
+    const res = {
       siInterest,
       siTotal,
       ciInterest,
@@ -132,20 +135,13 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
       duration: { years, months, days },
       siSteps,
       ciSteps
-    });
-    localStorage.setItem('ic_last_result', ciTotal.toFixed(2));
-
-    // Save to history if triggered by button (not auto)
-    return {
-      siInterest,
-      siTotal,
-      ciInterest,
-      ciTotal,
-      duration: `${years}y ${months}m ${days}d`
     };
+    setResults(res);
+
+    return res;
   };
 
-  const handleCalculate = () => {
+  const handleSaveToHistory = () => {
     const res = calculate();
     if (res) {
       const newItem: HistoryItem = {
@@ -164,12 +160,6 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
       const newHistory = [newItem, ...history].slice(0, 10);
       setHistory(newHistory);
       localStorage.setItem('ic_history', JSON.stringify(newHistory));
-
-      // Reset after calculation
-      setPrincipal('0');
-      setRate(0);
-      // We don't necessarily reset dates to 0 as they are dates, but maybe default?
-      // User said "Numbers -> 0, Text fields -> empty"
     }
   };
 
@@ -179,8 +169,6 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
     setStartDate(item.inputs.startDate);
     setEndDate(item.inputs.endDate);
     setCompounding(item.inputs.compounding);
-    // Trigger calculation for the reused values
-    setTimeout(() => calculate(), 100);
   };
 
   const clearHistory = () => {
@@ -189,10 +177,8 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
   };
 
   useEffect(() => {
-    if (autoCalculate) {
-      calculate();
-    }
-  }, [principal, rate, startDate, endDate, compounding, autoCalculate]);
+    calculate();
+  }, [debouncedValues, startDate, endDate, compounding]);
 
   const reset = () => {
     setPrincipal('');
@@ -200,7 +186,6 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
     setStartDate(format(new Date(), 'yyyy-MM-dd'));
     setEndDate(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
     setCompounding('yearly');
-    setAutoCalculate(false);
     setResults(null);
     setError(null);
   };
@@ -309,32 +294,32 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="p-4 bg-destructive/5 border border-destructive/20 rounded-2xl text-destructive text-[10px] font-black uppercase tracking-widest text-center"
+              className={`p-4 border rounded-2xl text-[10px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see results" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}
             >
               {error}
             </motion.div>
           )}
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t">
-            <div className="flex items-center gap-3">
-              <Switch
-                id="auto-calc-ic"
-                checked={autoCalculate}
-                onCheckedChange={setAutoCalculate}
-                className="data-[state=checked]:bg-purple-500"
-              />
-              <Label htmlFor="auto-calc-ic" className="text-[10px] font-black uppercase tracking-widest cursor-pointer text-muted-foreground">Auto Calculate</Label>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-green-600">⚡ Auto Calculation Enabled</span>
+              </div>
+              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tight">Results update automatically as you enter values</p>
             </div>
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[10px] h-12 rounded-2xl border-2 flex-1 sm:flex-none">
                 <RefreshCcw className="h-4 w-4 mr-2" />
                 Reset
               </Button>
-              {!autoCalculate && (
-                <Button onClick={handleCalculate} className="font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl bg-purple-600 hover:bg-purple-700 shadow-xl shadow-purple-500/20 flex-1 sm:flex-none">
-                  Calculate
-                </Button>
-              )}
+              <Button 
+                onClick={handleSaveToHistory} 
+                disabled={!results}
+                className="font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl bg-purple-600 hover:bg-purple-700 shadow-xl shadow-purple-500/20 flex-1 sm:flex-none flex items-center gap-2"
+              >
+                💾 Save to History
+              </Button>
             </div>
           </div>
 
