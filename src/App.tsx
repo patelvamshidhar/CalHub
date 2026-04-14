@@ -8,11 +8,13 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, Github } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
 import { InterestCalculator } from './components/InterestCalculator';
+import { FeedbackForm } from './components/FeedbackForm';
+import { AdminDashboard } from './components/AdminDashboard';
 import { motion, AnimatePresence } from 'motion/react';
 
 const LAST_UPDATED = "14-04-2026 09:30";
@@ -98,7 +100,7 @@ const MainApp = () => {
 
   const getActiveTab = () => {
     const path = location.pathname.substring(1);
-    return ['finance', 'vehicle', 'land'].includes(path) ? path : 'home';
+    return ['finance', 'vehicle', 'land', 'feedback', 'admin'].includes(path) ? path : 'home';
   };
 
   const activeTab = getActiveTab();
@@ -136,6 +138,16 @@ const MainApp = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => navigate('/feedback')}
+              className="rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 px-4 h-10 border shadow-sm"
+            >
+              <MessageSquarePlus className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Feedback</span>
+            </Button>
+
             {activeTab !== 'home' && (
               <Button
                 variant="outline"
@@ -239,6 +251,16 @@ const MainApp = () => {
                     <LandCalculator currency="₹" />
                   </div>
                 )}
+                {activeTab === 'feedback' && (
+                  <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <FeedbackForm />
+                  </div>
+                )}
+                {activeTab === 'admin' && (
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <AdminDashboard />
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-center pt-12">
@@ -271,6 +293,16 @@ const MainApp = () => {
             </div>
           </div>
           
+          <div className="flex justify-center gap-8">
+            <Button variant="link" onClick={() => navigate('/feedback')} className="font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+              Feedback
+            </Button>
+            <Link to="/admin" className="flex items-center gap-2 font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+              <ShieldCheck className="h-4 w-4" />
+              Admin Access
+            </Link>
+          </div>
+
           <div className="pt-10 border-t border-border/50 max-w-md mx-auto">
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -302,6 +334,8 @@ export default function App() {
         <Route path="/finance" element={<MainApp />} />
         <Route path="/vehicle" element={<MainApp />} />
         <Route path="/land" element={<MainApp />} />
+        <Route path="/feedback" element={<MainApp />} />
+        <Route path="/admin" element={<MainApp />} />
         <Route path="/calc" element={<Navigate to="/" replace />} />
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/app" element={<Navigate to="/" replace />} />

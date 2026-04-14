@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: feedback
+    // Document ID: auto-generated
+    // Fields:
+    //   - message: string (required, 1-1000 chars)
+    //   - type: string (required, ['Suggestion', 'Bug'])
+    //   - userId: string (required, matches auth.uid)
+    //   - userEmail: string (required, matches auth.token.email)
+    //   - createdAt: timestamp (required)
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email == "reddyvamshi607@gmail.com" &&
+             request.auth.token.email_verified == true;
+    }
+
+    function isValidFeedback(data) {
+      return data.keys().hasAll(['message', 'type', 'userId', 'userEmail', 'createdAt']) &&
+             data.keys().hasOnly(['message', 'type', 'userId', 'userEmail', 'createdAt']) &&
+             data.message is string && data.message.size() >= 1 && data.message.size() <= 1000 &&
+             data.type in ['Suggestion', 'Bug'] &&
+             data.userId == request.auth.uid &&
+             data.userEmail == request.auth.token.email &&
+             data.createdAt is timestamp;
+    }
+
+    match /feedback/{feedbackId} {
+      // Only admin can read all feedback
+      allow read: if isAdmin();
+      
+      // Any authenticated user can submit feedback
+      allow create: if isAuthenticated() && isValidFeedback(request.resource.data);
+      
+      // No updates or deletes allowed for users
+      // Admin can potentially update status if we add that field later
+      allow update, delete: if isAdmin();
+    }
+
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
