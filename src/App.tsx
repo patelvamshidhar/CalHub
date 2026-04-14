@@ -275,50 +275,34 @@ const MainApp = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t py-20 bg-muted/20">
-        <div className="max-w-7xl mx-auto px-4 text-center space-y-10">
-          <div className="flex flex-col items-center gap-4">
-            <div className="bg-primary text-primary-foreground px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-primary/20">
-              Crafted By
-            </div>
-            <p className="text-3xl font-black tracking-tighter text-foreground">
-              Patelvamshidhar Reddy
-            </p>
-            <p className="text-muted-foreground font-medium max-w-sm mx-auto">
-              Building high-precision tools for the next generation of Indian professionals.
-            </p>
-            <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-2">
-              <Clock className="h-3 w-3" />
-              Last Updated: {LAST_UPDATED}
-            </div>
-          </div>
-          
-          <div className="flex justify-center gap-8">
-            <Button variant="link" onClick={() => navigate('/feedback')} className="font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
-              Feedback
-            </Button>
-            <Link to="/admin" className="flex items-center gap-2 font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
-              <ShieldCheck className="h-4 w-4" />
-              Admin Access
-            </Link>
+      <footer className="border-t bg-background py-2.5 px-5">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          {/* Left Side */}
+          <div className="flex-1 text-center sm:text-left">
+            Created by <span className="text-foreground">Patelvamshidhar Reddy</span>
           </div>
 
-          <div className="pt-10 border-t border-border/50 max-w-md mx-auto">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Systems Operational</span>
-              <span className="text-[10px] text-muted-foreground/30 mx-2">•</span>
-              <div className="flex items-center gap-1.5">
-                <Github className="h-3 w-3 text-muted-foreground" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">GitHub Auto-Sync Active</span>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground font-bold">
-              CALHUB &copy; {new Date().getFullYear()}
-            </p>
-            <p className="text-[10px] text-muted-foreground/40 mt-2 font-black uppercase tracking-[0.3em]">
-              PRECISION • PRIVACY • PERFORMANCE
-            </p>
+          {/* Center */}
+          <div className="flex items-center justify-center gap-6 flex-1">
+            <button 
+              onClick={() => navigate('/feedback')} 
+              className="hover:text-primary transition-colors cursor-pointer"
+            >
+              Feedback
+            </button>
+            <span className="text-muted-foreground/30">|</span>
+            <button 
+              onClick={() => navigate('/admin')} 
+              className="flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer"
+            >
+              <ShieldCheck className="h-3 w-3" />
+              Admin Access
+            </button>
+          </div>
+
+          {/* Right Side */}
+          <div className="flex-1 text-center sm:text-right">
+            CalHub &copy; 2026
           </div>
         </div>
       </footer>

@@ -78,7 +78,7 @@ export const AdminDashboard = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'Admin') {
+    if (password === 'Patel@9488') {
       setIsLoggedIn(true);
       setLoginError(false);
     } else {
@@ -89,37 +89,58 @@ export const AdminDashboard = () => {
   if (!isLoggedIn) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-2 shadow-2xl">
-          <CardContent className="pt-10 pb-10 text-center space-y-6">
-            <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto rotate-3">
-              <ShieldCheck className="h-10 w-10 text-primary" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-2xl font-black tracking-tight uppercase">Admin Access</h3>
-              <p className="text-muted-foreground font-medium">
-                Enter the administrator password to access the dashboard.
-              </p>
-            </div>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="password"
-                  placeholder="Enter Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={`pl-11 h-12 rounded-2xl border-2 ${loginError ? 'border-destructive' : 'focus:ring-primary'}`}
-                />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="max-w-md w-full"
+        >
+          <Card className="border-2 shadow-2xl overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-8 text-center">
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20">
+                <Lock className="h-8 w-8" />
               </div>
-              {loginError && (
-                <p className="text-xs font-black text-destructive uppercase tracking-widest">Incorrect Password</p>
-              )}
-              <Button type="submit" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs gap-3">
-                Access Dashboard
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+              <CardTitle className="text-2xl font-black tracking-tight uppercase">Admin Login</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-8 pb-10 space-y-6">
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="password"
+                      placeholder="Enter Password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setLoginError(false);
+                      }}
+                      className={`pl-11 h-12 rounded-2xl border-2 transition-all ${
+                        loginError ? 'border-destructive focus:ring-destructive' : 'focus:ring-primary'
+                      }`}
+                      autoFocus
+                    />
+                  </div>
+                  <AnimatePresence>
+                    {loginError && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-[10px] font-black text-destructive uppercase tracking-widest text-center"
+                      >
+                        Invalid Password
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <Button type="submit" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs gap-3 shadow-lg shadow-primary/20">
+                  Login
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }

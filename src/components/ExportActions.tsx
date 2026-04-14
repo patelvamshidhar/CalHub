@@ -60,16 +60,18 @@ export const ExportActions = ({ title, inputs, results, disabled }: ExportAction
       </Button>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            disabled={disabled}
-            className="font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-          >
-            <Share2 className="h-4 w-4" />
-            Share Result
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              disabled={disabled}
+              className="font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            >
+              <Share2 className="h-4 w-4" />
+              Share Result
+            </Button>
+          }
+        />
         <DropdownMenuContent align="end" className="w-48 font-bold uppercase tracking-widest text-[10px]">
           <DropdownMenuItem onClick={handleWhatsApp} className="gap-2 cursor-pointer">
             <MessageSquare className="h-4 w-4 text-green-500" />
