@@ -21,10 +21,9 @@ import { ExportActions } from './ExportActions';
 
 interface LandCalculatorProps {
   currency: string;
-  onSuggest?: () => void;
 }
 
-export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => {
+export const LandCalculator = ({ currency }: LandCalculatorProps) => {
   // Area Calculator State
   const [length, setLength] = useState<string>('');
   const [width, setWidth] = useState<string>('');
@@ -295,11 +294,6 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
                 </div>
               </div>
 
-              {onSuggest && (
-                <Button variant="link" onClick={onSuggest} className="w-full text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
-                  Suggest Improvement
-                </Button>
-              )}
             </CardContent>
           </Card>
         </motion.div>

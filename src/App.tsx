@@ -8,15 +8,12 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, Github } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
 import { InterestCalculator } from './components/InterestCalculator';
-import { AdminDashboard } from './components/AdminDashboard';
-import { FeedbackModal } from './components/FeedbackSystem';
 import { motion, AnimatePresence } from 'motion/react';
-import { logSecurityEvent, ensureAuth } from '@/lib/firebase';
 
 const LAST_UPDATED = "14-04-2026 09:30";
 const IS_MAINTENANCE = false; // Set to true to show maintenance banner
@@ -88,13 +85,8 @@ const MainApp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
-  const [isSuggestion, setIsSuggestion] = useState(false);
-  const [interactionCount, setInteractionCount] = useState(0);
-  const [hasShownFeedback, setHasShownFeedback] = useState(false);
 
   useEffect(() => {
-    ensureAuth();
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -102,14 +94,6 @@ const MainApp = () => {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-
-    // Global error handler for security monitoring
-    const handleError = (event: ErrorEvent) => {
-      logSecurityEvent('SYSTEM_ERROR', `Runtime error: ${event.message} at ${event.filename}:${event.lineno}`, 'MEDIUM');
-    };
-
-    window.addEventListener('error', handleError);
-    return () => window.removeEventListener('error', handleError);
   }, [isDarkMode]);
 
   const getActiveTab = () => {
@@ -118,25 +102,6 @@ const MainApp = () => {
   };
 
   const activeTab = getActiveTab();
-
-  useEffect(() => {
-    if (interactionCount >= 20 && !hasShownFeedback && activeTab !== 'home') {
-      setIsFeedbackOpen(true);
-      setHasShownFeedback(true);
-    }
-  }, [interactionCount, hasShownFeedback, activeTab]);
-
-  const incrementInteraction = () => setInteractionCount(prev => prev + 1);
-
-  const openFeedback = () => {
-    setIsSuggestion(false);
-    setIsFeedbackOpen(true);
-  };
-
-  const openSuggestion = () => {
-    setIsSuggestion(true);
-    setIsFeedbackOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-300 selection:bg-primary selection:text-primary-foreground">
@@ -171,16 +136,6 @@ const MainApp = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={openFeedback}
-              className="rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 px-4 h-10 border shadow-sm"
-            >
-              <MessageSquarePlus className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Feedback</span>
-            </Button>
-
             {activeTab !== 'home' && (
               <Button
                 variant="outline"
@@ -270,18 +225,18 @@ const MainApp = () => {
                         <h3 className="text-3xl font-black tracking-tighter uppercase">Interest Planning</h3>
                         <p className="text-muted-foreground font-medium">Calculate simple and compound interest with ease</p>
                       </div>
-                      <InterestCalculator onSuggest={openSuggestion} />
+                      <InterestCalculator />
                     </section>
                   </div>
                 )}
                 {activeTab === 'vehicle' && (
                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <VehicleHub onSuggest={openSuggestion} />
+                    <VehicleHub />
                   </div>
                 )}
                 {activeTab === 'land' && (
                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <LandCalculator currency="₹" onSuggest={openSuggestion} />
+                    <LandCalculator currency="₹" />
                   </div>
                 )}
               </div>
@@ -316,16 +271,6 @@ const MainApp = () => {
             </div>
           </div>
           
-          <div className="flex justify-center gap-8">
-            <Button variant="link" onClick={openFeedback} className="font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
-              Feedback
-            </Button>
-            <Link to="/admin-dashboard" className="flex items-center gap-2 font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
-              <ShieldCheck className="h-4 w-4" />
-              Admin Access
-            </Link>
-          </div>
-
           <div className="pt-10 border-t border-border/50 max-w-md mx-auto">
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -345,13 +290,6 @@ const MainApp = () => {
           </div>
         </div>
       </footer>
-
-      <FeedbackModal 
-        isOpen={isFeedbackOpen} 
-        onClose={() => setIsFeedbackOpen(false)} 
-        isSuggestion={isSuggestion}
-        section={activeTab === 'finance' ? 'Interest' : activeTab === 'vehicle' ? 'Vehicle' : activeTab === 'land' ? 'Land' : undefined}
-      />
     </div>
   );
 };
@@ -364,7 +302,6 @@ export default function App() {
         <Route path="/finance" element={<MainApp />} />
         <Route path="/vehicle" element={<MainApp />} />
         <Route path="/land" element={<MainApp />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/calc" element={<Navigate to="/" replace />} />
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/app" element={<Navigate to="/" replace />} />

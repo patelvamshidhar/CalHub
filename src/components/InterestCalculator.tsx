@@ -18,11 +18,7 @@ interface CalculationStep {
   balance: number;
 }
 
-interface InterestCalculatorProps {
-  onSuggest?: () => void;
-}
-
-export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
+export const InterestCalculator = () => {
   const [principal, setPrincipal] = useState<string>('');
   const [rate, setRate] = useState<string>('');
   const [startDate, setStartDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
@@ -322,14 +318,6 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
               </Button>
             </div>
           </div>
-
-          {onSuggest && (
-            <div className="flex justify-center">
-              <Button variant="link" onClick={onSuggest} className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
-                Suggest Improvement
-              </Button>
-            </div>
-          )}
 
           <AnimatePresence>
             {results && (

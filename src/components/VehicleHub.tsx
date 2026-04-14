@@ -31,11 +31,7 @@ const FALLBACK_FUEL_PRICES = {
   }
 };
 
-interface VehicleHubProps {
-  onSuggest?: () => void;
-}
-
-export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
+export const VehicleHub = () => {
   // Fuel Cost Calculator State
   const [fuelType, setFuelType] = useState<'petrol' | 'diesel' | null>(null);
   const [fuelDistance, setFuelDistance] = useState<string>('');
@@ -414,13 +410,6 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
             </div>
           </div>
 
-          {onSuggest && (
-            <div className="flex justify-center pt-4">
-              <Button variant="link" onClick={onSuggest} className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
-                Suggest Improvement
-              </Button>
-            </div>
-          )}
         </motion.section>
       </div>
 
