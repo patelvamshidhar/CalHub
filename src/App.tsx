@@ -8,7 +8,7 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
@@ -16,7 +16,9 @@ import { InterestCalculator } from './components/InterestCalculator';
 import { AdminDashboard } from './components/AdminDashboard';
 import { FeedbackModal } from './components/FeedbackSystem';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquarePlus, ShieldCheck } from 'lucide-react';
+
+const LAST_UPDATED = "14-04-2026 09:30";
+const IS_MAINTENANCE = false; // Set to true to show maintenance banner
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -163,6 +165,21 @@ const MainApp = () => {
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-300 selection:bg-primary selection:text-primary-foreground">
+      {/* Maintenance Banner */}
+      <AnimatePresence>
+        {IS_MAINTENANCE && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-amber-500 text-amber-950 px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden"
+          >
+            <Construction className="h-3.5 w-3.5" />
+            🚧 Application Under Maintenance - Some features may be temporarily disabled
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -318,6 +335,10 @@ const MainApp = () => {
             <p className="text-muted-foreground font-medium max-w-sm mx-auto">
               Building high-precision tools for the next generation of Indian professionals.
             </p>
+            <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground/60 uppercase tracking-widest mt-2">
+              <Clock className="h-3 w-3" />
+              Last Updated: {LAST_UPDATED}
+            </div>
           </div>
           
           <div className="flex justify-center gap-8">
@@ -334,6 +355,11 @@ const MainApp = () => {
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Systems Operational</span>
+              <span className="text-[10px] text-muted-foreground/30 mx-2">•</span>
+              <div className="flex items-center gap-1.5">
+                <Github className="h-3 w-3 text-muted-foreground" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">GitHub Auto-Sync Active</span>
+              </div>
             </div>
             <p className="text-sm text-muted-foreground font-bold">
               CALHUB &copy; {new Date().getFullYear()}

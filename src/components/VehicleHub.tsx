@@ -225,7 +225,17 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
 
                   {/* Manual Fuel Price Input */}
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Enter Fuel Price (₹/liter)</Label>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Enter Fuel Price (₹/liter)</Label>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-[10px] font-bold">Select fuel type and enter price based on your city.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <div className="relative group">
                       <Input
                         type="number"
@@ -237,6 +247,9 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
                       />
                       <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                     </div>
+                    <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest text-center animate-pulse">
+                      Select fuel type and enter price based on your city.
+                    </p>
                   </div>
 
                   {error && (
