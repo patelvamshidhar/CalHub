@@ -17,7 +17,8 @@ import {
   LogOut,
   ShieldAlert,
   AlertTriangle,
-  Lock
+  Lock,
+  RefreshCcw
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,7 +62,8 @@ export const AdminDashboard = () => {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [suggestions, setSuggestions] = useState<FeedbackItem[]>([]);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -81,47 +83,57 @@ export const AdminDashboard = () => {
   useEffect(() => {
     if (!isAuthorized) return;
 
-    // Wait for auth state to be ready before starting listeners
+    setLoading(true);
+    setError(null);
+
+    // Listen to auth state changes to re-trigger listeners if needed
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
       if (!user) {
         setLoading(false);
+        setError("Firebase authentication required. Please login with Google to view data.");
         return;
       }
 
+      setError(null);
+      
       const qFeedback = query(collection(db, 'feedback'), orderBy('timestamp', 'desc'));
       const qSuggestions = query(collection(db, 'suggestions'), orderBy('timestamp', 'desc'));
+      const qSecurity = query(collection(db, 'security_events'), orderBy('timestamp', 'desc'), limit(50));
 
       const unsubFeedback = onSnapshot(qFeedback, (snapshot) => {
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeedbackItem));
         setFeedback(data);
         setLoading(false);
       }, (err) => {
-        // Only log if it's not a temporary auth-initialization error
-        if (err.code !== 'permission-denied') {
+        console.error("Feedback Listener Error:", err);
+        if (err.code === 'permission-denied') {
+          setError("Permission denied. Ensure you are logged in with the correct admin email.");
+        } else {
           handleFirestoreError(err, OperationType.LIST, 'feedback');
         }
+        setLoading(false);
       });
 
       const unsubSuggestions = onSnapshot(qSuggestions, (snapshot) => {
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), isSuggestion: true } as FeedbackItem));
         setSuggestions(data);
       }, (err) => {
+        console.error("Suggestions Listener Error:", err);
         if (err.code !== 'permission-denied') {
           handleFirestoreError(err, OperationType.LIST, 'suggestions');
         }
       });
 
-      const qSecurity = query(collection(db, 'security_events'), orderBy('timestamp', 'desc'), limit(50));
       const unsubSecurity = onSnapshot(qSecurity, (snapshot) => {
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SecurityEvent));
         setSecurityEvents(data);
       }, (err) => {
+        console.error("Security Listener Error:", err);
         if (err.code !== 'permission-denied') {
           handleFirestoreError(err, OperationType.LIST, 'security_events');
         }
       });
 
-      // Cleanup listeners when auth changes or component unmounts
       return () => {
         unsubFeedback();
         unsubSuggestions();
@@ -189,7 +201,11 @@ export const AdminDashboard = () => {
   };
 
   const exportData = () => {
-    const allData = [...feedback, ...suggestions].sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
+    const allData = [...feedback, ...suggestions].sort((a, b) => {
+      const timeA = a.timestamp?.toMillis() || Date.now();
+      const timeB = b.timestamp?.toMillis() || Date.now();
+      return timeB - timeA;
+    });
     const csvContent = "data:text/csv;charset=utf-8," 
       + "Date,Type,Name/Category,Rating/Section,Message,Status\n"
       + allData.map(item => {
@@ -226,7 +242,11 @@ export const AdminDashboard = () => {
       }
       return true;
     })
-    .sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
+    .sort((a, b) => {
+      const timeA = a.timestamp?.toMillis() || Date.now();
+      const timeB = b.timestamp?.toMillis() || Date.now();
+      return timeB - timeA;
+    });
 
   if (!isAuthorized) {
     return (
@@ -311,6 +331,14 @@ export const AdminDashboard = () => {
             <p className="text-muted-foreground font-medium">Manage user feedback and suggestions</p>
           </div>
           <div className="flex gap-3 w-full sm:w-auto">
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.reload()} 
+              className="flex-1 sm:flex-none font-bold border-2 gap-2"
+            >
+              <RefreshCcw className="h-4 w-4" />
+              Refresh
+            </Button>
             <Button variant="outline" onClick={exportData} className="flex-1 sm:flex-none font-bold border-2 gap-2">
               <Download className="h-4 w-4" />
               Export CSV
@@ -321,6 +349,25 @@ export const AdminDashboard = () => {
             </Button>
           </div>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 bg-destructive/10 border-2 border-destructive/20 rounded-2xl flex items-center justify-between gap-4"
+          >
+            <div className="flex items-center gap-3 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              <p className="text-sm font-bold">{error}</p>
+            </div>
+            {!auth.currentUser && (
+              <Button size="sm" onClick={handleGoogleLogin} className="font-black uppercase tracking-widest text-[10px]">
+                Login with Google
+              </Button>
+            )}
+          </motion.div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
@@ -433,8 +480,14 @@ export const AdminDashboard = () => {
             {/* Table */}
             <Card className="border-2 shadow-xl overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-muted/50 border-b-2">
+                {loading ? (
+                  <div className="p-12 text-center">
+                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                    <p className="mt-4 text-sm font-bold text-muted-foreground uppercase tracking-widest">Fetching data...</p>
+                  </div>
+                ) : (
+                  <table className="w-full text-sm text-left">
+                    <thead className="bg-muted/50 border-b-2">
                     <tr>
                       <th className="p-4 font-black uppercase tracking-widest text-[10px]">Date</th>
                       <th className="p-4 font-black uppercase tracking-widest text-[10px]">Source</th>
@@ -456,8 +509,8 @@ export const AdminDashboard = () => {
                         >
                           <td className="p-4 whitespace-nowrap">
                             <div className="flex flex-col">
-                              <span className="font-bold">{item.timestamp?.toDate().toLocaleDateString()}</span>
-                              <span className="text-[10px] text-muted-foreground">{item.timestamp?.toDate().toLocaleTimeString()}</span>
+                              <span className="font-bold">{item.timestamp ? item.timestamp.toDate().toLocaleDateString() : 'Pending...'}</span>
+                              <span className="text-[10px] text-muted-foreground">{item.timestamp ? item.timestamp.toDate().toLocaleTimeString() : ''}</span>
                             </div>
                           </td>
                           <td className="p-4">
@@ -520,9 +573,12 @@ export const AdminDashboard = () => {
                     </AnimatePresence>
                   </tbody>
                 </table>
-                {allItems.length === 0 && (
+                )}
+                {!loading && allItems.length === 0 && (
                   <div className="p-12 text-center text-muted-foreground">
-                    <p className="font-bold">No items found matching your filters.</p>
+                    <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                    <p className="font-bold uppercase tracking-widest text-xs">No Feedback Available</p>
+                    <p className="text-[10px] mt-1">New feedback will appear here in real-time.</p>
                   </div>
                 )}
               </div>
@@ -546,8 +602,8 @@ export const AdminDashboard = () => {
                       <tr key={event.id} className="hover:bg-muted/20 transition-colors">
                         <td className="p-4 whitespace-nowrap">
                           <div className="flex flex-col">
-                            <span className="font-bold">{event.timestamp?.toDate().toLocaleDateString()}</span>
-                            <span className="text-[10px] text-muted-foreground">{event.timestamp?.toDate().toLocaleTimeString()}</span>
+                            <span className="font-bold">{event.timestamp ? event.timestamp.toDate().toLocaleDateString() : 'Pending...'}</span>
+                            <span className="text-[10px] text-muted-foreground">{event.timestamp ? event.timestamp.toDate().toLocaleTimeString() : ''}</span>
                           </div>
                         </td>
                         <td className="p-4">
