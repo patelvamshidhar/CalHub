@@ -52,12 +52,25 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
 
   const calculate = () => {
     if (!fuelType) {
-      setError("Please select fuel type");
+      setError("Please select a fuel type (Petrol or Diesel)");
       setResults(null);
       return null;
     }
 
-    if (!fuelDistance || !fuelMileage || !manualFuelPrice) {
+    if (!fuelDistance) {
+      setError("Please enter the trip distance");
+      setResults(null);
+      return null;
+    }
+
+    if (!fuelMileage) {
+      setError("Please enter your vehicle's mileage");
+      setResults(null);
+      return null;
+    }
+
+    if (!manualFuelPrice) {
+      setError("Please enter the current fuel price");
       setResults(null);
       return null;
     }
@@ -66,25 +79,36 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
     const mil = Number(fuelMileage);
     const price = Number(manualFuelPrice);
 
-    if (dist > 0 && mil > 0 && price > 0) {
-      setError(null);
-      const fr = dist / mil;
-      const tc = fr * price;
-      const res = { fuelReq: fr, enteredPrice: price, totalCost: tc };
-      setResults(res);
-      return res;
+    if (isNaN(dist) || isNaN(mil) || isNaN(price)) {
+      setError("Please enter valid numeric values");
+      setResults(null);
+      return null;
     }
-    
-    if (dist < 0 || mil < 0 || price < 0) {
-      setError("Values cannot be negative");
-    } else if (mil === 0) {
-      setError("Mileage cannot be zero");
-    } else if (price === 0) {
-      setError("Please enter fuel price");
+
+    if (dist <= 0) {
+      setError("Distance must be greater than zero");
+      setResults(null);
+      return null;
     }
-    
-    setResults(null);
-    return null;
+
+    if (mil <= 0) {
+      setError("Mileage must be greater than zero");
+      setResults(null);
+      return null;
+    }
+
+    if (price <= 0) {
+      setError("Fuel price must be greater than zero");
+      setResults(null);
+      return null;
+    }
+
+    setError(null);
+    const fr = dist / mil;
+    const tc = fr * price;
+    const res = { fuelReq: fr, enteredPrice: price, totalCost: tc };
+    setResults(res);
+    return res;
   };
 
   useEffect(() => {

@@ -81,31 +81,55 @@ export const AdminDashboard = () => {
   useEffect(() => {
     if (!isAuthorized) return;
 
-    const qFeedback = query(collection(db, 'feedback'), orderBy('timestamp', 'desc'));
-    const qSuggestions = query(collection(db, 'suggestions'), orderBy('timestamp', 'desc'));
+    // Wait for auth state to be ready before starting listeners
+    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
-    const unsubFeedback = onSnapshot(qFeedback, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeedbackItem));
-      setFeedback(data);
-      setLoading(false);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'feedback'));
+      const qFeedback = query(collection(db, 'feedback'), orderBy('timestamp', 'desc'));
+      const qSuggestions = query(collection(db, 'suggestions'), orderBy('timestamp', 'desc'));
 
-    const unsubSuggestions = onSnapshot(qSuggestions, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), isSuggestion: true } as FeedbackItem));
-      setSuggestions(data);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'suggestions'));
+      const unsubFeedback = onSnapshot(qFeedback, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as FeedbackItem));
+        setFeedback(data);
+        setLoading(false);
+      }, (err) => {
+        // Only log if it's not a temporary auth-initialization error
+        if (err.code !== 'permission-denied') {
+          handleFirestoreError(err, OperationType.LIST, 'feedback');
+        }
+      });
 
-    const qSecurity = query(collection(db, 'security_events'), orderBy('timestamp', 'desc'), limit(50));
-    const unsubSecurity = onSnapshot(qSecurity, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SecurityEvent));
-      setSecurityEvents(data);
-    }, (err) => handleFirestoreError(err, OperationType.LIST, 'security_events'));
+      const unsubSuggestions = onSnapshot(qSuggestions, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), isSuggestion: true } as FeedbackItem));
+        setSuggestions(data);
+      }, (err) => {
+        if (err.code !== 'permission-denied') {
+          handleFirestoreError(err, OperationType.LIST, 'suggestions');
+        }
+      });
 
-    return () => {
-      unsubFeedback();
-      unsubSuggestions();
-      unsubSecurity();
-    };
+      const qSecurity = query(collection(db, 'security_events'), orderBy('timestamp', 'desc'), limit(50));
+      const unsubSecurity = onSnapshot(qSecurity, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SecurityEvent));
+        setSecurityEvents(data);
+      }, (err) => {
+        if (err.code !== 'permission-denied') {
+          handleFirestoreError(err, OperationType.LIST, 'security_events');
+        }
+      });
+
+      // Cleanup listeners when auth changes or component unmounts
+      return () => {
+        unsubFeedback();
+        unsubSuggestions();
+        unsubSecurity();
+      };
+    });
+
+    return () => unsubscribeAuth();
   }, [isAuthorized]);
 
   const handleLogin = (e: React.FormEvent) => {

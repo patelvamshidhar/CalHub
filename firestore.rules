@@ -57,7 +57,7 @@ service cloud.firestore {
 
     function isValidSuggestion(data) {
       return data.category in ['UI Improvement', 'New Feature', 'Calculation Fix'] &&
-             data.section in ['Vehicle', 'Interest', 'Land'] &&
+             data.section in ['Vehicle', 'Interest', 'Land', 'General'] &&
              data.message is string && data.message.size() > 0 && data.message.size() < 2000 &&
              data.status in ['New', 'Reviewed', 'Resolved'] &&
              data.timestamp is timestamp;

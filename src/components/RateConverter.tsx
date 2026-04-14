@@ -21,14 +21,20 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
   const calculate = () => {
     if (!inputValue) {
       setResult(null);
-      setError("Please enter a value");
+      setError("Please enter a value to convert");
       return;
     }
 
     const val = Number(inputValue);
     if (isNaN(val)) {
       setResult(null);
-      setError("Invalid number");
+      setError("Please enter a valid numeric value");
+      return;
+    }
+
+    if (val < 0) {
+      setResult(null);
+      setError("Value cannot be negative");
       return;
     }
 

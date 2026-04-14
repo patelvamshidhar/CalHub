@@ -48,8 +48,20 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
 
   // Calculations
   const calculate = () => {
-    if (!length || !width || !pricePerUnit) {
-      setError("Please enter all required values");
+    if (!length) {
+      setError("Please enter the plot length");
+      setResults(null);
+      return null;
+    }
+
+    if (!width) {
+      setError("Please enter the plot width");
+      setResults(null);
+      return null;
+    }
+
+    if (!pricePerUnit) {
+      setError("Please enter the price per unit");
       setResults(null);
       return null;
     }
@@ -58,11 +70,24 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
     const w = Number(width);
     const price = Number(pricePerUnit);
 
-    if (isNaN(l) || isNaN(w) || isNaN(price) || l <= 0 || w <= 0) {
-      setError("Invalid dimensions or price entered");
+    if (isNaN(l) || isNaN(w) || isNaN(price)) {
+      setError("Please enter valid numeric dimensions and price");
       setResults(null);
       return null;
     }
+
+    if (l <= 0 || w <= 0) {
+      setError("Dimensions must be greater than zero");
+      setResults(null);
+      return null;
+    }
+
+    if (price < 0) {
+      setError("Price cannot be negative");
+      setResults(null);
+      return null;
+    }
+
     setError(null);
     const a = l * w;
     const conv = convertLandArea(a, inputUnit);

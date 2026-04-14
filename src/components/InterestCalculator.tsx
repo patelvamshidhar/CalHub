@@ -44,19 +44,37 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
   } | null>(null);
 
   const calculate = () => {
+    if (!principal) {
+      setError("Please enter the principal amount");
+      setResults(null);
+      return;
+    }
+
+    if (!rate) {
+      setError("Please enter the interest rate");
+      setResults(null);
+      return;
+    }
+
     const P = Number(principal);
     const R = Number(rate);
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    if (!principal || !rate) {
-      setError("Please enter all required values");
+    if (isNaN(P) || P <= 0) {
+      setError("Principal amount must be a positive number");
       setResults(null);
       return;
     }
 
-    if (isNaN(P) || isNaN(R) || !isAfter(end, start)) {
-      setError(isNaN(P) || isNaN(R) ? "Invalid numbers entered" : "End date must be after start date");
+    if (isNaN(R) || R < 0) {
+      setError("Interest rate cannot be negative");
+      setResults(null);
+      return;
+    }
+
+    if (!isAfter(end, start)) {
+      setError("End date must be after the start date");
       setResults(null);
       return;
     }
