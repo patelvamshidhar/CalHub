@@ -16,6 +16,7 @@ import { InterestCalculator } from './components/InterestCalculator';
 import { AdminDashboard } from './components/AdminDashboard';
 import { FeedbackModal } from './components/FeedbackSystem';
 import { motion, AnimatePresence } from 'motion/react';
+import { logSecurityEvent } from '@/lib/firebase';
 
 const LAST_UPDATED = "14-04-2026 09:30";
 const IS_MAINTENANCE = false; // Set to true to show maintenance banner
@@ -135,6 +136,14 @@ const MainApp = () => {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
+
+    // Global error handler for security monitoring
+    const handleError = (event: ErrorEvent) => {
+      logSecurityEvent('SYSTEM_ERROR', `Runtime error: ${event.message} at ${event.filename}:${event.lineno}`, 'MEDIUM');
+    };
+
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
   }, [isDarkMode]);
 
   const getActiveTab = () => {

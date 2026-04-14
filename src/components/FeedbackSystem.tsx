@@ -36,6 +36,14 @@ export const FeedbackSystem = ({ section, isSuggestion = false, onClose }: Feedb
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Client-side throttle
+    const lastSubmit = localStorage.getItem('last_feedback_submit');
+    if (lastSubmit && Date.now() - parseInt(lastSubmit) < 60000) {
+      setError('Please wait 1 minute before submitting again.');
+      return;
+    }
+
     if (!isSuggestion && rating === 0) {
       setError('Please provide a rating');
       return;
@@ -67,6 +75,8 @@ export const FeedbackSystem = ({ section, isSuggestion = false, onClose }: Feedb
           status: 'New'
         });
       }
+      
+      localStorage.setItem('last_feedback_submit', Date.now().toString());
       setIsSuccess(true);
       setTimeout(() => {
         if (onClose) onClose();

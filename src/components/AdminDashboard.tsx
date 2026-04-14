@@ -14,7 +14,10 @@ import {
   ChevronLeft,
   MoreVertical,
   ArrowUpDown,
-  LogOut
+  LogOut,
+  ShieldAlert,
+  AlertTriangle,
+  Lock
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,9 +31,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { db, auth, googleProvider, handleFirestoreError, OperationType } from '@/lib/firebase';
+import { db, auth, googleProvider, handleFirestoreError, OperationType, logSecurityEvent } from '@/lib/firebase';
 import { signInWithPopup } from 'firebase/auth';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, Timestamp, limit } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 interface FeedbackItem {
@@ -46,15 +49,25 @@ interface FeedbackItem {
   isSuggestion?: boolean;
 }
 
+interface SecurityEvent {
+  id: string;
+  type: string;
+  details: string;
+  severity: string;
+  timestamp: Timestamp;
+}
+
 export const AdminDashboard = () => {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [suggestions, setSuggestions] = useState<FeedbackItem[]>([]);
+  const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterType, setFilterType] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [password, setPassword] = useState('');
+  const [activeTab, setActiveTab] = useState<'feedback' | 'security'>('feedback');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,9 +95,16 @@ export const AdminDashboard = () => {
       setSuggestions(data);
     }, (err) => handleFirestoreError(err, OperationType.LIST, 'suggestions'));
 
+    const qSecurity = query(collection(db, 'security_events'), orderBy('timestamp', 'desc'), limit(50));
+    const unsubSecurity = onSnapshot(qSecurity, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SecurityEvent));
+      setSecurityEvents(data);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, 'security_events'));
+
     return () => {
       unsubFeedback();
       unsubSuggestions();
+      unsubSecurity();
     };
   }, [isAuthorized]);
 
@@ -94,6 +114,7 @@ export const AdminDashboard = () => {
       setIsAuthorized(true);
       localStorage.setItem('admin_auth', 'true');
     } else {
+      logSecurityEvent('FAILED_LOGIN', `Failed password attempt in dashboard`, 'MEDIUM');
       alert('Invalid password');
     }
   };
@@ -107,10 +128,12 @@ export const AdminDashboard = () => {
         setIsAuthorized(true);
         localStorage.setItem('admin_auth', 'true');
       } else {
+        logSecurityEvent('UNAUTHORIZED_ACCESS', `Unauthorized Google login attempt: ${user.email}`, 'HIGH');
         alert('Unauthorized access. Only the admin can log in via Google.');
         await auth.signOut();
       }
     } catch (err) {
+      logSecurityEvent('SYSTEM_ERROR', `Google login error: ${err instanceof Error ? err.message : String(err)}`, 'MEDIUM');
       console.error('Google Login Error:', err);
       alert('Failed to login with Google');
     }
@@ -276,14 +299,14 @@ export const AdminDashboard = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
           <Card className="border-2 shadow-lg bg-blue-500/5">
             <CardContent className="p-6 flex items-center gap-4">
               <div className="h-12 w-12 bg-blue-500/10 rounded-2xl flex items-center justify-center">
                 <MessageSquare className="h-6 w-6 text-blue-500" />
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Total Feedback</p>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Feedback</p>
                 <p className="text-3xl font-black">{feedback.length}</p>
               </div>
             </CardContent>
@@ -294,7 +317,7 @@ export const AdminDashboard = () => {
                 <Star className="h-6 w-6 text-amber-500" />
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Total Suggestions</p>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Suggestions</p>
                 <p className="text-3xl font-black">{suggestions.length}</p>
               </div>
             </CardContent>
@@ -305,150 +328,237 @@ export const AdminDashboard = () => {
                 <CheckCircle2 className="h-6 w-6 text-green-500" />
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Resolved Items</p>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Resolved</p>
                 <p className="text-3xl font-black">
                   {[...feedback, ...suggestions].filter(i => i.status === 'Resolved').length}
                 </p>
               </div>
             </CardContent>
           </Card>
+          <Card className="border-2 shadow-lg bg-red-500/5 cursor-pointer hover:bg-red-500/10 transition-colors" onClick={() => setActiveTab('security')}>
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="h-12 w-12 bg-red-500/10 rounded-2xl flex items-center justify-center">
+                <ShieldAlert className="h-6 w-6 text-red-500" />
+              </div>
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Security Alerts</p>
+                <p className="text-3xl font-black">{securityEvents.filter(e => e.severity === 'HIGH' || e.severity === 'CRITICAL').length}</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Filters */}
-        <Card className="border-2 shadow-lg">
-          <CardContent className="p-4 flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search messages or names..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-10 border-2"
-              />
-            </div>
-            <div className="flex gap-4">
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-[140px] h-10 border-2">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="New">New</SelectItem>
-                  <SelectItem value="Reviewed">Reviewed</SelectItem>
-                  <SelectItem value="Resolved">Resolved</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-[140px] h-10 border-2">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="Feedback">Feedback</SelectItem>
-                  <SelectItem value="Suggestion">Suggestion</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Tabs */}
+        <div className="flex gap-4 border-b">
+          <Button 
+            variant="ghost" 
+            onClick={() => setActiveTab('feedback')}
+            className={`rounded-none border-b-2 h-12 font-black uppercase tracking-widest text-xs ${activeTab === 'feedback' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
+          >
+            Feedback Management
+          </Button>
+          <Button 
+            variant="ghost" 
+            onClick={() => setActiveTab('security')}
+            className={`rounded-none border-b-2 h-12 font-black uppercase tracking-widest text-xs ${activeTab === 'security' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
+          >
+            Security Logs
+          </Button>
+        </div>
 
-        {/* Table */}
-        <Card className="border-2 shadow-xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-muted/50 border-b-2">
-                <tr>
-                  <th className="p-4 font-black uppercase tracking-widest text-[10px]">Date</th>
-                  <th className="p-4 font-black uppercase tracking-widest text-[10px]">Source</th>
-                  <th className="p-4 font-black uppercase tracking-widest text-[10px]">Details</th>
-                  <th className="p-4 font-black uppercase tracking-widest text-[10px]">Message</th>
-                  <th className="p-4 font-black uppercase tracking-widest text-[10px]">Status</th>
-                  <th className="p-4 font-black uppercase tracking-widest text-[10px] text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                <AnimatePresence mode="popLayout">
-                  {allItems.map((item) => (
-                    <motion.tr
-                      key={item.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="hover:bg-muted/20 transition-colors"
-                    >
-                      <td className="p-4 whitespace-nowrap">
-                        <div className="flex flex-col">
-                          <span className="font-bold">{item.timestamp?.toDate().toLocaleDateString()}</span>
-                          <span className="text-[10px] text-muted-foreground">{item.timestamp?.toDate().toLocaleTimeString()}</span>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <Badge variant={item.isSuggestion ? "outline" : "default"} className="font-black uppercase text-[9px]">
-                          {item.isSuggestion ? "Suggestion" : item.type}
-                        </Badge>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex flex-col">
-                          <span className="font-black text-xs">
-                            {item.isSuggestion ? item.category : item.name}
-                          </span>
-                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                            {item.isSuggestion ? (
-                              <>Section: {item.section}</>
-                            ) : (
-                              <div className="flex gap-0.5">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} className={`h-2 w-2 ${i < (item.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/20'}`} />
-                                ))}
-                              </div>
-                            )}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="p-4 max-w-xs">
-                        <p className="line-clamp-2 text-xs font-medium">{item.message}</p>
-                      </td>
-                      <td className="p-4">
-                        <Select 
-                          value={item.status} 
-                          onValueChange={(v) => updateStatus(item.id, v, !!item.isSuggestion)}
+        {activeTab === 'feedback' ? (
+          <>
+            {/* Filters */}
+            <Card className="border-2 shadow-lg">
+              <CardContent className="p-4 flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    placeholder="Search messages or names..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 h-10 border-2"
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-[140px] h-10 border-2">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="New">New</SelectItem>
+                      <SelectItem value="Reviewed">Reviewed</SelectItem>
+                      <SelectItem value="Resolved">Resolved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filterType} onValueChange={setFilterType}>
+                    <SelectTrigger className="w-[140px] h-10 border-2">
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="Feedback">Feedback</SelectItem>
+                      <SelectItem value="Suggestion">Suggestion</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Table */}
+            <Card className="border-2 shadow-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted/50 border-b-2">
+                    <tr>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Date</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Source</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Details</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Message</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Status</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px] text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <AnimatePresence mode="popLayout">
+                      {allItems.map((item) => (
+                        <motion.tr
+                          key={item.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="hover:bg-muted/20 transition-colors"
                         >
-                          <SelectTrigger className={`h-8 w-28 text-[10px] font-black uppercase border-2 ${
-                            item.status === 'New' ? 'border-blue-200 bg-blue-50 text-blue-600' :
-                            item.status === 'Reviewed' ? 'border-amber-200 bg-amber-50 text-amber-600' :
-                            'border-green-200 bg-green-50 text-green-600'
-                          }`}>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="New">New</SelectItem>
-                            <SelectItem value="Reviewed">Reviewed</SelectItem>
-                            <SelectItem value="Resolved">Resolved</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </td>
-                      <td className="p-4 text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => deleteItem(item.id, !!item.isSuggestion)}
-                          className="text-destructive hover:bg-destructive/10 rounded-full"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              </tbody>
-            </table>
-            {allItems.length === 0 && (
-              <div className="p-12 text-center text-muted-foreground">
-                <p className="font-bold">No items found matching your filters.</p>
+                          <td className="p-4 whitespace-nowrap">
+                            <div className="flex flex-col">
+                              <span className="font-bold">{item.timestamp?.toDate().toLocaleDateString()}</span>
+                              <span className="text-[10px] text-muted-foreground">{item.timestamp?.toDate().toLocaleTimeString()}</span>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <Badge variant={item.isSuggestion ? "outline" : "default"} className="font-black uppercase text-[9px]">
+                              {item.isSuggestion ? "Suggestion" : item.type}
+                            </Badge>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex flex-col">
+                              <span className="font-black text-xs">
+                                {item.isSuggestion ? item.category : item.name}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                                {item.isSuggestion ? (
+                                  <>Section: {item.section}</>
+                                ) : (
+                                  <div className="flex gap-0.5">
+                                    {[...Array(5)].map((_, i) => (
+                                      <Star key={i} className={`h-2 w-2 ${i < (item.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground/20'}`} />
+                                    ))}
+                                  </div>
+                                )}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="p-4 max-w-xs">
+                            <p className="line-clamp-2 text-xs font-medium">{item.message}</p>
+                          </td>
+                          <td className="p-4">
+                            <Select 
+                              value={item.status} 
+                              onValueChange={(v) => updateStatus(item.id, v, !!item.isSuggestion)}
+                            >
+                              <SelectTrigger className={`h-8 w-28 text-[10px] font-black uppercase border-2 ${
+                                item.status === 'New' ? 'border-blue-200 bg-blue-50 text-blue-600' :
+                                item.status === 'Reviewed' ? 'border-amber-200 bg-amber-50 text-amber-600' :
+                                'border-green-200 bg-green-50 text-green-600'
+                              }`}>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="New">New</SelectItem>
+                                <SelectItem value="Reviewed">Reviewed</SelectItem>
+                                <SelectItem value="Resolved">Resolved</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="p-4 text-right">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => deleteItem(item.id, !!item.isSuggestion)}
+                              className="text-destructive hover:bg-destructive/10 rounded-full"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </td>
+                        </motion.tr>
+                      ))}
+                    </AnimatePresence>
+                  </tbody>
+                </table>
+                {allItems.length === 0 && (
+                  <div className="p-12 text-center text-muted-foreground">
+                    <p className="font-bold">No items found matching your filters.</p>
+                  </div>
+                )}
               </div>
-            )}
+            </Card>
+          </>
+        ) : (
+          <div className="space-y-6">
+            <Card className="border-2 shadow-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted/50 border-b-2">
+                    <tr>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Timestamp</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Type</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Severity</th>
+                      <th className="p-4 font-black uppercase tracking-widest text-[10px]">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {securityEvents.map((event) => (
+                      <tr key={event.id} className="hover:bg-muted/20 transition-colors">
+                        <td className="p-4 whitespace-nowrap">
+                          <div className="flex flex-col">
+                            <span className="font-bold">{event.timestamp?.toDate().toLocaleDateString()}</span>
+                            <span className="text-[10px] text-muted-foreground">{event.timestamp?.toDate().toLocaleTimeString()}</span>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <Badge variant="outline" className="font-black uppercase text-[9px]">
+                            {event.type}
+                          </Badge>
+                        </td>
+                        <td className="p-4">
+                          <Badge 
+                            className={`font-black uppercase text-[9px] ${
+                              event.severity === 'CRITICAL' ? 'bg-red-600' :
+                              event.severity === 'HIGH' ? 'bg-orange-600' :
+                              event.severity === 'MEDIUM' ? 'bg-amber-600' :
+                              'bg-blue-600'
+                            }`}
+                          >
+                            {event.severity}
+                          </Badge>
+                        </td>
+                        <td className="p-4">
+                          <p className="text-xs font-medium">{event.details}</p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {securityEvents.length === 0 && (
+                  <div className="p-12 text-center text-muted-foreground">
+                    <p className="font-bold">No security events logged yet.</p>
+                  </div>
+                )}
+              </div>
+            </Card>
           </div>
-        </Card>
+        )}
       </div>
     </div>
   );

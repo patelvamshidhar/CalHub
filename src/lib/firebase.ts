@@ -36,6 +36,21 @@ export interface FirestoreErrorInfo {
   }
 }
 
+export async function logSecurityEvent(type: 'FAILED_LOGIN' | 'UNAUTHORIZED_ACCESS' | 'SYSTEM_ERROR', details: string, severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' = 'LOW') {
+  try {
+    await addDoc(collection(db, 'security_events'), {
+      type,
+      details,
+      severity,
+      timestamp: serverTimestamp(),
+      userAgent: navigator.userAgent,
+      path: window.location.pathname
+    });
+  } catch (error) {
+    console.error('Failed to log security event:', error);
+  }
+}
+
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
@@ -55,6 +70,14 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     operationType,
     path
   }
+  
+  // Log critical errors as security events
+  if (errInfo.error.includes('permission-denied')) {
+    logSecurityEvent('UNAUTHORIZED_ACCESS', `Permission denied on ${path} during ${operationType}`, 'HIGH');
+  } else {
+    logSecurityEvent('SYSTEM_ERROR', `Firestore error on ${path}: ${errInfo.error}`, 'MEDIUM');
+  }
+
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
