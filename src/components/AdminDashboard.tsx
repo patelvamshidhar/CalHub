@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { db, auth, googleProvider, handleFirestoreError, OperationType } from '@/src/lib/firebase';
+import { db, auth, googleProvider, handleFirestoreError, OperationType } from '@/lib/firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';

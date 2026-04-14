@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { CalendarIcon, TrendingUp, DollarSign, Clock, Info, ChevronDown, ChevronUp, RefreshCcw, History } from 'lucide-react';
+import { CalendarIcon, TrendingUp, DollarSign, Clock, Info, ChevronDown, ChevronUp, RefreshCcw, History, FileText, Share2 } from 'lucide-react';
 import { format, differenceInDays, addMonths, addYears, isAfter } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
+import { ExportActions } from './ExportActions';
 
 interface CalculationStep {
   period: string;
@@ -188,28 +189,28 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
 
   return (
     <TooltipProvider>
-      <Card className="w-full max-w-4xl mx-auto border-none shadow-2xl overflow-hidden bg-gradient-to-br from-background to-muted/50">
+      <Card className="w-full max-w-4xl mx-auto border-2 shadow-2xl overflow-hidden bg-card rounded-[2.5rem]">
         <div className="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" />
-        <CardHeader className="p-6 border-b border-primary/10">
-          <CardTitle className="text-2xl font-black flex items-center gap-2">
-            <TrendingUp className="h-6 w-6 text-purple-500" />
+        <CardHeader className="p-8 sm:p-10 border-b border-primary/5">
+          <CardTitle className="text-3xl font-black flex items-center gap-3">
+            <TrendingUp className="h-8 w-8 text-purple-500" />
             Interest Calculator
           </CardTitle>
-            <CardDescription className="flex justify-between items-center">
-              <span>Calculate Simple and Compound interest with date-based duration</span>
-              <span className="text-[10px] font-bold text-destructive uppercase tracking-tighter">Fields empty on load</span>
+            <CardDescription className="flex justify-between items-center font-medium text-base">
+              <span>Calculate Simple and Compound interest with ease</span>
+              <span className="text-[10px] font-black text-destructive uppercase tracking-widest bg-destructive/5 px-3 py-1 rounded-full">Pro Mode</span>
             </CardDescription>
         </CardHeader>
 
-        <CardContent className="p-6 space-y-8">
+        <CardContent className="p-8 sm:p-10 space-y-10">
           {/* Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="principal" className="text-xs font-bold uppercase tracking-wider">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <Label htmlFor="principal" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
                   Principal Amount (₹)
                 </Label>
-                <div className="relative">
+                <div className="relative group">
                   <Input
                     id="principal"
                     type="number"
@@ -217,19 +218,17 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
                     onChange={(e) => setPrincipal(e.target.value)}
                     placeholder="e.g. 50000"
                     autoComplete="off"
-                    className="text-xl h-12 pl-10 font-black border-2 focus-visible:ring-purple-500"
+                    className="text-xl h-14 pl-12 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
                   />
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">₹</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-lg text-muted-foreground group-focus-within:text-purple-500 transition-colors">₹</span>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="rate" className="text-xs font-bold uppercase tracking-wider">
-                    Interest Rate (% P.A.)
-                  </Label>
-                </div>
-                <div className="relative">
+              <div className="space-y-3">
+                <Label htmlFor="rate" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                  Interest Rate (% P.A.)
+                </Label>
+                <div className="relative group">
                   <Input
                     id="rate"
                     type="number"
@@ -237,49 +236,49 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
                     onChange={(e) => setRate(e.target.value)}
                     placeholder="e.g. 12"
                     autoComplete="off"
-                    className="text-xl h-12 pr-10 font-black border-2 focus-visible:ring-purple-500"
+                    className="text-xl h-14 pr-12 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">%</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-lg text-muted-foreground group-focus-within:text-purple-500 transition-colors">%</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider">Start Date</Label>
+            <div className="space-y-8">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Start Date</Label>
                   <Input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="h-12 font-bold border-2 focus-visible:ring-purple-500"
+                    className="h-14 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider">End Date</Label>
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">End Date</Label>
                   <Input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="h-12 font-bold border-2 focus-visible:ring-purple-500"
+                    className="h-14 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wider">Compounding Frequency</Label>
-                <div className="flex gap-2 p-1 bg-muted rounded-xl border-2">
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Compounding Frequency</Label>
+                <div className="flex gap-2 p-2 bg-muted/50 rounded-2xl border-2 shadow-inner">
                   <Button
                     variant={compounding === 'yearly' ? 'default' : 'ghost'}
                     onClick={() => setCompounding('yearly')}
-                    className="flex-1 font-bold rounded-lg h-10"
+                    className="flex-1 font-black uppercase tracking-widest text-[10px] rounded-xl h-10 transition-all"
                   >
                     Yearly
                   </Button>
                   <Button
                     variant={compounding === 'monthly' ? 'default' : 'ghost'}
                     onClick={() => setCompounding('monthly')}
-                    className="flex-1 font-bold rounded-lg h-10"
+                    className="flex-1 font-black uppercase tracking-widest text-[10px] rounded-xl h-10 transition-all"
                   >
                     Monthly
                   </Button>
@@ -292,28 +291,29 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
             <motion.div 
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-xs font-bold text-center"
+              className="p-4 bg-destructive/5 border border-destructive/20 rounded-2xl text-destructive text-[10px] font-black uppercase tracking-widest text-center"
             >
               {error}
             </motion.div>
           )}
 
-          <div className="flex items-center justify-between pt-4 border-t">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t">
+            <div className="flex items-center gap-3">
               <Switch
                 id="auto-calc-ic"
                 checked={autoCalculate}
                 onCheckedChange={setAutoCalculate}
+                className="data-[state=checked]:bg-purple-500"
               />
-              <Label htmlFor="auto-calc-ic" className="text-xs font-bold uppercase tracking-wider cursor-pointer">Auto Calculate</Label>
+              <Label htmlFor="auto-calc-ic" className="text-[10px] font-black uppercase tracking-widest cursor-pointer text-muted-foreground">Auto Calculate</Label>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={reset} className="font-bold uppercase tracking-widest text-xs h-9">
-                <RefreshCcw className="h-3 w-3 mr-2" />
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[10px] h-12 rounded-2xl border-2 flex-1 sm:flex-none">
+                <RefreshCcw className="h-4 w-4 mr-2" />
                 Reset
               </Button>
               {!autoCalculate && (
-                <Button onClick={handleCalculate} className="font-bold uppercase tracking-widest text-xs h-9 px-6">
+                <Button onClick={handleCalculate} className="font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl bg-purple-600 hover:bg-purple-700 shadow-xl shadow-purple-500/20 flex-1 sm:flex-none">
                   Calculate
                 </Button>
               )}
@@ -402,6 +402,25 @@ export const InterestCalculator = ({ onSuggest }: InterestCalculatorProps) => {
                     </CardContent>
                   </Card>
                 </div>
+
+                {/* Export & Share Actions */}
+                <ExportActions
+                  title="Interest Calculation"
+                  inputs={[
+                    { label: 'Principal', value: `₹${principal}` },
+                    { label: 'Rate', value: `${rate}%` },
+                    { label: 'Start Date', value: startDate },
+                    { label: 'End Date', value: endDate },
+                    { label: 'Compounding', value: compounding },
+                  ]}
+                  results={[
+                    { label: 'Simple Interest', value: `₹${results.siInterest.toFixed(2)}` },
+                    { label: 'SI Total', value: `₹${results.siTotal.toFixed(2)}` },
+                    { label: 'Compound Interest', value: `₹${results.ciInterest.toFixed(2)}` },
+                    { label: 'CI Total', value: `₹${results.ciTotal.toFixed(2)}` },
+                    { label: 'Duration', value: `${results.duration.years}y ${results.duration.months}m ${results.duration.days}d` },
+                  ]}
+                />
 
                 {/* Step-by-Step Toggle */}
                 <div className="space-y-4">

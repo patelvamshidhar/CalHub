@@ -33,42 +33,55 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-700">
-      <div className="text-center space-y-4">
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
-          Professional tools for Indian finance, travel, and land calculations.
+    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="text-center space-y-6 max-w-3xl mx-auto">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-xs font-black uppercase tracking-widest mb-4"
+        >
+          <ShieldCheck className="h-3.5 w-3.5" />
+          Secure & Private Calculations
+        </motion.div>
+        <h2 className="text-5xl sm:text-7xl font-black tracking-tighter leading-[0.9] text-foreground">
+          SMART TOOLS FOR <span className="text-primary">MODERN INDIA.</span>
+        </h2>
+        <p className="text-muted-foreground text-lg sm:text-xl font-medium leading-relaxed">
+          Professional-grade calculators for finance, travel, and land. 
+          Built for precision, designed for clarity.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
         {[
-          { id: 'finance', title: 'Interest Calculator', icon: IndianRupee, desc: 'Simple & Compound Interest', color: 'bg-purple-500' },
-          { id: 'vehicle', title: 'Vehicle Hub', icon: Navigation, desc: 'Fuel & Travel Cost', color: 'bg-blue-500' },
-          { id: 'land', title: 'Land Calculator', icon: MapIcon, desc: 'Area & Plot Costing', color: 'bg-emerald-500' },
+          { id: 'finance', title: 'Finance Hub', icon: IndianRupee, desc: 'Interest, EMI & Rate Conversion', color: 'from-blue-500 to-indigo-600', delay: 0.1 },
+          { id: 'vehicle', title: 'Vehicle Hub', icon: Navigation, desc: 'Fuel, Trip & Travel Planning', color: 'from-orange-500 to-red-600', delay: 0.2 },
+          { id: 'land', title: 'Land Hub', icon: MapIcon, desc: 'Area, Plot & Terminology', color: 'from-emerald-500 to-teal-600', delay: 0.3 },
         ].map((item) => (
           <motion.div
             key={item.id}
-            whileHover={{ y: -8, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: item.delay }}
+            whileHover={{ y: -12 }}
             className="h-full"
           >
             <Card 
-              className="cursor-pointer border-2 hover:border-primary/50 transition-all group h-full shadow-lg hover:shadow-xl bg-card/50 backdrop-blur-sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/${item.id}`);
-              }}
+              className="cursor-pointer border-2 hover:border-primary/30 transition-all group h-full shadow-xl hover:shadow-2xl bg-card relative overflow-hidden"
+              onClick={() => navigate(`/${item.id}`)}
             >
-              <CardHeader className="pb-2">
-                <div className={`${item.color} w-14 h-14 rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg shadow-${item.color.split('-')[1]}-500/20 group-hover:scale-110 transition-transform`}>
-                  <item.icon className="h-7 w-7" />
+              <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${item.color}`} />
+              <CardHeader className="pb-4 pt-8">
+                <div className={`w-16 h-16 rounded-3xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
+                  <item.icon className="h-8 w-8" />
                 </div>
-                <CardTitle className="text-2xl font-black tracking-tight">{item.title}</CardTitle>
-                <CardDescription className="text-sm font-medium">{item.desc}</CardDescription>
+                <CardTitle className="text-3xl font-black tracking-tight mb-2">{item.title}</CardTitle>
+                <CardDescription className="text-base font-medium leading-snug">{item.desc}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center text-primary font-black text-xs uppercase tracking-widest group-hover:gap-2 transition-all">
-                  Start Calculating <ArrowRight className="h-4 w-4 ml-1" />
+                <div className="flex items-center text-primary font-black text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
+                  Explore Tools <ArrowRight className="h-4 w-4 ml-2" />
                 </div>
               </CardContent>
             </Card>
@@ -78,19 +91,23 @@ const HomePage = () => {
 
       {lastResult && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
           className="max-w-md mx-auto"
         >
-          <Card className="bg-muted/50 border-dashed border-2">
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <History className="h-5 w-5 text-primary" />
+          <Card className="bg-muted/30 border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors">
+            <CardContent className="p-5 flex items-center gap-5">
+              <div className="bg-primary/10 p-3 rounded-2xl">
+                <History className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Last Calculation</p>
-                <p className="font-black text-foreground">{lastResult}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Recent Activity</p>
+                <p className="font-black text-lg text-foreground">{lastResult}</p>
               </div>
+              <Button variant="ghost" size="icon" onClick={() => navigate(`/${lastResult.split(':')[0].toLowerCase()}`)}>
+                <ArrowRight className="h-5 w-5" />
+              </Button>
             </CardContent>
           </Card>
         </motion.div>
@@ -145,27 +162,30 @@ const MainApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300">
+    <div className="min-h-screen bg-background transition-colors duration-300 selection:bg-primary selection:text-primary-foreground">
       {/* Header */}
-      <header className="border-b sticky top-0 z-10 bg-background/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+      <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
+            <div className="bg-primary text-primary-foreground p-2.5 rounded-2xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
               <LayoutGrid className="h-6 w-6" />
             </div>
-            <h1 className="text-xl font-black tracking-tight hidden sm:block">
-              EasyCalc Hub
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-xl font-black tracking-tighter leading-none">
+                CAL<span className="text-primary">HUB</span>
+              </h1>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Pro Tools</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={openFeedback}
-              className="rounded-full font-bold border-2 gap-2 px-2 sm:px-4"
+              className="rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 px-4 h-10 border shadow-sm"
             >
-              <MessageSquarePlus className="h-4 w-4" />
+              <MessageSquarePlus className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Feedback</span>
             </Button>
 
@@ -174,23 +194,18 @@ const MainApp = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => navigate('/')}
-                className="rounded-full font-bold border-2 gap-2 px-2 sm:px-4 animate-in slide-in-from-right-4 duration-300"
+                className="rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 px-4 h-10 border-2 animate-in slide-in-from-right-4 duration-300"
               >
-                <Home className="h-4 w-4" />
+                <Home className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Home</span>
               </Button>
             )}
-
-            <div className="hidden sm:flex items-center gap-2 bg-muted px-3 py-1.5 rounded-full border">
-              <IndianRupee className="h-4 w-4 text-primary" />
-              <span className="text-[10px] font-black uppercase tracking-widest">INR Only</span>
-            </div>
 
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="rounded-full"
+              className="rounded-2xl w-10 h-10 hover:bg-muted transition-colors"
             >
               {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
@@ -199,38 +214,38 @@ const MainApp = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
         <AnimatePresence mode="wait">
           {activeTab === 'home' ? (
             <motion.div
               key="home"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
             >
               <HomePage />
             </motion.div>
           ) : (
             <motion.div
               key="calculators"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-12"
+              exit={{ opacity: 0, y: -30 }}
+              className="space-y-16"
             >
               <div className="flex justify-center">
-                <Tabs value={activeTab} onValueChange={(v) => navigate(`/${v}`)} className="w-full max-w-3xl">
-                  <TabsList className="grid grid-cols-3 w-full h-14 p-1.5 bg-muted rounded-2xl">
-                    <TabsTrigger value="finance" className="rounded-xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-md">
+                <Tabs value={activeTab} onValueChange={(v) => navigate(`/${v}`)} className="w-full max-w-2xl">
+                  <TabsList className="grid grid-cols-3 w-full h-16 p-2 bg-muted/50 rounded-3xl border shadow-inner">
+                    <TabsTrigger value="finance" className="rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-xl data-[state=active]:text-primary transition-all">
                       <IndianRupee className="h-4 w-4 mr-2 hidden sm:block" />
                       <span>Finance</span>
                     </TabsTrigger>
-                    <TabsTrigger value="vehicle" className="rounded-xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-md">
+                    <TabsTrigger value="vehicle" className="rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-xl data-[state=active]:text-primary transition-all">
                       <Navigation className="h-4 w-4 mr-2 hidden sm:block" />
                       <span>Vehicle</span>
                     </TabsTrigger>
-                    <TabsTrigger value="land" className="rounded-xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-md">
+                    <TabsTrigger value="land" className="rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-xl data-[state=active]:text-primary transition-all">
                       <MapIcon className="h-4 w-4 mr-2 hidden sm:block" />
                       <span>Land</span>
                     </TabsTrigger>
@@ -238,48 +253,51 @@ const MainApp = () => {
                 </Tabs>
               </div>
 
-              <div className="mt-8">
+              <div className="mt-12">
                 {activeTab === 'finance' && (
-                  <div className="space-y-12 animate-in fade-in duration-500">
-                    <section className="space-y-8">
-                      <div className="text-center">
-                        <h3 className="text-2xl font-black uppercase tracking-widest text-primary/40">Rate Conversion</h3>
+                  <div className="space-y-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <section className="space-y-10">
+                      <div className="text-center space-y-2">
+                        <h3 className="text-3xl font-black tracking-tighter uppercase">Rate Conversion</h3>
+                        <p className="text-muted-foreground font-medium">Convert between different interest rate formats</p>
                       </div>
                       <RateConverter onBack={() => navigate('/')} />
                     </section>
-                    <div className="relative py-8">
+                    <div className="relative py-12">
                       <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-dashed" />
+                        <span className="w-full border-t-2 border-dashed border-muted" />
                       </div>
                       <div className="relative flex justify-center">
-                        <span className="bg-background px-4 text-muted-foreground">
-                          <Calculator className="h-6 w-6 opacity-20" />
+                        <span className="bg-background px-6 text-muted-foreground/30">
+                          <Calculator className="h-8 w-8" />
                         </span>
                       </div>
                     </div>
-                    <section className="space-y-8">
-                      <div className="text-center">
-                        <h3 className="text-2xl font-black uppercase tracking-widest text-primary/40">Interest Planning</h3>
+                    <section className="space-y-10">
+                      <div className="text-center space-y-2">
+                        <h3 className="text-3xl font-black tracking-tighter uppercase">Interest Planning</h3>
+                        <p className="text-muted-foreground font-medium">Calculate simple and compound interest with ease</p>
                       </div>
                       <InterestCalculator onSuggest={openSuggestion} />
                     </section>
                   </div>
                 )}
                 {activeTab === 'vehicle' && (
-                  <div className="animate-in fade-in duration-500">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <VehicleHub onSuggest={openSuggestion} />
                   </div>
                 )}
                 {activeTab === 'land' && (
-                  <div className="animate-in fade-in duration-500">
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <LandCalculator currency="₹" onSuggest={openSuggestion} />
                   </div>
                 )}
               </div>
 
-              <div className="flex justify-center pt-8">
-                <Button variant="outline" onClick={() => navigate('/')} className="rounded-full font-bold uppercase tracking-widest text-xs">
-                  Back to Home
+              <div className="flex justify-center pt-12">
+                <Button variant="ghost" onClick={() => navigate('/')} className="rounded-full font-black uppercase tracking-widest text-[10px] gap-2 hover:bg-primary/5 hover:text-primary transition-colors">
+                  <ArrowRight className="h-4 w-4 rotate-180" />
+                  Back to Dashboard
                 </Button>
               </div>
             </motion.div>
@@ -288,33 +306,40 @@ const MainApp = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t py-12 mt-12 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 text-center space-y-6">
-          <div className="flex flex-col items-center gap-2">
-            <div className="bg-primary/10 text-primary px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-              Author
+      <footer className="border-t py-20 bg-muted/20">
+        <div className="max-w-7xl mx-auto px-4 text-center space-y-10">
+          <div className="flex flex-col items-center gap-4">
+            <div className="bg-primary text-primary-foreground px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-primary/20">
+              Crafted By
             </div>
-            <p className="text-xl font-black tracking-tight text-foreground">
+            <p className="text-3xl font-black tracking-tighter text-foreground">
               Patelvamshidhar Reddy
+            </p>
+            <p className="text-muted-foreground font-medium max-w-sm mx-auto">
+              Building high-precision tools for the next generation of Indian professionals.
             </p>
           </div>
           
-          <div className="flex justify-center gap-4">
-            <Button variant="link" onClick={openFeedback} className="font-bold text-xs uppercase tracking-widest text-muted-foreground hover:text-primary">
-              Give Feedback
+          <div className="flex justify-center gap-8">
+            <Button variant="link" onClick={openFeedback} className="font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+              Feedback
             </Button>
-            <Link to="/admin-dashboard" className="flex items-center gap-1 font-bold text-xs uppercase tracking-widest text-muted-foreground hover:text-primary">
-              <ShieldCheck className="h-3 w-3" />
-              Admin
+            <Link to="/admin-dashboard" className="flex items-center gap-2 font-black text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+              <ShieldCheck className="h-4 w-4" />
+              Admin Access
             </Link>
           </div>
 
-          <div className="pt-4 border-t border-border/50 max-w-xs mx-auto">
+          <div className="pt-10 border-t border-border/50 max-w-md mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Systems Operational</span>
+            </div>
             <p className="text-sm text-muted-foreground font-bold">
-              EasyCalc Hub &copy; {new Date().getFullYear()}
+              CALHUB &copy; {new Date().getFullYear()}
             </p>
-            <p className="text-[10px] text-muted-foreground/60 mt-1 font-black uppercase tracking-widest">
-              Precision tools for the modern India.
+            <p className="text-[10px] text-muted-foreground/40 mt-2 font-black uppercase tracking-[0.3em]">
+              PRECISION • PRIVACY • PERFORMANCE
             </p>
           </div>
         </div>

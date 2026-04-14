@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { formatCurrency } from '@/src/lib/calculations';
+import { formatCurrency } from '@/lib/calculations';
 
 interface InterestChartProps {
   data: { year: number; amount: number }[];

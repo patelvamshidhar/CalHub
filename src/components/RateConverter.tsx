@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Percent, IndianRupee, ArrowRight, Info, Home, ArrowLeftRight, RefreshCcw } from 'lucide-react';
+import { Percent, IndianRupee, ArrowRight, Info, Home, ArrowLeftRight, RefreshCcw, FileText, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ExportActions } from './ExportActions';
 
 interface RateConverterProps {
   onBack?: () => void;
@@ -168,7 +169,19 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
             </p>
           </div>
 
-          <div className="flex justify-end pt-4 border-t">
+          <div className="flex justify-between items-center pt-4 border-t">
+            {result && (
+              <ExportActions
+                title="Rate Conversion"
+                inputs={[
+                  { label: 'Mode', value: mode === 'pctToRate' ? 'Percentage to Rate' : 'Rate to Percentage' },
+                  { label: 'Input Value', value: `${inputValue}${mode === 'pctToRate' ? '%' : rateUnit === 'rupees' ? '₹' : 'P'}` },
+                ]}
+                results={[
+                  { label: 'Converted Result', value: result },
+                ]}
+              />
+            )}
             <Button variant="outline" onClick={reset} className="font-bold uppercase tracking-widest gap-2">
               <RefreshCcw className="h-4 w-4" />
               Clear

@@ -13,10 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Ruler, Map as MapIcon, Banknote, Info, RefreshCcw, Maximize, Download, ChevronDown, ChevronUp, History } from 'lucide-react';
+import { Ruler, Map as MapIcon, Banknote, Info, RefreshCcw, Maximize, Download, ChevronDown, ChevronUp, History, FileText, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { LAND_UNITS, convertLandArea, formatCurrency } from '@/src/lib/calculations';
+import { LAND_UNITS, convertLandArea, formatCurrency } from '@/lib/calculations';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
+import { ExportActions } from './ExportActions';
 
 interface LandCalculatorProps {
   currency: string;
@@ -149,22 +150,22 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
           className="space-y-6"
         >
           {/* Area Input Card */}
-          <Card className="border-none shadow-2xl bg-gradient-to-br from-background to-muted/50 overflow-hidden">
+          <Card className="border-2 shadow-2xl bg-card overflow-hidden rounded-3xl">
             <div className="h-2 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500" />
-            <CardHeader>
-              <CardTitle className="text-2xl font-black flex items-center gap-2">
+            <CardHeader className="pb-6 pt-8">
+              <CardTitle className="text-2xl font-black flex items-center gap-3">
                 <Ruler className="h-6 w-6 text-orange-500" />
                 Land Area Calculator
               </CardTitle>
-              <CardDescription className="flex justify-between items-center">
-              <span>Calculate plot area and dimensions</span>
-              <span className="text-[10px] font-bold text-destructive uppercase tracking-tighter">Fields empty on load</span>
-            </CardDescription>
+              <CardDescription className="flex justify-between items-center font-medium">
+                <span>Calculate plot area and dimensions</span>
+                <span className="text-[10px] font-black text-destructive uppercase tracking-widest bg-destructive/5 px-2 py-0.5 rounded-full">New Session</span>
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="length" className="font-bold text-xs uppercase tracking-wider">
+            <CardContent className="space-y-8 pb-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label htmlFor="length" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
                     Length
                   </Label>
                   <Input
@@ -174,11 +175,11 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
                     onChange={(e) => setLength(e.target.value)}
                     placeholder="e.g. 50"
                     autoComplete="off"
-                    className="h-12 border-2 focus-visible:ring-orange-500"
+                    className="h-14 border-2 font-black text-lg rounded-2xl focus-visible:ring-orange-500 transition-all"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="width" className="font-bold text-xs uppercase tracking-wider">
+                <div className="space-y-3">
+                  <Label htmlFor="width" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
                     Width
                   </Label>
                   <Input
@@ -188,19 +189,19 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
                     onChange={(e) => setWidth(e.target.value)}
                     placeholder="e.g. 30"
                     autoComplete="off"
-                    className="h-12 border-2 focus-visible:ring-orange-500"
+                    className="h-14 border-2 font-black text-lg rounded-2xl focus-visible:ring-orange-500 transition-all"
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label className="font-bold text-xs uppercase tracking-wider">Input Unit</Label>
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Input Unit</Label>
                 <Select value={inputUnit} onValueChange={(v: any) => setInputUnit(v)}>
-                  <SelectTrigger className="h-12 border-2">
+                  <SelectTrigger className="h-14 border-2 rounded-2xl font-black text-lg">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SQ_FT">Feet (ft)</SelectItem>
-                    <SelectItem value="SQ_M">Meters (m)</SelectItem>
+                  <SelectContent className="rounded-2xl">
+                    <SelectItem value="SQ_FT" className="rounded-xl font-bold">Feet (ft)</SelectItem>
+                    <SelectItem value="SQ_M" className="rounded-xl font-bold">Meters (m)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -208,77 +209,78 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
           </Card>
 
           {/* Price Input Card */}
-          <Card className="border-none shadow-2xl bg-gradient-to-br from-background to-muted/50 overflow-hidden">
-            <CardHeader>
-              <CardTitle className="text-2xl font-black flex items-center gap-2">
+          <Card className="border-2 shadow-2xl bg-card overflow-hidden rounded-3xl">
+            <CardHeader className="pb-6 pt-8">
+              <CardTitle className="text-2xl font-black flex items-center gap-3">
                 <Banknote className="h-6 w-6 text-amber-500" />
                 Plot Price Calculator
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8 pb-10">
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <Label className="font-bold text-xs uppercase tracking-wider">
-                    Price Per Unit
-                  </Label>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="relative">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                  Price Per Unit
+                </Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="relative group">
                     <Input
                       type="number"
                       value={pricePerUnit}
                       onChange={(e) => setPricePerUnit(e.target.value)}
                       placeholder="e.g. 2000"
                       autoComplete="off"
-                      className="h-12 border-2 pl-8 focus-visible:ring-amber-500"
+                      className="h-14 border-2 font-black text-lg pl-12 rounded-2xl focus-visible:ring-amber-500 transition-all"
                     />
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">{currency}</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-black text-lg">{currency}</span>
                   </div>
                   <Select value={priceUnit} onValueChange={(v: any) => setPriceUnit(v)}>
-                    <SelectTrigger className="h-12 border-2">
+                    <SelectTrigger className="h-14 border-2 rounded-2xl font-black text-lg">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="SQ_FT">Per Sq. Ft</SelectItem>
-                      <SelectItem value="SQ_M">Per Sq. Meter</SelectItem>
-                      <SelectItem value="SQ_YD">Per Sq. Yard</SelectItem>
-                      <SelectItem value="ACRE">Per Acre</SelectItem>
-                      <SelectItem value="HECTARE">Per Hectare</SelectItem>
-                      <SelectItem value="GUNTA">Per Gunta</SelectItem>
-                      <SelectItem value="CENT">Per Cent</SelectItem>
+                    <SelectContent className="rounded-2xl">
+                      <SelectItem value="SQ_FT" className="rounded-xl font-bold">Per Sq. Ft</SelectItem>
+                      <SelectItem value="SQ_M" className="rounded-xl font-bold">Per Sq. Meter</SelectItem>
+                      <SelectItem value="SQ_YD" className="rounded-xl font-bold">Per Sq. Yard</SelectItem>
+                      <SelectItem value="ACRE" className="rounded-xl font-bold">Per Acre</SelectItem>
+                      <SelectItem value="HECTARE" className="rounded-xl font-bold">Per Hectare</SelectItem>
+                      <SelectItem value="GUNTA" className="rounded-xl font-bold">Per Gunta</SelectItem>
+                      <SelectItem value="CENT" className="rounded-xl font-bold">Per Cent</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               {error && (
-                <div className="p-2 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-[10px] font-bold text-center">
+                <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-xl text-destructive text-[10px] font-black uppercase tracking-widest text-center">
                   {error}
                 </div>
               )}
 
-              <div className="flex items-center justify-between pt-4 border-t">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-6 border-t">
+                <div className="flex items-center gap-3">
                   <Switch
                     id="auto-calc-lc"
                     checked={autoCalculate}
                     onCheckedChange={setAutoCalculate}
+                    className="data-[state=checked]:bg-orange-500"
                   />
-                  <Label htmlFor="auto-calc-lc" className="text-xs font-bold uppercase tracking-wider cursor-pointer">Auto Calculate</Label>
+                  <Label htmlFor="auto-calc-lc" className="text-[10px] font-black uppercase tracking-widest cursor-pointer text-muted-foreground">Auto Calculate</Label>
                 </div>
-                <Button variant="outline" className="h-9 font-bold gap-2 border-2 text-xs uppercase tracking-widest" onClick={reset}>
-                  <RefreshCcw className="h-3 w-3" />
-                  Reset
-                </Button>
-                {!autoCalculate && (
-                  <Button onClick={handleCalculate} className="h-9 font-bold px-6 border-2 text-xs uppercase tracking-widest">
-                    Calculate
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <Button variant="outline" className="h-12 font-black gap-2 border-2 rounded-2xl text-[10px] uppercase tracking-widest flex-1 sm:flex-none" onClick={reset}>
+                    <RefreshCcw className="h-4 w-4" />
+                    Reset
                   </Button>
-                )}
+                  {!autoCalculate && (
+                    <Button onClick={handleCalculate} className="h-12 font-black px-8 rounded-2xl text-[10px] uppercase tracking-widest bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/20 flex-1 sm:flex-none">
+                      Calculate
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {onSuggest && (
-                <Button variant="link" onClick={onSuggest} className="w-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
+                <Button variant="link" onClick={onSuggest} className="w-full text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
                   Suggest Improvement
                 </Button>
               )}
@@ -376,6 +378,22 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
                       </motion.div>
                     </div>
                   </div>
+
+                  {/* Export & Share Actions */}
+                  <ExportActions
+                    title="Land Area & Price Calculation"
+                    inputs={[
+                      { label: 'Length', value: `${length} ${inputUnit === 'SQ_FT' ? 'ft' : 'm'}` },
+                      { label: 'Width', value: `${width} ${inputUnit === 'SQ_FT' ? 'ft' : 'm'}` },
+                      { label: 'Price Per Unit', value: `${currency}${pricePerUnit} per ${priceUnit}` },
+                    ]}
+                    results={[
+                      { label: 'Total Area', value: `${results.area.toLocaleString()} ${inputUnit === 'SQ_FT' ? 'sq ft' : 'sq m'}` },
+                      { label: 'Total Cost', value: formatCurrency(results.totalPrice, currency) },
+                      { label: 'Sq. Feet', value: results.conversions.sqFt.toLocaleString() },
+                      { label: 'Acre', value: results.conversions.acre.toFixed(4) },
+                    ]}
+                  />
 
                   {/* Step-by-Step Breakdown */}
                   <div className="space-y-4">
