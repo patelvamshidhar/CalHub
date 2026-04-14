@@ -16,7 +16,7 @@ import { InterestCalculator } from './components/InterestCalculator';
 import { AdminDashboard } from './components/AdminDashboard';
 import { FeedbackModal } from './components/FeedbackSystem';
 import { motion, AnimatePresence } from 'motion/react';
-import { logSecurityEvent } from '@/lib/firebase';
+import { logSecurityEvent, ensureAuth } from '@/lib/firebase';
 
 const LAST_UPDATED = "14-04-2026 09:30";
 const IS_MAINTENANCE = false; // Set to true to show maintenance banner
@@ -94,6 +94,7 @@ const MainApp = () => {
   const [hasShownFeedback, setHasShownFeedback] = useState(false);
 
   useEffect(() => {
+    ensureAuth();
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');

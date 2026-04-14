@@ -88,9 +88,12 @@ export const AdminDashboard = () => {
 
     // Listen to auth state changes to re-trigger listeners if needed
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-      if (!user) {
+      if (!user || user.isAnonymous) {
         setLoading(false);
-        setError("Firebase authentication required. Please login with Google to view data.");
+        setError("Admin authentication required. Please login with Google to view dashboard data.");
+        setFeedback([]);
+        setSuggestions([]);
+        setSecurityEvents([]);
         return;
       }
 

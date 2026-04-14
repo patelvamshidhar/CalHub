@@ -72,21 +72,21 @@ service cloud.firestore {
 
     match /feedback/{feedbackId} {
       allow read: if isAdmin();
-      allow create: if isValidFeedback(request.resource.data);
+      allow create: if true; // Public submission
       allow update: if isAdmin() && isValidFeedback(request.resource.data);
       allow delete: if isAdmin();
     }
 
     match /suggestions/{suggestionId} {
       allow read: if isAdmin();
-      allow create: if isValidSuggestion(request.resource.data);
+      allow create: if true; // Public submission
       allow update: if isAdmin() && isValidSuggestion(request.resource.data);
       allow delete: if isAdmin();
     }
     
     match /security_events/{eventId} {
       allow read: if isAdmin();
-      allow create: if isValidSecurityEvent(request.resource.data);
+      allow create: if true; // Public logging
       allow update, delete: if false; // Immutable logs
     }
     
