@@ -23,17 +23,6 @@ const IS_MAINTENANCE = false; // Set to true to show maintenance banner
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [lastResult, setLastResult] = useState<string | null>(null);
-
-  useEffect(() => {
-    const vh = localStorage.getItem('vh_last_result');
-    const ic = localStorage.getItem('ic_last_result');
-    const lc = localStorage.getItem('lc_last_result');
-    
-    if (vh) setLastResult(`Vehicle: ₹${vh}`);
-    else if (ic) setLastResult(`Interest: ₹${ic}`);
-    else if (lc) setLastResult(`Land: ₹${lc}`);
-  }, []);
 
   return (
     <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -91,30 +80,6 @@ const HomePage = () => {
           </motion.div>
         ))}
       </div>
-
-      {lastResult && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="max-w-md mx-auto"
-        >
-          <Card className="bg-muted/30 border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors">
-            <CardContent className="p-5 flex items-center gap-5">
-              <div className="bg-primary/10 p-3 rounded-2xl">
-                <History className="h-6 w-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Recent Activity</p>
-                <p className="font-black text-lg text-foreground">{lastResult}</p>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => navigate(`/${lastResult.split(':')[0].toLowerCase()}`)}>
-                <ArrowRight className="h-5 w-5" />
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
     </div>
   );
 };

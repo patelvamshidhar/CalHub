@@ -52,11 +52,6 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
   } | null>(null);
   const [lastSavedTrip, setLastSavedTrip] = useState<HistoryItem | null>(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('vh_last_saved');
-    if (saved) setLastSavedTrip(JSON.parse(saved));
-  }, []);
-
   const calculate = () => {
     if (!fuelType || !fuelDistance || !fuelMileage || !manualFuelPrice) {
       setError("Enter all details to see results");
@@ -123,8 +118,6 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
       const newHistory = [newItem, ...history].slice(0, 10);
       setHistory(newHistory);
       setLastSavedTrip(newItem);
-      localStorage.setItem('vh_history', JSON.stringify(newHistory));
-      localStorage.setItem('vh_last_saved', JSON.stringify(newItem));
     }
   };
 
@@ -137,7 +130,6 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
 
   const clearHistory = () => {
     setHistory([]);
-    localStorage.removeItem('vh_history');
   };
 
   const reset = () => {

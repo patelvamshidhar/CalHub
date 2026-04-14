@@ -36,7 +36,6 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
 
   // Toggle State
   const [showSteps, setShowSteps] = useState(false);
-  const [autoCalculate, setAutoCalculate] = useState<boolean>(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,22 +45,20 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
     totalPrice: number;
   } | null>(null);
 
+  // Debounce logic
+  const [debouncedValues, setDebouncedValues] = useState({ length, width, pricePerUnit });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValues({ length, width, pricePerUnit });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [length, width, pricePerUnit]);
+
   // Calculations
   const calculate = () => {
-    if (!length) {
-      setError("Please enter the plot length");
-      setResults(null);
-      return null;
-    }
-
-    if (!width) {
-      setError("Please enter the plot width");
-      setResults(null);
-      return null;
-    }
-
-    if (!pricePerUnit) {
-      setError("Please enter the price per unit");
+    if (!length || !width || !pricePerUnit) {
+      setError("Enter all details to see result");
       setResults(null);
       return null;
     }
@@ -109,10 +106,8 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
   };
 
   useEffect(() => {
-    if (autoCalculate) {
-      calculate();
-    }
-  }, [length, width, inputUnit, pricePerUnit, priceUnit, autoCalculate]);
+    calculate();
+  }, [debouncedValues, inputUnit, priceUnit]);
 
   const reset = () => {
     setLength('');
@@ -120,12 +115,11 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
     setInputUnit('SQ_FT');
     setPricePerUnit('');
     setPriceUnit('SQ_FT');
-    setAutoCalculate(false);
     setResults(null);
     setError(null);
   };
 
-  const handleCalculate = () => {
+  const handleSaveToHistory = () => {
     const res = calculate();
     if (res && res.totalPrice > 0) {
       const newItem: HistoryItem = {
@@ -144,9 +138,6 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
       const newHistory = [newItem, ...history].slice(0, 10);
       setHistory(newHistory);
       localStorage.setItem('lc_history', JSON.stringify(newHistory));
-
-      // Reset after calculation
-      reset();
     }
   };
 
@@ -276,31 +267,31 @@ export const LandCalculator = ({ currency, onSuggest }: LandCalculatorProps) => 
               </div>
 
               {error && (
-                <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-xl text-destructive text-[10px] font-black uppercase tracking-widest text-center">
+                <div className={`p-3 border rounded-xl text-[10px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see result" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}>
                   {error}
                 </div>
               )}
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-6 border-t">
-                <div className="flex items-center gap-3">
-                  <Switch
-                    id="auto-calc-lc"
-                    checked={autoCalculate}
-                    onCheckedChange={setAutoCalculate}
-                    className="data-[state=checked]:bg-orange-500"
-                  />
-                  <Label htmlFor="auto-calc-lc" className="text-[10px] font-black uppercase tracking-widest cursor-pointer text-muted-foreground">Auto Calculate</Label>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-green-600">⚡ Auto Calculation Enabled</span>
+                  </div>
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tight">No need to click calculate. Results update automatically.</p>
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <Button variant="outline" className="h-12 font-black gap-2 border-2 rounded-2xl text-[10px] uppercase tracking-widest flex-1 sm:flex-none" onClick={reset}>
                     <RefreshCcw className="h-4 w-4" />
                     Reset
                   </Button>
-                  {!autoCalculate && (
-                    <Button onClick={handleCalculate} className="h-12 font-black px-8 rounded-2xl text-[10px] uppercase tracking-widest bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/20 flex-1 sm:flex-none">
-                      Calculate
-                    </Button>
-                  )}
+                  <Button 
+                    onClick={handleSaveToHistory} 
+                    disabled={!results}
+                    className="h-12 font-black px-8 rounded-2xl text-[10px] uppercase tracking-widest bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/20 flex-1 sm:flex-none flex items-center gap-2"
+                  >
+                    💾 Save to History
+                  </Button>
                 </div>
               </div>
 
