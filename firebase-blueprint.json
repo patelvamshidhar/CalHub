@@ -11,16 +11,16 @@
         },
         "type": {
           "type": "string",
-          "enum": ["Suggestion", "Bug"],
+          "enum": ["Suggestion", "Bug", "Improvement"],
           "description": "The category of feedback"
+        },
+        "rating": {
+          "type": "integer",
+          "description": "Star rating from 1 to 5"
         },
         "name": {
           "type": "string",
           "description": "The name of the user (optional)"
-        },
-        "email": {
-          "type": "string",
-          "description": "The email of the user (optional)"
         },
         "createdAt": {
           "type": "string",

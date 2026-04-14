@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db, googleProvider, handleFirestoreError, OperationType } from '@/lib/firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { db, handleFirestoreError, OperationType } from '@/lib/firebase';
 import { collection, query, orderBy, onSnapshot, where, Timestamp } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -12,26 +12,25 @@ import {
   Filter, 
   ArrowUpDown, 
   Clock, 
-  Mail, 
   Bug, 
   Lightbulb,
+  Rocket,
   Search,
   Loader2,
   AlertTriangle,
-  LogIn,
-  User
+  Lock,
+  User,
+  Star
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
 
-const ADMIN_EMAIL = 'reddyvamshi607@gmail.com';
-
 interface FeedbackItem {
   id: string;
   message: string;
-  type: 'Suggestion' | 'Bug';
+  type: 'Suggestion' | 'Bug' | 'Improvement';
+  rating?: number;
   name?: string;
-  email?: string;
   createdAt: Timestamp;
 }
 
@@ -39,18 +38,20 @@ export const AdminDashboard = () => {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filterType, setFilterType] = useState<'All' | 'Suggestion' | 'Bug'>('All');
+  const [filterType, setFilterType] = useState<'All' | 'Suggestion' | 'Bug' | 'Improvement'>('All');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [searchTerm, setSearchTerm] = useState('');
-
-  const isAdmin = auth.currentUser?.email === ADMIN_EMAIL;
+  const [password, setPassword] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginError, setLoginError] = useState(false);
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!isLoggedIn) {
       setLoading(false);
       return;
     }
 
+    setLoading(true);
     const feedbackRef = collection(db, 'feedback');
     let q = query(feedbackRef, orderBy('createdAt', sortOrder));
 
@@ -73,17 +74,19 @@ export const AdminDashboard = () => {
     });
 
     return () => unsubscribe();
-  }, [isAdmin, filterType, sortOrder]);
+  }, [isLoggedIn, filterType, sortOrder]);
 
-  const handleLogin = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error('Login failed:', error);
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === 'Admin') {
+      setIsLoggedIn(true);
+      setLoginError(false);
+    } else {
+      setLoginError(true);
     }
   };
 
-  if (!auth.currentUser) {
+  if (!isLoggedIn) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-4">
         <Card className="max-w-md w-full border-2 shadow-2xl">
@@ -94,36 +97,27 @@ export const AdminDashboard = () => {
             <div className="space-y-2">
               <h3 className="text-2xl font-black tracking-tight uppercase">Admin Access</h3>
               <p className="text-muted-foreground font-medium">
-                Please sign in with an authorized admin account to access the dashboard.
+                Enter the administrator password to access the dashboard.
               </p>
             </div>
-            <Button onClick={handleLogin} className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs gap-3">
-              <LogIn className="h-5 w-5" />
-              Sign in with Google
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center p-4">
-        <Card className="max-w-md w-full border-2 border-destructive/20 shadow-2xl bg-destructive/5">
-          <CardContent className="pt-10 pb-10 text-center space-y-6">
-            <div className="w-20 h-20 bg-destructive/10 rounded-3xl flex items-center justify-center mx-auto">
-              <AlertTriangle className="h-10 w-10 text-destructive" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-2xl font-black tracking-tight uppercase text-destructive">Access Denied</h3>
-              <p className="text-muted-foreground font-medium">
-                Your account ({auth.currentUser.email}) does not have administrative privileges.
-              </p>
-            </div>
-            <Button variant="outline" onClick={() => auth.signOut()} className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-xs">
-              Sign Out
-            </Button>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="password"
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`pl-11 h-12 rounded-2xl border-2 ${loginError ? 'border-destructive' : 'focus:ring-primary'}`}
+                />
+              </div>
+              {loginError && (
+                <p className="text-xs font-black text-destructive uppercase tracking-widest">Incorrect Password</p>
+              )}
+              <Button type="submit" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs gap-3">
+                Access Dashboard
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
@@ -132,7 +126,6 @@ export const AdminDashboard = () => {
 
   const filteredFeedback = feedback.filter(item => 
     item.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.email?.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (item.name?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
@@ -170,6 +163,7 @@ export const AdminDashboard = () => {
               <SelectItem value="All" className="rounded-xl">All Types</SelectItem>
               <SelectItem value="Suggestion" className="rounded-xl">Suggestions</SelectItem>
               <SelectItem value="Bug" className="rounded-xl">Bugs</SelectItem>
+              <SelectItem value="Improvement" className="rounded-xl">Improvements</SelectItem>
             </SelectContent>
           </Select>
 
@@ -180,6 +174,14 @@ export const AdminDashboard = () => {
           >
             <ArrowUpDown className="h-4 w-4" />
             {sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
+          </Button>
+
+          <Button
+            variant="ghost"
+            onClick={() => setIsLoggedIn(false)}
+            className="h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+          >
+            Logout
           </Button>
         </div>
       </div>
@@ -225,11 +227,21 @@ export const AdminDashboard = () => {
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-xl ${item.type === 'Bug' ? 'bg-red-500/10 text-red-600' : 'bg-amber-500/10 text-amber-600'}`}>
-                          {item.type === 'Bug' ? <Bug className="h-5 w-5" /> : <Lightbulb className="h-5 w-5" />}
+                        <div className={`p-2 rounded-xl ${
+                          item.type === 'Bug' ? 'bg-red-500/10 text-red-600' : 
+                          item.type === 'Improvement' ? 'bg-blue-500/10 text-blue-600' :
+                          'bg-amber-500/10 text-amber-600'
+                        }`}>
+                          {item.type === 'Bug' ? <Bug className="h-5 w-5" /> : 
+                           item.type === 'Improvement' ? <Rocket className="h-5 w-5" /> :
+                           <Lightbulb className="h-5 w-5" />}
                         </div>
                         <div>
-                          <Badge variant="outline" className={`rounded-lg font-black uppercase tracking-widest text-[10px] ${item.type === 'Bug' ? 'border-red-200 text-red-600 bg-red-50' : 'border-amber-200 text-amber-600 bg-amber-50'}`}>
+                          <Badge variant="outline" className={`rounded-lg font-black uppercase tracking-widest text-[10px] ${
+                            item.type === 'Bug' ? 'border-red-200 text-red-600 bg-red-50' : 
+                            item.type === 'Improvement' ? 'border-blue-200 text-blue-600 bg-blue-50' :
+                            'border-amber-200 text-amber-600 bg-amber-50'
+                          }`}>
                             {item.type}
                           </Badge>
                           <div className="flex items-center gap-2 mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
@@ -238,6 +250,12 @@ export const AdminDashboard = () => {
                           </div>
                         </div>
                       </div>
+                      {item.rating && (
+                        <div className="flex items-center gap-0.5 bg-amber-500/10 px-2 py-1 rounded-lg">
+                          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                          <span className="text-xs font-black text-amber-600">{item.rating}</span>
+                        </div>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -247,7 +265,7 @@ export const AdminDashboard = () => {
                     
                     <div className="pt-6 border-t flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xs font-black uppercase tracking-tighter border-2 border-background shadow-sm">
-                        {(item.name || item.email || 'A').charAt(0).toUpperCase()}
+                        {(item.name || 'A').charAt(0).toUpperCase()}
                       </div>
                       <div className="flex flex-col">
                         <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Submitted By</span>
@@ -257,21 +275,10 @@ export const AdminDashboard = () => {
                               <User className="h-3.5 w-3.5 text-primary" />
                               {item.name}
                             </span>
-                          ) : item.email ? (
-                            <span className="flex items-center gap-1.5">
-                              <Mail className="h-3.5 w-3.5 text-primary" />
-                              {item.email}
-                            </span>
                           ) : (
                             <span className="text-muted-foreground italic">Anonymous User</span>
                           )}
                         </div>
-                        {item.name && item.email && (
-                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
-                            <Mail className="h-3 w-3" />
-                            {item.email}
-                          </div>
-                        )}
                       </div>
                     </div>
                   </CardContent>

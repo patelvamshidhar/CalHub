@@ -7,14 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { MessageSquare, AlertCircle, CheckCircle2, Loader2, User, Mail } from 'lucide-react';
+import { MessageSquare, AlertCircle, CheckCircle2, Loader2, User, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const FeedbackForm = () => {
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [type, setType] = useState<'Suggestion' | 'Bug'>('Suggestion');
+  const [rating, setRating] = useState(0);
+  const [hoveredRating, setHoveredRating] = useState(0);
+  const [type, setType] = useState<'Suggestion' | 'Bug' | 'Improvement'>('Suggestion');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -30,14 +31,14 @@ export const FeedbackForm = () => {
       await addDoc(collection(db, 'feedback'), {
         message: message.trim(),
         type,
+        rating,
         name: name.trim() || null,
-        email: email.trim() || null,
         createdAt: serverTimestamp(),
       });
       
       setMessage('');
       setName('');
-      setEmail('');
+      setRating(0);
       setStatus('success');
       setTimeout(() => setStatus('idle'), 5000);
     } catch (error) {
@@ -59,12 +60,12 @@ export const FeedbackForm = () => {
           <CardTitle className="text-2xl font-black tracking-tight uppercase">Submit Feedback</CardTitle>
         </div>
         <CardDescription className="text-sm font-medium">
-          Help us improve CalHub. Share your suggestions or report any issues you encounter.
+          Help us improve CalHub. Share your suggestions, report bugs, or suggest improvements.
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-8 space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-6">
             <div className="space-y-2">
               <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Name (Optional)</Label>
               <div className="relative">
@@ -77,17 +78,31 @@ export const FeedbackForm = () => {
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email (Optional)</Label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-11 h-12 rounded-2xl border-2 focus:ring-primary"
-                />
+
+            <div className="space-y-3">
+              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Rating</Label>
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setRating(star)}
+                    onMouseEnter={() => setHoveredRating(star)}
+                    onMouseLeave={() => setHoveredRating(0)}
+                    className="transition-transform hover:scale-125 active:scale-90"
+                  >
+                    <Star
+                      className={`h-8 w-8 ${
+                        (hoveredRating || rating) >= star
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'text-muted-foreground/30'
+                      }`}
+                    />
+                  </button>
+                ))}
+                <span className="ml-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
+                  {rating > 0 ? `${rating} / 5` : 'Select Rating'}
+                </span>
               </div>
             </div>
           </div>
@@ -101,6 +116,7 @@ export const FeedbackForm = () => {
               <SelectContent className="rounded-2xl">
                 <SelectItem value="Suggestion" className="rounded-xl">💡 Suggestion</SelectItem>
                 <SelectItem value="Bug" className="rounded-xl">🐛 Bug Report</SelectItem>
+                <SelectItem value="Improvement" className="rounded-xl">🚀 Improvement</SelectItem>
               </SelectContent>
             </Select>
           </div>
