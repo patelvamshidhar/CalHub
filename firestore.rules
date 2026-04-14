@@ -28,12 +28,12 @@ service cloud.firestore {
     }
 
     function isValidFeedback(data) {
-      return data.keys().hasAll(['message', 'type', 'userId', 'userEmail', 'createdAt']) &&
-             data.keys().hasOnly(['message', 'type', 'userId', 'userEmail', 'createdAt']) &&
+      return data.keys().hasAll(['message', 'type', 'createdAt']) &&
+             data.keys().hasOnly(['message', 'type', 'name', 'email', 'createdAt']) &&
              data.message is string && data.message.size() >= 1 && data.message.size() <= 1000 &&
              data.type in ['Suggestion', 'Bug'] &&
-             data.userId == request.auth.uid &&
-             data.userEmail == request.auth.token.email &&
+             (data.name == null || (data.name is string && data.name.size() <= 100)) &&
+             (data.email == null || (data.email is string && data.email.size() <= 100)) &&
              data.createdAt is timestamp;
     }
 
@@ -41,11 +41,10 @@ service cloud.firestore {
       // Only admin can read all feedback
       allow read: if isAdmin();
       
-      // Any authenticated user can submit feedback
-      allow create: if isAuthenticated() && isValidFeedback(request.resource.data);
+      // Anyone can submit feedback
+      allow create: if isValidFeedback(request.resource.data);
       
-      // No updates or deletes allowed for users
-      // Admin can potentially update status if we add that field later
+      // Only admin can update or delete
       allow update, delete: if isAdmin();
     }
 

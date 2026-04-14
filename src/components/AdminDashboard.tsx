@@ -18,7 +18,8 @@ import {
   Search,
   Loader2,
   AlertTriangle,
-  LogIn
+  LogIn,
+  User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
@@ -29,8 +30,8 @@ interface FeedbackItem {
   id: string;
   message: string;
   type: 'Suggestion' | 'Bug';
-  userId: string;
-  userEmail: string;
+  name?: string;
+  email?: string;
   createdAt: Timestamp;
 }
 
@@ -131,7 +132,8 @@ export const AdminDashboard = () => {
 
   const filteredFeedback = feedback.filter(item => 
     item.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.userEmail.toLowerCase().includes(searchTerm.toLowerCase())
+    (item.email?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (item.name?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -245,14 +247,31 @@ export const AdminDashboard = () => {
                     
                     <div className="pt-6 border-t flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xs font-black uppercase tracking-tighter border-2 border-background shadow-sm">
-                        {item.userEmail.charAt(0).toUpperCase()}
+                        {(item.name || item.email || 'A').charAt(0).toUpperCase()}
                       </div>
                       <div className="flex flex-col">
                         <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Submitted By</span>
                         <div className="flex items-center gap-1.5 text-sm font-bold text-foreground">
-                          <Mail className="h-3.5 w-3.5 text-primary" />
-                          {item.userEmail}
+                          {item.name ? (
+                            <span className="flex items-center gap-1.5">
+                              <User className="h-3.5 w-3.5 text-primary" />
+                              {item.name}
+                            </span>
+                          ) : item.email ? (
+                            <span className="flex items-center gap-1.5">
+                              <Mail className="h-3.5 w-3.5 text-primary" />
+                              {item.email}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground italic">Anonymous User</span>
+                          )}
                         </div>
+                        {item.name && item.email && (
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+                            <Mail className="h-3 w-3" />
+                            {item.email}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </CardContent>

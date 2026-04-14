@@ -1,33 +1,26 @@
 import React, { useState } from 'react';
-import { auth, db, googleProvider, handleFirestoreError, OperationType } from '@/lib/firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { db, handleFirestoreError, OperationType } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MessageSquare, AlertCircle, CheckCircle2, LogIn, Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { MessageSquare, AlertCircle, CheckCircle2, Loader2, User, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const FeedbackForm = () => {
   const [message, setMessage] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [type, setType] = useState<'Suggestion' | 'Bug'>('Suggestion');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!auth.currentUser) return;
     if (!message.trim()) return;
 
     setIsSubmitting(true);
@@ -37,12 +30,14 @@ export const FeedbackForm = () => {
       await addDoc(collection(db, 'feedback'), {
         message: message.trim(),
         type,
-        userId: auth.currentUser.uid,
-        userEmail: auth.currentUser.email,
+        name: name.trim() || null,
+        email: email.trim() || null,
         createdAt: serverTimestamp(),
       });
       
       setMessage('');
+      setName('');
+      setEmail('');
       setStatus('success');
       setTimeout(() => setStatus('idle'), 5000);
     } catch (error) {
@@ -53,27 +48,6 @@ export const FeedbackForm = () => {
       setIsSubmitting(false);
     }
   };
-
-  if (!auth.currentUser) {
-    return (
-      <Card className="border-2 border-dashed">
-        <CardContent className="pt-10 pb-10 text-center space-y-6">
-          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto">
-            <LogIn className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-xl font-black tracking-tight">Authentication Required</h3>
-            <p className="text-muted-foreground text-sm max-w-xs mx-auto">
-              Please sign in with your Google account to provide feedback or report bugs.
-            </p>
-          </div>
-          <Button onClick={handleLogin} className="rounded-2xl font-black uppercase tracking-widest text-xs h-12 px-8">
-            Sign in with Google
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="border-2 shadow-xl overflow-hidden">
@@ -90,6 +64,34 @@ export const FeedbackForm = () => {
       </CardHeader>
       <CardContent className="pt-8 space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Name (Optional)</Label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="pl-11 h-12 rounded-2xl border-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email (Optional)</Label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-11 h-12 rounded-2xl border-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Feedback Type</Label>
             <Select value={type} onValueChange={(v: any) => setType(v)}>
@@ -154,19 +156,6 @@ export const FeedbackForm = () => {
             )}
           </Button>
         </form>
-
-        <div className="pt-4 border-t flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-500" />
-            Logged in as {auth.currentUser.email}
-          </div>
-          <button 
-            onClick={() => auth.signOut()}
-            className="hover:text-primary transition-colors"
-          >
-            Sign Out
-          </button>
-        </div>
       </CardContent>
     </Card>
   );

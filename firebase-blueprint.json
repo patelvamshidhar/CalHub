@@ -14,13 +14,13 @@
           "enum": ["Suggestion", "Bug"],
           "description": "The category of feedback"
         },
-        "userId": {
+        "name": {
           "type": "string",
-          "description": "The UID of the user who submitted the feedback"
+          "description": "The name of the user (optional)"
         },
-        "userEmail": {
+        "email": {
           "type": "string",
-          "description": "The email of the user who submitted the feedback"
+          "description": "The email of the user (optional)"
         },
         "createdAt": {
           "type": "string",
@@ -28,7 +28,7 @@
           "description": "When the feedback was submitted"
         }
       },
-      "required": ["message", "type", "userId", "userEmail", "createdAt"]
+      "required": ["message", "type", "createdAt"]
     }
   },
   "firestore": {
