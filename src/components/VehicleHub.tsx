@@ -48,29 +48,18 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
     fuelReq: number;
     enteredPrice: number;
     totalCost: number;
+    costPerKm: number;
   } | null>(null);
+  const [lastSavedTrip, setLastSavedTrip] = useState<HistoryItem | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('vh_last_saved');
+    if (saved) setLastSavedTrip(JSON.parse(saved));
+  }, []);
 
   const calculate = () => {
-    if (!fuelType) {
-      setError("Please select a fuel type (Petrol or Diesel)");
-      setResults(null);
-      return null;
-    }
-
-    if (!fuelDistance) {
-      setError("Please enter the trip distance");
-      setResults(null);
-      return null;
-    }
-
-    if (!fuelMileage) {
-      setError("Please enter your vehicle's mileage");
-      setResults(null);
-      return null;
-    }
-
-    if (!manualFuelPrice) {
-      setError("Please enter the current fuel price");
+    if (!fuelType || !fuelDistance || !fuelMileage || !manualFuelPrice) {
+      setError("Enter all details to see results");
       setResults(null);
       return null;
     }
@@ -106,7 +95,8 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
     setError(null);
     const fr = dist / mil;
     const tc = fr * price;
-    const res = { fuelReq: fr, enteredPrice: price, totalCost: tc };
+    const cpkm = tc / dist;
+    const res = { fuelReq: fr, enteredPrice: price, totalCost: tc, costPerKm: cpkm };
     setResults(res);
     return res;
   };
@@ -115,7 +105,7 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
     calculate();
   }, [fuelDistance, fuelMileage, fuelType, manualFuelPrice]);
 
-  const handleCalculate = () => {
+  const handleSaveTrip = () => {
     const res = calculate();
     if (res && fuelType) {
       const newItem: HistoryItem = {
@@ -132,7 +122,9 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
       };
       const newHistory = [newItem, ...history].slice(0, 10);
       setHistory(newHistory);
+      setLastSavedTrip(newItem);
       localStorage.setItem('vh_history', JSON.stringify(newHistory));
+      localStorage.setItem('vh_last_saved', JSON.stringify(newItem));
     }
   };
 
@@ -280,17 +272,49 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
                     <motion.p
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      className="text-[10px] font-black uppercase tracking-widest text-destructive text-center bg-destructive/5 py-3 rounded-xl border border-destructive/20"
+                      className={`text-[10px] font-black uppercase tracking-widest text-center py-3 rounded-xl border ${error === "Enter all details to see results" ? "text-primary/60 bg-primary/5 border-primary/10" : "text-destructive bg-destructive/5 border-destructive/20"}`}
                     >
                       {error}
                     </motion.p>
                   )}
 
-                  <Button onClick={handleCalculate} className="w-full font-black uppercase tracking-widest text-xs h-14 rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
-                    Calculate & Save Trip
+                  <div className="flex items-center justify-center gap-2 py-2">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-green-600">⚡ Auto Calculation Enabled</span>
+                  </div>
+
+                  <Button 
+                    onClick={handleSaveTrip} 
+                    disabled={!results}
+                    className="w-full font-black uppercase tracking-widest text-xs h-14 rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2"
+                  >
+                    💾 Save Trip
                   </Button>
                 </CardContent>
               </Card>
+
+              {/* Last Saved Trip Preview */}
+              <AnimatePresence>
+                {lastSavedTrip && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-6 bg-primary/5 border-2 border-primary/10 rounded-3xl space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Last Saved Trip</span>
+                      <span className="text-[10px] font-bold text-muted-foreground">{new Date(lastSavedTrip.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-black">{lastSavedTrip.inputs.distance} km</span>
+                      </div>
+                      <span className="text-sm font-black text-primary">{lastSavedTrip.result}</span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Reference Price List Card */}
               <AnimatePresence>
@@ -342,14 +366,18 @@ export const VehicleHub = ({ onSuggest }: VehicleHubProps) => {
                       </h3>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="p-8 bg-background rounded-[2rem] border-2 shadow-sm space-y-2 hover:border-primary/20 transition-colors">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Fuel Required</p>
-                        <p className="text-4xl font-black tracking-tight">{results ? results.fuelReq.toFixed(2) : '0.00'} <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest ml-1">Liters</span></p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div className="p-6 bg-background rounded-[2rem] border-2 shadow-sm space-y-2 hover:border-primary/20 transition-colors">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Total Fuel Used</p>
+                        <p className="text-3xl font-black tracking-tight">{results ? results.fuelReq.toFixed(2) : '0.00'} <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1">L</span></p>
                       </div>
-                      <div className="p-8 bg-background rounded-[2rem] border-2 shadow-sm space-y-2 hover:border-primary/20 transition-colors">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Entered Fuel Price</p>
-                        <p className="text-4xl font-black tracking-tight">₹{results ? results.enteredPrice.toFixed(2) : '0.00'} <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest ml-1">/L</span></p>
+                      <div className="p-6 bg-background rounded-[2rem] border-2 shadow-sm space-y-2 hover:border-primary/20 transition-colors">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Total Cost</p>
+                        <p className="text-3xl font-black tracking-tight">₹{results ? results.totalCost.toFixed(0) : '0'}</p>
+                      </div>
+                      <div className="p-6 bg-background rounded-[2rem] border-2 shadow-sm space-y-2 hover:border-primary/20 transition-colors">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Cost per KM</p>
+                        <p className="text-3xl font-black tracking-tight">₹{results ? results.costPerKm.toFixed(2) : '0.00'}</p>
                       </div>
                     </div>
 
