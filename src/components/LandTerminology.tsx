@@ -112,7 +112,7 @@ export const LandTerminology = () => {
             <Info className="h-8 w-8" />
           </div>
           <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-xl font-black">Pro Tip for Buyers</h3>
+            <h3 className="text-xl font-black">Expert Tip for Buyers</h3>
             <p className="text-sm text-muted-foreground font-medium max-w-2xl leading-relaxed">
               Always verify the <span className="font-bold text-foreground">RERA registration</span> of a project and check the <span className="font-bold text-foreground">Encumbrance Certificate (EC)</span> of the land to ensure a clear title and legal ownership.
             </p>

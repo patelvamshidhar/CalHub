@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, handleFirestoreError, OperationType } from '@/lib/firebase';
-import { collection, query, orderBy, onSnapshot, where, Timestamp } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, where, Timestamp, getDocs, writeBatch, deleteDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,7 +20,9 @@ import {
   AlertTriangle,
   Lock,
   User,
-  Star
+  Star,
+  Trash2,
+  CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
@@ -44,6 +46,34 @@ export const AdminDashboard = () => {
   const [password, setPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleClearBugs = async () => {
+    setIsClearing(true);
+    try {
+      const bugQuery = query(collection(db, 'feedback'), where('type', '==', 'Bug'));
+      const snapshot = await getDocs(bugQuery);
+      
+      if (snapshot.empty) {
+        setIsClearing(false);
+        return;
+      }
+
+      const batch = writeBatch(db);
+      snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      
+      await batch.commit();
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (err) {
+      console.error('Failed to clear bugs:', err);
+    } finally {
+      setIsClearing(false);
+    }
+  };
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -151,61 +181,88 @@ export const AdminDashboard = () => {
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary text-primary-foreground rounded-xl shadow-lg shadow-primary/20">
-              <ShieldCheck className="h-6 w-6" />
+    <div className="space-y-6 animate-in fade-in duration-700">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-primary text-primary-foreground rounded-lg shadow-lg shadow-primary/20">
+              <ShieldCheck className="h-5 w-5" />
             </div>
-            <h2 className="text-4xl font-black tracking-tighter uppercase">Admin Dashboard</h2>
+            <h2 className="text-2xl font-black tracking-tighter uppercase">Admin Dashboard</h2>
           </div>
-          <p className="text-muted-foreground font-medium">Monitoring user feedback and system suggestions in real-time.</p>
+          <p className="text-muted-foreground text-xs font-medium">Monitoring user feedback and system suggestions.</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="relative flex-1 md:w-64">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search feedback..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-12 pl-11 pr-4 rounded-2xl border-2 bg-card focus:ring-2 focus:ring-primary outline-none text-sm font-medium transition-all"
+              className="w-full h-10 pl-9 pr-4 rounded-xl border-2 bg-card focus:ring-2 focus:ring-primary outline-none text-xs font-medium transition-all"
             />
           </div>
           
           <Select value={filterType} onValueChange={(v: any) => setFilterType(v)}>
-            <SelectTrigger className="h-12 w-40 rounded-2xl border-2 font-bold text-xs uppercase tracking-widest">
-              <Filter className="h-4 w-4 mr-2" />
+            <SelectTrigger className="h-10 w-32 rounded-xl border-2 font-bold text-[10px] uppercase tracking-widest">
+              <Filter className="h-3.5 w-3.5 mr-2" />
               <SelectValue placeholder="Filter" />
             </SelectTrigger>
-            <SelectContent className="rounded-2xl">
-              <SelectItem value="All" className="rounded-xl">All Types</SelectItem>
-              <SelectItem value="Suggestion" className="rounded-xl">Suggestions</SelectItem>
-              <SelectItem value="Bug" className="rounded-xl">Bugs</SelectItem>
-              <SelectItem value="Improvement" className="rounded-xl">Improvements</SelectItem>
+            <SelectContent className="rounded-xl">
+              <SelectItem value="All" className="rounded-lg">All Types</SelectItem>
+              <SelectItem value="Suggestion" className="rounded-lg">Suggestions</SelectItem>
+              <SelectItem value="Bug" className="rounded-lg">Bugs</SelectItem>
+              <SelectItem value="Improvement" className="rounded-lg">Improvements</SelectItem>
             </SelectContent>
           </Select>
 
           <Button
             variant="outline"
+            size="sm"
             onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-            className="h-12 rounded-2xl border-2 font-black uppercase tracking-widest text-[10px] gap-2"
+            className="h-10 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] gap-2"
           >
-            <ArrowUpDown className="h-4 w-4" />
-            {sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
+            <ArrowUpDown className="h-3.5 w-3.5" />
+            {sortOrder === 'desc' ? 'New' : 'Old'}
+          </Button>
+
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={handleClearBugs}
+            disabled={isClearing || feedback.filter(f => f.type === 'Bug').length === 0}
+            className="h-10 rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 shadow-lg shadow-destructive/20"
+          >
+            {isClearing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+            Clear Bugs
           </Button>
 
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => setIsLoggedIn(false)}
-            className="h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+            className="h-10 rounded-xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:text-destructive transition-colors"
           >
             Logout
           </Button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-green-500/10 border border-green-500/20 p-3 rounded-xl flex items-center justify-center gap-2 text-green-600 text-[10px] font-black uppercase tracking-widest"
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            All bug reports cleared successfully
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {loading ? (
         <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">

@@ -43,8 +43,8 @@ export const WelcomePage = ({ onStart }: WelcomePageProps) => {
           <div className="inline-flex items-center justify-center p-4 bg-primary text-primary-foreground rounded-3xl shadow-2xl mb-4">
             <LayoutGrid className="h-12 w-12" />
           </div>
-          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-foreground">
-            EasyCalc <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Hub</span>
+          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-foreground uppercase">
+            CAL<span className="text-primary">HUB</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
             The ultimate utility toolkit for India. Finance, Vehicle, and Land calculations made easy.
@@ -59,7 +59,7 @@ export const WelcomePage = ({ onStart }: WelcomePageProps) => {
           className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto"
         >
           {[
-            { icon: IndianRupee, title: "Finance", desc: "Rate Converter & Interest Pro", color: "text-purple-500", bg: "bg-purple-500/10" },
+            { icon: IndianRupee, title: "Finance", desc: "Rate Converter & Interest Planner", color: "text-purple-500", bg: "bg-purple-500/10" },
             { icon: Navigation, title: "Vehicle", desc: "Fuel, Mileage & Travel Cost", color: "text-blue-500", bg: "bg-blue-500/10" },
             { icon: MapIcon, title: "Land", desc: "Indian Units & Costing", color: "text-emerald-500", bg: "bg-emerald-500/10" },
           ].map((feature, i) => (

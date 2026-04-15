@@ -35,12 +35,12 @@ const HomePage = () => {
           <ShieldCheck className="h-3.5 w-3.5" />
           Secure & Private Calculations
         </motion.div>
-        <h2 className="text-5xl sm:text-7xl font-black tracking-tighter leading-[0.9] text-foreground">
-          SMART TOOLS FOR <span className="text-primary">MODERN INDIA.</span>
+        <h2 className="text-5xl sm:text-7xl font-black tracking-tighter leading-[0.9] text-foreground uppercase">
+          CAL<span className="text-primary">HUB</span>
         </h2>
         <p className="text-muted-foreground text-lg sm:text-xl font-medium leading-relaxed">
-          Professional-grade calculators for finance, travel, and land. 
-          Built for precision, designed for clarity.
+          Precision calculators for finance, travel, and land. 
+          Built for accuracy, designed for clarity.
         </p>
       </div>
 
@@ -133,7 +133,6 @@ const MainApp = () => {
               <h1 className="text-xl font-black tracking-tighter leading-none">
                 CAL<span className="text-primary">HUB</span>
               </h1>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Pro Tools</span>
             </div>
           </div>
 
@@ -212,7 +211,7 @@ const MainApp = () => {
                 </Tabs>
               </div>
 
-              <div className="mt-12">
+              <div className="mt-8">
                 {activeTab === 'finance' && (
                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -254,13 +253,6 @@ const MainApp = () => {
                     <AdminDashboard />
                   </div>
                 )}
-              </div>
-
-              <div className="flex justify-center pt-12">
-                <Button variant="ghost" onClick={() => navigate('/')} className="rounded-full font-black uppercase tracking-widest text-[10px] gap-2 hover:bg-primary/5 hover:text-primary transition-colors">
-                  <ArrowRight className="h-4 w-4 rotate-180" />
-                  Back to Dashboard
-                </Button>
               </div>
             </motion.div>
           )}

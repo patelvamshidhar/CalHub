@@ -197,7 +197,6 @@ export const InterestCalculator = () => {
                 <TrendingUp className="h-5 w-5 text-purple-500" />
                 Interest Planner
               </CardTitle>
-              <span className="text-[10px] font-black text-destructive uppercase tracking-widest bg-destructive/5 px-2 py-1 rounded-lg">Pro</span>
             </div>
           </CardHeader>
 
