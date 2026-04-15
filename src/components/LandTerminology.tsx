@@ -72,12 +72,12 @@ const TERMS = [
 export const LandTerminology = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl sm:text-5xl font-black tracking-tighter">
-          Land <span className="text-primary">Terminology</span> Guide
+      <div className="text-center space-y-2">
+        <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase">
+          Land <span className="text-primary">Terminology</span>
         </h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
-          Understand the common units and legal terms used in Indian real estate.
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base">
+          Understand common units and legal terms used in Indian real estate
         </p>
       </div>
 
@@ -88,15 +88,16 @@ export const LandTerminology = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
+            whileHover={{ y: -8 }}
           >
-            <Card className="h-full border-2 hover:border-primary/20 transition-all hover:shadow-xl group">
-              <CardHeader>
-                <div className={`w-12 h-12 rounded-2xl ${term.bg} ${term.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform`}>
+            <Card className="h-full border-2 hover:border-primary/30 transition-all hover:shadow-2xl group rounded-[2rem] bg-card/50 backdrop-blur-sm overflow-hidden">
+              <CardHeader className="pb-3 pt-6 px-6">
+                <div className={`w-12 h-12 rounded-2xl ${term.bg} ${term.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform shadow-inner`}>
                   <term.icon className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-xl font-black">{term.title}</CardTitle>
+                <CardTitle className="text-xl font-black tracking-tight">{term.title}</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-6 pb-6">
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">
                   {term.desc}
                 </p>
@@ -106,13 +107,13 @@ export const LandTerminology = () => {
         ))}
       </div>
 
-      <Card className="bg-primary/5 border-2 border-primary/10 overflow-hidden">
-        <CardContent className="p-8 flex flex-col md:flex-row items-center gap-8">
-          <div className="bg-primary text-primary-foreground p-4 rounded-3xl shadow-xl">
-            <Info className="h-8 w-8" />
+      <Card className="bg-primary/5 border-2 border-primary/10 overflow-hidden rounded-[2.5rem]">
+        <CardContent className="p-6 sm:p-8 flex flex-col md:flex-row items-center gap-6">
+          <div className="bg-primary text-primary-foreground p-4 rounded-2xl shadow-xl shrink-0">
+            <Info className="h-6 w-6" />
           </div>
-          <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-xl font-black">Expert Tip for Buyers</h3>
+          <div className="space-y-1 text-center md:text-left">
+            <h3 className="text-lg font-black uppercase tracking-tight">Expert Tip for Buyers</h3>
             <p className="text-sm text-muted-foreground font-medium max-w-2xl leading-relaxed">
               Always verify the <span className="font-bold text-foreground">RERA registration</span> of a project and check the <span className="font-bold text-foreground">Encumbrance Certificate (EC)</span> of the land to ensure a clear title and legal ownership.
             </p>

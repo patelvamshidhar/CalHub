@@ -24,27 +24,38 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      <div className="text-center space-y-6 max-w-3xl mx-auto">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="text-center space-y-4 max-w-3xl mx-auto">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-xs font-black uppercase tracking-widest mb-4"
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest mb-2"
         >
-          <ShieldCheck className="h-3.5 w-3.5" />
+          <ShieldCheck className="h-3 w-3" />
           Secure & Private Calculations
         </motion.div>
-        <h2 className="text-5xl sm:text-7xl font-black tracking-tighter leading-[0.9] text-foreground uppercase">
+        <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.85] text-foreground uppercase">
           CAL<span className="text-primary">HUB</span>
         </h2>
-        <p className="text-muted-foreground text-lg sm:text-xl font-medium leading-relaxed">
+        <p className="text-muted-foreground text-base sm:text-lg font-medium leading-relaxed max-w-2xl mx-auto">
           Precision calculators for finance, travel, and land. 
           Built for accuracy, designed for clarity.
         </p>
+        
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="pt-2"
+        >
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center justify-center gap-2">
+            Trusted by users for accurate calculations 🚀
+          </p>
+        </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
         {[
           { id: 'finance', title: 'Finance Hub', icon: IndianRupee, desc: 'Interest, EMI & Rate Conversion', color: 'from-blue-500 to-indigo-600', delay: 0.1 },
           { id: 'vehicle', title: 'Vehicle Hub', icon: Navigation, desc: 'Fuel, Trip & Travel Planning', color: 'from-orange-500 to-red-600', delay: 0.2 },
@@ -55,24 +66,27 @@ const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: item.delay }}
-            whileHover={{ y: -12 }}
+            whileHover={{ y: -8 }}
             className="h-full"
           >
             <Card 
-              className="cursor-pointer border-2 hover:border-primary/30 transition-all group h-full shadow-xl hover:shadow-2xl bg-card relative overflow-hidden"
+              className="cursor-pointer border-2 hover:border-primary/40 transition-all group h-full shadow-lg hover:shadow-2xl bg-card relative overflow-hidden rounded-[2.5rem]"
               onClick={() => navigate(`/${item.id}`)}
             >
-              <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${item.color}`} />
-              <CardHeader className="pb-4 pt-8">
-                <div className={`w-16 h-16 rounded-3xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
-                  <item.icon className="h-8 w-8" />
+              <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${item.color} opacity-80`} />
+              <CardHeader className="pb-3 pt-8 px-8">
+                <div className="relative mb-6">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-2xl opacity-20 group-hover:opacity-40 transition-opacity rounded-full`} />
+                  <div className={`relative w-20 h-20 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-white shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
+                    <item.icon className="h-10 w-10" />
+                  </div>
                 </div>
-                <CardTitle className="text-3xl font-black tracking-tight mb-2">{item.title}</CardTitle>
-                <CardDescription className="text-base font-medium leading-snug">{item.desc}</CardDescription>
+                <CardTitle className="text-2xl sm:text-3xl font-black tracking-tight mb-2 group-hover:text-primary transition-colors">{item.title}</CardTitle>
+                <CardDescription className="text-sm sm:text-base font-medium leading-snug text-muted-foreground/80">{item.desc}</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-primary font-black text-xs uppercase tracking-widest group-hover:translate-x-2 transition-transform">
-                  Explore Tools <ArrowRight className="h-4 w-4 ml-2" />
+              <CardContent className="px-8 pb-8">
+                <div className="flex items-center text-primary font-black text-[10px] uppercase tracking-widest group-hover:translate-x-2 transition-transform">
+                  Explore Tools <ArrowRight className="h-3.5 w-3.5 ml-2" />
                 </div>
               </CardContent>
             </Card>
@@ -123,36 +137,24 @@ const MainApp = () => {
       </AnimatePresence>
 
       {/* Header */}
-      <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-xl shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-            <div className="bg-primary text-primary-foreground p-2.5 rounded-2xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
-              <LayoutGrid className="h-6 w-6" />
+            <div className="bg-primary text-primary-foreground p-2 rounded-xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
+              <LayoutGrid className="h-5 w-5" />
             </div>
-            <div className="flex flex-col">
-              <h1 className="text-xl font-black tracking-tighter leading-none">
-                CAL<span className="text-primary">HUB</span>
-              </h1>
-            </div>
+            <h1 className="text-lg font-black tracking-tighter leading-none group-hover:text-primary transition-colors">
+              CAL<span className="text-primary">HUB</span>
+            </h1>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/feedback')}
-              className="rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 px-4 h-10 border shadow-sm"
-            >
-              <MessageSquarePlus className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Feedback</span>
-            </Button>
-
+          <div className="flex items-center gap-2 sm:gap-3">
             {activeTab !== 'home' && (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={() => navigate('/')}
-                className="rounded-2xl font-black uppercase tracking-widest text-[10px] gap-2 px-4 h-10 border-2 animate-in slide-in-from-right-4 duration-300"
+                className="rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 px-3 h-9 hover:bg-primary/10 hover:text-primary transition-all"
               >
                 <Home className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Home</span>
@@ -163,16 +165,16 @@ const MainApp = () => {
               variant="ghost"
               size="icon"
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="rounded-2xl w-10 h-10 hover:bg-muted transition-colors"
+              className="rounded-xl w-9 h-9 hover:bg-muted transition-colors"
             >
-              {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <AnimatePresence mode="wait">
           {activeTab === 'home' ? (
             <motion.div
@@ -259,35 +261,49 @@ const MainApp = () => {
         </AnimatePresence>
       </main>
 
+      {/* Floating Feedback Button */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 1, type: 'spring' }}
+        className="fixed bottom-6 right-6 z-[60]"
+      >
+        <Button
+          onClick={() => navigate('/feedback')}
+          className="w-14 h-14 rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center p-0 group overflow-hidden relative"
+        >
+          <div className="absolute inset-0 bg-primary group-hover:bg-primary/90 transition-colors" />
+          <MessageSquarePlus className="h-6 w-6 relative z-10 group-hover:scale-110 transition-transform" />
+          <span className="sr-only">Feedback</span>
+        </Button>
+      </motion.div>
+
       {/* Footer */}
-      <footer className="border-t bg-background py-2.5 px-5">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          {/* Left Side */}
-          <div className="flex-1 text-center sm:text-left">
-            Created by <span className="text-foreground">Patelvamshidhar Reddy</span>
+      <footer className="border-t bg-background py-4 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
+          <div>
+            &copy; 2026 CALHUB
           </div>
 
-          {/* Center */}
-          <div className="flex items-center justify-center gap-6 flex-1">
+          <div className="flex items-center gap-6">
             <button 
               onClick={() => navigate('/feedback')} 
-              className="hover:text-primary transition-colors cursor-pointer"
+              className="hover:text-primary transition-colors"
             >
               Feedback
             </button>
-            <span className="text-muted-foreground/30">|</span>
+            <span className="opacity-20">|</span>
             <button 
               onClick={() => navigate('/admin')} 
-              className="flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 hover:text-primary transition-colors"
             >
               <ShieldCheck className="h-3 w-3" />
               Admin Access
             </button>
           </div>
 
-          {/* Right Side */}
-          <div className="flex-1 text-center sm:text-right">
-            CalHub &copy; 2026
+          <div className="hidden sm:block">
+            Precision in every calculation
           </div>
         </div>
       </footer>

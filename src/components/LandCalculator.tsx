@@ -157,7 +157,7 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
 
   return (
     <TooltipProvider>
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 w-full max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-6 lg:gap-8 w-full max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -165,22 +165,23 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
           className="space-y-6"
         >
           {/* Area Input Card */}
-          <Card className="border-2 shadow-2xl bg-card overflow-hidden rounded-3xl">
-            <div className="h-2 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500" />
-            <CardHeader className="pb-6 pt-8">
-              <CardTitle className="text-2xl font-black flex items-center gap-3">
-                <Ruler className="h-6 w-6 text-orange-500" />
-                Land Area Calculator
+          <Card className="border-2 shadow-xl bg-card/50 backdrop-blur-sm overflow-hidden rounded-[2.5rem]">
+            <div className="h-1.5 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 opacity-80" />
+            <CardHeader className="pb-4 pt-6 px-6">
+              <CardTitle className="text-xl font-black flex items-center gap-3">
+                <div className="p-2 bg-orange-500/10 rounded-xl">
+                  <Ruler className="h-5 w-5 text-orange-500" />
+                </div>
+                Land Area
               </CardTitle>
-              <CardDescription className="flex justify-between items-center font-medium">
+              <CardDescription className="flex justify-between items-center font-medium text-xs">
                 <span>Calculate plot area and dimensions</span>
-                <span className="text-[10px] font-black text-destructive uppercase tracking-widest bg-destructive/5 px-2 py-0.5 rounded-full">New Session</span>
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8 pb-10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <Label htmlFor="length" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+            <CardContent className="space-y-6 pb-8 px-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="length" className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
                     Length
                   </Label>
                   <Input
@@ -190,11 +191,11 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
                     onChange={(e) => setLength(e.target.value)}
                     placeholder="e.g. 50"
                     autoComplete="off"
-                    className="h-14 border-2 font-black text-lg rounded-2xl focus-visible:ring-orange-500 transition-all"
+                    className="h-12 border-2 font-black text-base rounded-xl focus-visible:ring-orange-500 transition-all"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label htmlFor="width" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                <div className="space-y-2">
+                  <Label htmlFor="width" className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
                     Width
                   </Label>
                   <Input
@@ -204,19 +205,19 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
                     onChange={(e) => setWidth(e.target.value)}
                     placeholder="e.g. 30"
                     autoComplete="off"
-                    className="h-14 border-2 font-black text-lg rounded-2xl focus-visible:ring-orange-500 transition-all"
+                    className="h-12 border-2 font-black text-base rounded-xl focus-visible:ring-orange-500 transition-all"
                   />
                 </div>
               </div>
-              <div className="space-y-3">
-                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Input Unit</Label>
+              <div className="space-y-2">
+                <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Input Unit</Label>
                 <Select value={inputUnit} onValueChange={(v: any) => setInputUnit(v)}>
-                  <SelectTrigger className="h-14 border-2 rounded-2xl font-black text-lg">
+                  <SelectTrigger className="h-12 border-2 rounded-xl font-black text-base">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-2xl">
-                    <SelectItem value="SQ_FT" className="rounded-xl font-bold">Feet (ft)</SelectItem>
-                    <SelectItem value="SQ_M" className="rounded-xl font-bold">Meters (m)</SelectItem>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="SQ_FT" className="rounded-lg font-bold">Feet (ft)</SelectItem>
+                    <SelectItem value="SQ_M" className="rounded-lg font-bold">Meters (m)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -224,19 +225,21 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
           </Card>
 
           {/* Price Input Card */}
-          <Card className="border-2 shadow-2xl bg-card overflow-hidden rounded-3xl">
-            <CardHeader className="pb-6 pt-8">
-              <CardTitle className="text-2xl font-black flex items-center gap-3">
-                <Banknote className="h-6 w-6 text-amber-500" />
-                Plot Price Calculator
+          <Card className="border-2 shadow-xl bg-card/50 backdrop-blur-sm overflow-hidden rounded-[2.5rem]">
+            <CardHeader className="pb-4 pt-6 px-6">
+              <CardTitle className="text-xl font-black flex items-center gap-3">
+                <div className="p-2 bg-amber-500/10 rounded-xl">
+                  <Banknote className="h-5 w-5 text-amber-500" />
+                </div>
+                Plot Price
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-8 pb-10">
-              <div className="space-y-4">
-                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+            <CardContent className="space-y-6 pb-8 px-6">
+              <div className="space-y-2">
+                <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
                   Price Per Unit
                 </Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="relative group">
                     <Input
                       type="number"
@@ -244,56 +247,52 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
                       onChange={(e) => setPricePerUnit(e.target.value)}
                       placeholder="e.g. 2000"
                       autoComplete="off"
-                      className="h-14 border-2 font-black text-lg pl-12 rounded-2xl focus-visible:ring-amber-500 transition-all"
+                      className="h-12 border-2 font-black text-base pl-10 rounded-xl focus-visible:ring-amber-500 transition-all"
                     />
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-black text-lg">{currency}</span>
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground font-black text-base">{currency}</span>
                   </div>
                   <Select value={priceUnit} onValueChange={(v: any) => setPriceUnit(v)}>
-                    <SelectTrigger className="h-14 border-2 rounded-2xl font-black text-lg">
+                    <SelectTrigger className="h-12 border-2 rounded-xl font-black text-base">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-2xl">
-                      <SelectItem value="SQ_FT" className="rounded-xl font-bold">Per Sq. Ft</SelectItem>
-                      <SelectItem value="SQ_M" className="rounded-xl font-bold">Per Sq. Meter</SelectItem>
-                      <SelectItem value="SQ_YD" className="rounded-xl font-bold">Per Sq. Yard</SelectItem>
-                      <SelectItem value="ACRE" className="rounded-xl font-bold">Per Acre</SelectItem>
-                      <SelectItem value="HECTARE" className="rounded-xl font-bold">Per Hectare</SelectItem>
-                      <SelectItem value="GUNTA" className="rounded-xl font-bold">Per Gunta</SelectItem>
-                      <SelectItem value="CENT" className="rounded-xl font-bold">Per Cent</SelectItem>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="SQ_FT" className="rounded-lg font-bold">Per Sq. Ft</SelectItem>
+                      <SelectItem value="SQ_M" className="rounded-lg font-bold">Per Sq. Meter</SelectItem>
+                      <SelectItem value="SQ_YD" className="rounded-lg font-bold">Per Sq. Yard</SelectItem>
+                      <SelectItem value="ACRE" className="rounded-lg font-bold">Per Acre</SelectItem>
+                      <SelectItem value="HECTARE" className="rounded-lg font-bold">Per Hectare</SelectItem>
+                      <SelectItem value="GUNTA" className="rounded-lg font-bold">Per Gunta</SelectItem>
+                      <SelectItem value="CENT" className="rounded-lg font-bold">Per Cent</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               {error && (
-                <div className={`p-3 border rounded-xl text-[10px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see result" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}>
+                <div className={`p-2 border rounded-lg text-[9px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see result" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}>
                   {error}
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-6 border-t">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-green-600">⚡ Auto Calculation Enabled</span>
-                  </div>
-                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tight">No need to click calculate. Results update automatically.</p>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-green-600">⚡ Auto Calculation</span>
                 </div>
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <Button variant="outline" className="h-12 font-black gap-2 border-2 rounded-2xl text-[10px] uppercase tracking-widest flex-1 sm:flex-none" onClick={reset}>
-                    <RefreshCcw className="h-4 w-4" />
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Button variant="outline" className="h-10 font-black gap-2 border-2 rounded-xl text-[9px] uppercase tracking-widest flex-1 sm:flex-none" onClick={reset}>
+                    <RefreshCcw className="h-3.5 w-3.5" />
                     Reset
                   </Button>
                   <Button 
                     onClick={handleSaveToHistory} 
                     disabled={!results}
-                    className="h-12 font-black px-8 rounded-2xl text-[10px] uppercase tracking-widest bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/20 flex-1 sm:flex-none flex items-center gap-2"
+                    className="h-10 font-black px-6 rounded-xl text-[9px] uppercase tracking-widest bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/20 flex-1 sm:flex-none flex items-center gap-2"
                   >
-                    💾 Save to History
+                    💾 Save
                   </Button>
                 </div>
               </div>
-
             </CardContent>
           </Card>
         </motion.div>
@@ -305,14 +304,20 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
           className="space-y-6"
         >
           {/* Results Card */}
-          <Card className="border-none shadow-2xl bg-gradient-to-tr from-background to-muted/30 overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <MapIcon className="h-6 w-6 text-orange-500" />
-                Area & Price Results
-              </CardTitle>
+          <Card className="border-2 shadow-xl bg-card/50 backdrop-blur-sm overflow-hidden rounded-[2.5rem] h-full">
+            <div className="h-1.5 bg-gradient-to-r from-orange-500 to-amber-500 opacity-80" />
+            <CardHeader className="pb-4 pt-6 px-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-500/10 rounded-xl">
+                  <Maximize className="h-5 w-5 text-orange-500" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-black tracking-tight uppercase">Results Preview</CardTitle>
+                  <CardDescription className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">Live calculation results</CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-6">
               {results ? (
                 <div className="space-y-6">
                   {/* Main Highlight */}

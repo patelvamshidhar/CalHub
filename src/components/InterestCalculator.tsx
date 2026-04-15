@@ -189,23 +189,25 @@ export const InterestCalculator = () => {
   return (
     <TooltipProvider>
       <div className="w-full space-y-6">
-        <Card className="w-full border-2 shadow-lg overflow-hidden bg-card rounded-3xl">
-          <div className="h-1.5 bg-gradient-to-r from-purple-500 to-indigo-500" />
-          <CardHeader className="p-6 border-b border-primary/5">
+        <Card className="w-full border-2 shadow-xl overflow-hidden bg-card/50 backdrop-blur-sm rounded-[2.5rem]">
+          <div className="h-1.5 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-80" />
+          <CardHeader className="pb-4 pt-6 px-6">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-black flex items-center gap-2 uppercase tracking-tight">
-                <TrendingUp className="h-5 w-5 text-purple-500" />
+              <CardTitle className="text-xl font-black flex items-center gap-3 uppercase tracking-tight">
+                <div className="p-2 bg-purple-500/10 rounded-xl">
+                  <TrendingUp className="h-5 w-5 text-purple-500" />
+                </div>
                 Interest Planner
               </CardTitle>
             </div>
           </CardHeader>
 
-          <CardContent className="p-6 space-y-8">
+          <CardContent className="p-6 space-y-6">
             {/* Inputs */}
             <div className="space-y-6">
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="principal" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <Label htmlFor="principal" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">
                     Principal Amount (₹)
                   </Label>
                   <div className="relative group">
@@ -215,14 +217,14 @@ export const InterestCalculator = () => {
                       value={principal}
                       onChange={(e) => setPrincipal(e.target.value)}
                       placeholder="e.g. 50000"
-                      className="text-lg h-12 pl-10 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
+                      className="text-base h-12 pl-10 font-black border-2 rounded-xl focus-visible:ring-purple-500 transition-all"
                     />
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">₹</span>
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">₹</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="rate" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <Label htmlFor="rate" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">
                     Interest Rate (% P.A.)
                   </Label>
                   <div className="relative group">
@@ -232,48 +234,48 @@ export const InterestCalculator = () => {
                       value={rate}
                       onChange={(e) => setRate(e.target.value)}
                       placeholder="e.g. 12"
-                      className="text-lg h-12 pr-10 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
+                      className="text-base h-12 pr-10 font-black border-2 rounded-xl focus-visible:ring-purple-500 transition-all"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">%</span>
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">%</span>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Start Date</Label>
+                  <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">Start Date</Label>
                   <Input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="h-12 font-bold border-2 rounded-2xl focus-visible:ring-purple-500 transition-all text-sm"
+                    className="h-12 font-bold border-2 rounded-xl focus-visible:ring-purple-500 transition-all text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">End Date</Label>
+                  <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">End Date</Label>
                   <Input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="h-12 font-bold border-2 rounded-2xl focus-visible:ring-purple-500 transition-all text-sm"
+                    className="h-12 font-bold border-2 rounded-xl focus-visible:ring-purple-500 transition-all text-sm"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Compounding</Label>
-                <div className="flex gap-2 p-1.5 bg-muted/50 rounded-2xl border-2 shadow-inner">
+                <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">Compounding</Label>
+                <div className="flex gap-2 p-1 bg-muted/50 rounded-xl border-2 shadow-inner">
                   <Button
                     variant={compounding === 'yearly' ? 'default' : 'ghost'}
                     onClick={() => setCompounding('yearly')}
-                    className="flex-1 font-black uppercase tracking-widest text-[9px] rounded-xl h-9 transition-all"
+                    className="flex-1 font-black uppercase tracking-widest text-[8px] rounded-lg h-8 transition-all"
                   >
                     Yearly
                   </Button>
                   <Button
                     variant={compounding === 'monthly' ? 'default' : 'ghost'}
                     onClick={() => setCompounding('monthly')}
-                    className="flex-1 font-black uppercase tracking-widest text-[9px] rounded-xl h-9 transition-all"
+                    className="flex-1 font-black uppercase tracking-widest text-[8px] rounded-lg h-8 transition-all"
                   >
                     Monthly
                   </Button>
@@ -285,21 +287,21 @@ export const InterestCalculator = () => {
               <motion.div 
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className={`p-3 border rounded-xl text-[10px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see results" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}
+                className={`p-2 border rounded-lg text-[9px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see results" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}
               >
                 {error}
               </motion.div>
             )}
 
-            <div className="flex items-center justify-between gap-4 pt-6 border-t">
-              <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[10px] h-10 rounded-xl border-2 px-4">
+            <div className="flex items-center justify-between gap-4 pt-4 border-t">
+              <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[9px] h-10 rounded-xl border-2 px-4">
                 <RefreshCcw className="h-3.5 w-3.5 mr-2" />
                 Reset
               </Button>
               <Button 
                 onClick={handleSaveToHistory} 
                 disabled={!results}
-                className="font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/20 flex items-center gap-2"
+                className="font-black uppercase tracking-widest text-[9px] h-10 px-6 rounded-xl bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/20 flex items-center gap-2"
               >
                 💾 Save
               </Button>
@@ -311,64 +313,58 @@ export const InterestCalculator = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="space-y-6 pt-4"
+                  className="space-y-6 pt-2"
                 >
                   {/* Duration Info */}
-                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl border-2 border-dashed">
-                    <Clock className="h-4 w-4 text-purple-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                      {results.duration.years}Y {results.duration.months}M {results.duration.days}D
+                  <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-xl border-2 border-dashed justify-center">
+                    <Clock className="h-3.5 w-3.5 text-purple-500" />
+                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                      Duration: {results.duration.years}Y {results.duration.months}M {results.duration.days}D
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Compound Interest Result */}
-                    <Card className="border-2 border-purple-500/20 bg-purple-500/5 rounded-2xl overflow-hidden">
+                    <Card className="border-2 border-purple-500/20 bg-purple-500/5 rounded-[1.5rem] overflow-hidden">
                       <CardHeader className="p-4 pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-[10px] font-black uppercase tracking-widest text-purple-600">Compound Interest</CardTitle>
-                          <Tooltip>
-                            <TooltipTrigger render={<Info className="h-3 w-3 text-purple-400" />} />
-                            <TooltipContent>
-                              <p className="text-[10px]">A = P(1 + r/n)^(nt)</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          <CardTitle className="text-[9px] font-black uppercase tracking-widest text-purple-600">Compound Interest</CardTitle>
                         </div>
                       </CardHeader>
-                      <CardContent className="p-4 pt-0 space-y-3">
+                      <CardContent className="p-4 pt-0 space-y-2">
                         <div className="flex justify-between items-end">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
-                          <span className="text-xl font-black text-purple-700">₹{results.ciInterest.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
+                          <span className="text-lg font-black text-purple-700 tracking-tight">₹{results.ciInterest.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                         </div>
                         <div className="flex justify-between items-end pt-2 border-t border-purple-500/10">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
-                          <span className="text-2xl font-black text-purple-800">₹{results.ciTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
+                          <span className="text-xl font-black text-purple-800 tracking-tight">₹{results.ciTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                         </div>
                       </CardContent>
                     </Card>
 
                     {/* Simple Interest Result */}
-                    <Card className="border-2 border-blue-500/20 bg-blue-500/5 rounded-2xl overflow-hidden">
+                    <Card className="border-2 border-blue-500/20 bg-blue-500/5 rounded-[1.5rem] overflow-hidden">
                       <CardHeader className="p-4 pb-2">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-[10px] font-black uppercase tracking-widest text-blue-600">Simple Interest</CardTitle>
+                          <CardTitle className="text-[9px] font-black uppercase tracking-widest text-blue-600">Simple Interest</CardTitle>
                         </div>
                       </CardHeader>
-                      <CardContent className="p-4 pt-0 space-y-3">
+                      <CardContent className="p-4 pt-0 space-y-2">
                         <div className="flex justify-between items-end">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
-                          <span className="text-xl font-black text-blue-700">₹{results.siInterest.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
+                          <span className="text-lg font-black text-blue-700 tracking-tight">₹{results.siInterest.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                         </div>
                         <div className="flex justify-between items-end pt-2 border-t border-blue-500/10">
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
-                          <span className="text-2xl font-black text-blue-800">₹{results.siTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
+                          <span className="text-xl font-black text-blue-800 tracking-tight">₹{results.siTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                         </div>
                       </CardContent>
                     </Card>
                   </div>
 
                   {/* Export Actions */}
-                  <div className="pt-4 flex flex-col gap-4">
+                  <div className="flex justify-center">
                     <ExportActions
                       title="Interest Calculation"
                       inputs={[
@@ -381,7 +377,9 @@ export const InterestCalculator = () => {
                         { label: 'SI Total', value: `₹${results.siTotal.toFixed(2)}` },
                       ]}
                     />
+                  </div>
 
+                  <div className="pt-4 border-t border-dashed border-border/50">
                     <Button
                       variant="ghost"
                       size="sm"
