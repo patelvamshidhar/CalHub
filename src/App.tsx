@@ -303,7 +303,7 @@ const MainApp = () => {
           </div>
 
           <div className="hidden sm:block">
-            Precision in every calculation
+            Crafted by PATEL VAMSHIDHAR REDDY
           </div>
         </div>
       </footer>

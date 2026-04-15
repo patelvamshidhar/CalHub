@@ -91,7 +91,7 @@ export const WelcomePage = ({ onStart }: WelcomePageProps) => {
 
           <div className="flex items-center justify-center gap-6 text-muted-foreground">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest">Created by Patelvamshidhar Reddy</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Crafted by PATEL VAMSHIDHAR REDDY</span>
             </div>
           </div>
         </motion.div>
