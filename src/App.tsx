@@ -214,31 +214,24 @@ const MainApp = () => {
 
               <div className="mt-12">
                 {activeTab === 'finance' && (
-                  <div className="space-y-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <section className="space-y-10">
-                      <div className="text-center space-y-2">
-                        <h3 className="text-3xl font-black tracking-tighter uppercase">Rate Conversion</h3>
-                        <p className="text-muted-foreground font-medium">Convert between different interest rate formats</p>
-                      </div>
-                      <RateConverter onBack={() => navigate('/')} />
-                    </section>
-                    <div className="relative py-12">
-                      <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t-2 border-dashed border-muted" />
-                      </div>
-                      <div className="relative flex justify-center">
-                        <span className="bg-background px-6 text-muted-foreground/30">
-                          <Calculator className="h-8 w-8" />
-                        </span>
-                      </div>
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                      <section className="space-y-6">
+                        <div className="text-center lg:text-left space-y-2 px-4">
+                          <h3 className="text-3xl font-black tracking-tighter uppercase">Rate Conversion</h3>
+                          <p className="text-muted-foreground font-medium text-sm">Convert between different interest rate formats</p>
+                        </div>
+                        <RateConverter onBack={() => navigate('/')} />
+                      </section>
+
+                      <section className="space-y-6">
+                        <div className="text-center lg:text-left space-y-2 px-4">
+                          <h3 className="text-3xl font-black tracking-tighter uppercase">Interest Planning</h3>
+                          <p className="text-muted-foreground font-medium text-sm">Calculate simple and compound interest with ease</p>
+                        </div>
+                        <InterestCalculator />
+                      </section>
                     </div>
-                    <section className="space-y-10">
-                      <div className="text-center space-y-2">
-                        <h3 className="text-3xl font-black tracking-tighter uppercase">Interest Planning</h3>
-                        <p className="text-muted-foreground font-medium">Calculate simple and compound interest with ease</p>
-                      </div>
-                      <InterestCalculator />
-                    </section>
                   </div>
                 )}
                 {activeTab === 'vehicle' && (

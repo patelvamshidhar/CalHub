@@ -188,317 +188,268 @@ export const InterestCalculator = () => {
 
   return (
     <TooltipProvider>
-      <Card className="w-full max-w-4xl mx-auto border-2 shadow-2xl overflow-hidden bg-card rounded-[2.5rem]">
-        <div className="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" />
-        <CardHeader className="p-8 sm:p-10 border-b border-primary/5">
-          <CardTitle className="text-3xl font-black flex items-center gap-3">
-            <TrendingUp className="h-8 w-8 text-purple-500" />
-            Interest Calculator
-          </CardTitle>
-            <CardDescription className="flex justify-between items-center font-medium text-base">
-              <span>Calculate Simple and Compound interest with ease</span>
-              <span className="text-[10px] font-black text-destructive uppercase tracking-widest bg-destructive/5 px-3 py-1 rounded-full">Pro Mode</span>
-            </CardDescription>
-        </CardHeader>
-
-        <CardContent className="p-8 sm:p-10 space-y-10">
-          {/* Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="space-y-8">
-              <div className="space-y-3">
-                <Label htmlFor="principal" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-                  Principal Amount (₹)
-                </Label>
-                <div className="relative group">
-                  <Input
-                    id="principal"
-                    type="number"
-                    value={principal}
-                    onChange={(e) => setPrincipal(e.target.value)}
-                    placeholder="e.g. 50000"
-                    autoComplete="off"
-                    className="text-xl h-14 pl-12 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
-                  />
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-lg text-muted-foreground group-focus-within:text-purple-500 transition-colors">₹</span>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Label htmlFor="rate" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-                  Interest Rate (% P.A.)
-                </Label>
-                <div className="relative group">
-                  <Input
-                    id="rate"
-                    type="number"
-                    value={rate}
-                    onChange={(e) => setRate(e.target.value)}
-                    placeholder="e.g. 12"
-                    autoComplete="off"
-                    className="text-xl h-14 pr-12 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-lg text-muted-foreground group-focus-within:text-purple-500 transition-colors">%</span>
-                </div>
-              </div>
+      <div className="w-full space-y-6">
+        <Card className="w-full border-2 shadow-lg overflow-hidden bg-card rounded-3xl">
+          <div className="h-1.5 bg-gradient-to-r from-purple-500 to-indigo-500" />
+          <CardHeader className="p-6 border-b border-primary/5">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl font-black flex items-center gap-2 uppercase tracking-tight">
+                <TrendingUp className="h-5 w-5 text-purple-500" />
+                Interest Planner
+              </CardTitle>
+              <span className="text-[10px] font-black text-destructive uppercase tracking-widest bg-destructive/5 px-2 py-1 rounded-lg">Pro</span>
             </div>
+          </CardHeader>
 
-            <div className="space-y-8">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Start Date</Label>
+          <CardContent className="p-6 space-y-8">
+            {/* Inputs */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="principal" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    Principal Amount (₹)
+                  </Label>
+                  <div className="relative group">
+                    <Input
+                      id="principal"
+                      type="number"
+                      value={principal}
+                      onChange={(e) => setPrincipal(e.target.value)}
+                      placeholder="e.g. 50000"
+                      className="text-lg h-12 pl-10 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
+                    />
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">₹</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="rate" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    Interest Rate (% P.A.)
+                  </Label>
+                  <div className="relative group">
+                    <Input
+                      id="rate"
+                      type="number"
+                      value={rate}
+                      onChange={(e) => setRate(e.target.value)}
+                      placeholder="e.g. 12"
+                      className="text-lg h-12 pr-10 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Start Date</Label>
                   <Input
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="h-14 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
+                    className="h-12 font-bold border-2 rounded-2xl focus-visible:ring-purple-500 transition-all text-sm"
                   />
                 </div>
-                <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">End Date</Label>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">End Date</Label>
                   <Input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="h-14 font-black border-2 rounded-2xl focus-visible:ring-purple-500 transition-all"
+                    className="h-12 font-bold border-2 rounded-2xl focus-visible:ring-purple-500 transition-all text-sm"
                   />
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Compounding Frequency</Label>
-                <div className="flex gap-2 p-2 bg-muted/50 rounded-2xl border-2 shadow-inner">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Compounding</Label>
+                <div className="flex gap-2 p-1.5 bg-muted/50 rounded-2xl border-2 shadow-inner">
                   <Button
                     variant={compounding === 'yearly' ? 'default' : 'ghost'}
                     onClick={() => setCompounding('yearly')}
-                    className="flex-1 font-black uppercase tracking-widest text-[10px] rounded-xl h-10 transition-all"
+                    className="flex-1 font-black uppercase tracking-widest text-[9px] rounded-xl h-9 transition-all"
                   >
                     Yearly
                   </Button>
                   <Button
                     variant={compounding === 'monthly' ? 'default' : 'ghost'}
                     onClick={() => setCompounding('monthly')}
-                    className="flex-1 font-black uppercase tracking-widest text-[10px] rounded-xl h-10 transition-all"
+                    className="flex-1 font-black uppercase tracking-widest text-[9px] rounded-xl h-9 transition-all"
                   >
                     Monthly
                   </Button>
                 </div>
               </div>
             </div>
-          </div>
 
-          {error && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              className={`p-4 border rounded-2xl text-[10px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see results" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}
-            >
-              {error}
-            </motion.div>
-          )}
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className={`p-3 border rounded-xl text-[10px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see results" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}
+              >
+                {error}
+              </motion.div>
+            )}
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-green-600">⚡ Auto Calculation Enabled</span>
-              </div>
-              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tight">Results update automatically as you enter values</p>
-            </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[10px] h-12 rounded-2xl border-2 flex-1 sm:flex-none">
-                <RefreshCcw className="h-4 w-4 mr-2" />
+            <div className="flex items-center justify-between gap-4 pt-6 border-t">
+              <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[10px] h-10 rounded-xl border-2 px-4">
+                <RefreshCcw className="h-3.5 w-3.5 mr-2" />
                 Reset
               </Button>
               <Button 
                 onClick={handleSaveToHistory} 
                 disabled={!results}
-                className="font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl bg-purple-600 hover:bg-purple-700 shadow-xl shadow-purple-500/20 flex-1 sm:flex-none flex items-center gap-2"
+                className="font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/20 flex items-center gap-2"
               >
-                💾 Save to History
+                💾 Save
               </Button>
             </div>
-          </div>
 
-          <AnimatePresence>
-            {results && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-8"
-              >
-                {/* Duration Info */}
-                <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-2xl border-2 border-dashed">
-                  <Clock className="h-5 w-5 text-purple-500" />
-                  <div className="flex flex-wrap gap-x-4 gap-y-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Duration:</span>
-                    <span className="text-sm font-black">
-                      {results.duration.years} Years, {results.duration.months} Months, {results.duration.days} Days
+            <AnimatePresence>
+              {results && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-6 pt-4"
+                >
+                  {/* Duration Info */}
+                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl border-2 border-dashed">
+                    <Clock className="h-4 w-4 text-purple-500" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                      {results.duration.years}Y {results.duration.months}M {results.duration.days}D
                     </span>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Simple Interest Result */}
-                  <Card className="border-2 border-blue-500/20 bg-blue-500/5 rounded-3xl overflow-hidden group">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-xs font-black uppercase tracking-widest text-blue-600">Simple Interest</CardTitle>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="h-3 w-3 text-blue-400" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-[10px]">Formula: (P × R × T) / 100</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex justify-between items-end">
-                        <span className="text-xs font-bold text-muted-foreground">Interest Earned</span>
-                        <span className="text-2xl font-black text-blue-700">₹{results.siInterest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </div>
-                      <div className="flex justify-between items-end pt-2 border-t border-blue-500/10">
-                        <span className="text-xs font-bold text-muted-foreground">Total Amount</span>
-                        <span className="text-3xl font-black text-blue-800">₹{results.siTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Compound Interest Result */}
-                  <Card className="border-2 border-purple-500/20 bg-purple-500/5 rounded-3xl overflow-hidden group">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-xs font-black uppercase tracking-widest text-purple-600">Compound Interest</CardTitle>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="h-3 w-3 text-purple-400" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-[10px]">Formula: P(1 + r/n)^(nt)</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex justify-between items-end">
-                        <span className="text-xs font-bold text-muted-foreground">Interest Earned</span>
-                        <span className="text-2xl font-black text-purple-700">₹{results.ciInterest.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </div>
-                      <div className="flex justify-between items-end pt-2 border-t border-purple-500/10">
-                        <span className="text-xs font-bold text-muted-foreground">Total Amount</span>
-                        <span className="text-3xl font-black text-purple-800">₹{results.ciTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Export & Share Actions */}
-                <ExportActions
-                  title="Interest Calculation"
-                  inputs={[
-                    { label: 'Principal', value: `₹${principal}` },
-                    { label: 'Rate', value: `${rate}%` },
-                    { label: 'Start Date', value: startDate },
-                    { label: 'End Date', value: endDate },
-                    { label: 'Compounding', value: compounding },
-                  ]}
-                  results={[
-                    { label: 'Simple Interest', value: `₹${results.siInterest.toFixed(2)}` },
-                    { label: 'SI Total', value: `₹${results.siTotal.toFixed(2)}` },
-                    { label: 'Compound Interest', value: `₹${results.ciInterest.toFixed(2)}` },
-                    { label: 'CI Total', value: `₹${results.ciTotal.toFixed(2)}` },
-                    { label: 'Duration', value: `${results.duration.years}y ${results.duration.months}m ${results.duration.days}d` },
-                  ]}
-                />
-
-                {/* Step-by-Step Toggle */}
-                <div className="space-y-4">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setShowSteps(!showSteps)}
-                    className="w-full flex items-center justify-between p-4 h-auto hover:bg-muted rounded-2xl border-2 border-dashed"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Info className="h-5 w-5 text-purple-500" />
-                      <span className="font-black uppercase tracking-widest text-xs">Show Calculation Steps</span>
-                    </div>
-                    {showSteps ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                  </Button>
-
-                  <AnimatePresence>
-                    {showSteps && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-1">
-                          <div className="space-y-2">
-                            <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-2">SI Breakdown (Yearly)</h4>
-                            <div className="max-h-60 overflow-y-auto rounded-2xl border-2 bg-background shadow-inner">
-                              <table className="w-full text-[11px]">
-                                <thead className="sticky top-0 bg-muted z-10">
-                                  <tr>
-                                    <th className="p-3 text-left font-black uppercase tracking-tighter">Period</th>
-                                    <th className="p-3 text-right font-black uppercase tracking-tighter">Interest</th>
-                                    <th className="p-3 text-right font-black uppercase tracking-tighter">Balance</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {results.siSteps.map((step, i) => (
-                                    <tr key={i} className="border-t hover:bg-muted/30 transition-colors">
-                                      <td className="p-3 font-bold">{step.period}</td>
-                                      <td className="p-3 text-right">₹{step.interest.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-                                      <td className="p-3 text-right font-black">₹{step.balance.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2">
-                            <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-2">CI Breakdown ({compounding})</h4>
-                            <div className="max-h-60 overflow-y-auto rounded-2xl border-2 bg-background shadow-inner">
-                              <table className="w-full text-[11px]">
-                                <thead className="sticky top-0 bg-muted z-10">
-                                  <tr>
-                                    <th className="p-3 text-left font-black uppercase tracking-tighter">Period</th>
-                                    <th className="p-3 text-right font-black uppercase tracking-tighter">Interest</th>
-                                    <th className="p-3 text-right font-black uppercase tracking-tighter">Balance</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {results.ciSteps.map((step, i) => (
-                                    <tr key={i} className="border-t hover:bg-muted/30 transition-colors">
-                                      <td className="p-3 font-bold">{step.period}</td>
-                                      <td className="p-3 text-right">₹{step.interest.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-                                      <td className="p-3 text-right font-black">₹{step.balance.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    {/* Compound Interest Result */}
+                    <Card className="border-2 border-purple-500/20 bg-purple-500/5 rounded-2xl overflow-hidden">
+                      <CardHeader className="p-4 pb-2">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-[10px] font-black uppercase tracking-widest text-purple-600">Compound Interest</CardTitle>
+                          <Tooltip>
+                            <TooltipTrigger render={<Info className="h-3 w-3 text-purple-400" />} />
+                            <TooltipContent>
+                              <p className="text-[10px]">A = P(1 + r/n)^(nt)</p>
+                            </TooltipContent>
+                          </Tooltip>
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </CardContent>
-      </Card>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0 space-y-3">
+                        <div className="flex justify-between items-end">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
+                          <span className="text-xl font-black text-purple-700">₹{results.ciInterest.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div className="flex justify-between items-end pt-2 border-t border-purple-500/10">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
+                          <span className="text-2xl font-black text-purple-800">₹{results.ciTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-      <CalculationHistory 
-        history={history} 
-        onClear={clearHistory} 
-        onReuse={handleReuse} 
-      />
+                    {/* Simple Interest Result */}
+                    <Card className="border-2 border-blue-500/20 bg-blue-500/5 rounded-2xl overflow-hidden">
+                      <CardHeader className="p-4 pb-2">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-[10px] font-black uppercase tracking-widest text-blue-600">Simple Interest</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0 space-y-3">
+                        <div className="flex justify-between items-end">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
+                          <span className="text-xl font-black text-blue-700">₹{results.siInterest.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div className="flex justify-between items-end pt-2 border-t border-blue-500/10">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
+                          <span className="text-2xl font-black text-blue-800">₹{results.siTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Export Actions */}
+                  <div className="pt-4 flex flex-col gap-4">
+                    <ExportActions
+                      title="Interest Calculation"
+                      inputs={[
+                        { label: 'Principal', value: `₹${principal}` },
+                        { label: 'Rate', value: `${rate}%` },
+                        { label: 'Duration', value: `${results.duration.years}y ${results.duration.months}m ${results.duration.days}d` },
+                      ]}
+                      results={[
+                        { label: 'CI Total', value: `₹${results.ciTotal.toFixed(2)}` },
+                        { label: 'SI Total', value: `₹${results.siTotal.toFixed(2)}` },
+                      ]}
+                    />
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowSteps(!showSteps)}
+                      className="w-full flex items-center justify-between p-3 h-auto hover:bg-muted rounded-xl border border-dashed text-[10px] font-black uppercase tracking-widest"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Info className="h-3.5 w-3.5 text-purple-500" />
+                        <span>Calculation Steps</span>
+                      </div>
+                      {showSteps ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    </Button>
+
+                    <AnimatePresence>
+                      {showSteps && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="space-y-4 pt-2">
+                            <div className="space-y-2">
+                              <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">CI Breakdown ({compounding})</h4>
+                              <div className="max-h-40 overflow-y-auto rounded-xl border bg-background shadow-inner">
+                                <table className="w-full text-[10px]">
+                                  <thead className="sticky top-0 bg-muted z-10">
+                                    <tr>
+                                      <th className="p-2 text-left font-black uppercase tracking-tighter">Period</th>
+                                      <th className="p-2 text-right font-black uppercase tracking-tighter">Interest</th>
+                                      <th className="p-2 text-right font-black uppercase tracking-tighter">Balance</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {results.ciSteps.slice(0, 12).map((step, i) => (
+                                      <tr key={i} className="border-t hover:bg-muted/30 transition-colors">
+                                        <td className="p-2 font-bold">{step.period}</td>
+                                        <td className="p-2 text-right">₹{step.interest.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
+                                        <td className="p-2 text-right font-black">₹{step.balance.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
+                                      </tr>
+                                    ))}
+                                    {results.ciSteps.length > 12 && (
+                                      <tr>
+                                        <td colSpan={3} className="p-2 text-center text-muted-foreground italic">... and {results.ciSteps.length - 12} more periods</td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </CardContent>
+        </Card>
+
+        <CalculationHistory 
+          history={history} 
+          onClear={clearHistory} 
+          onReuse={handleReuse} 
+        />
+      </div>
     </TooltipProvider>
   );
 };

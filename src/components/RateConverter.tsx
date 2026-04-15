@@ -82,8 +82,8 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
   };
 
   return (
-    <div className="space-y-4">
-      <Card className="w-full max-w-2xl mx-auto border-2 shadow-xl overflow-hidden">
+    <div className="w-full">
+      <Card className="w-full border-2 shadow-lg overflow-hidden rounded-3xl">
         <div className="bg-primary/5 p-6 border-b border-primary/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <CardTitle className="text-2xl flex items-center gap-2">
