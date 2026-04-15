@@ -48,15 +48,16 @@ export const AdminDashboard = () => {
   const [loginError, setLoginError] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleClearBugs = async () => {
+  const handleClearAllReports = async () => {
     setIsClearing(true);
     try {
-      const bugQuery = query(collection(db, 'feedback'), where('type', '==', 'Bug'));
-      const snapshot = await getDocs(bugQuery);
+      const snapshot = await getDocs(collection(db, 'feedback'));
       
       if (snapshot.empty) {
         setIsClearing(false);
+        setShowConfirm(false);
         return;
       }
 
@@ -67,9 +68,11 @@ export const AdminDashboard = () => {
       
       await batch.commit();
       setShowSuccess(true);
+      setShowConfirm(false);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (err) {
-      console.error('Failed to clear bugs:', err);
+      console.error('Failed to clear reports:', err);
+      handleFirestoreError(err, OperationType.DELETE, 'feedback');
     } finally {
       setIsClearing(false);
     }
@@ -181,7 +184,7 @@ export const AdminDashboard = () => {
   );
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-700">
+    <div className="space-y-4 animate-in fade-in duration-700">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -193,61 +196,98 @@ export const AdminDashboard = () => {
           <p className="text-muted-foreground text-xs font-medium">Monitoring user feedback and system suggestions.</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search feedback..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-9 pr-4 rounded-xl border-2 bg-card focus:ring-2 focus:ring-primary outline-none text-xs font-medium transition-all"
-            />
-          </div>
-          
-          <Select value={filterType} onValueChange={(v: any) => setFilterType(v)}>
-            <SelectTrigger className="h-10 w-32 rounded-xl border-2 font-bold text-[10px] uppercase tracking-widest">
-              <Filter className="h-3.5 w-3.5 mr-2" />
-              <SelectValue placeholder="Filter" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              <SelectItem value="All" className="rounded-lg">All Types</SelectItem>
-              <SelectItem value="Suggestion" className="rounded-lg">Suggestions</SelectItem>
-              <SelectItem value="Bug" className="rounded-lg">Bugs</SelectItem>
-              <SelectItem value="Improvement" className="rounded-lg">Improvements</SelectItem>
-            </SelectContent>
-          </Select>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsLoggedIn(false)}
+          className="h-10 rounded-xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+        >
+          Logout
+        </Button>
+      </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-            className="h-10 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] gap-2"
-          >
-            <ArrowUpDown className="h-3.5 w-3.5" />
-            {sortOrder === 'desc' ? 'New' : 'Old'}
-          </Button>
-
+      {/* Unified Clear Button */}
+      <div className="pt-0">
+        {!showConfirm ? (
           <Button
             variant="destructive"
-            size="sm"
-            onClick={handleClearBugs}
-            disabled={isClearing || feedback.filter(f => f.type === 'Bug').length === 0}
-            className="h-10 rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 shadow-lg shadow-destructive/20"
+            onClick={() => setShowConfirm(true)}
+            disabled={isClearing || feedback.length === 0}
+            className="w-full h-12 rounded-xl font-black uppercase tracking-widest text-xs gap-3 shadow-lg shadow-destructive/20 transition-all hover:scale-[1.005] active:scale-[0.995]"
           >
-            {isClearing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-            Clear Bugs
+            <Trash2 className="h-5 w-5" />
+            Clear All Reports
           </Button>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-destructive/5 border-2 border-destructive/20 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-destructive/10 rounded-lg">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+              </div>
+              <p className="text-sm font-bold text-destructive">
+                Are you sure you want to clear all bugs and suggestions?
+              </p>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 sm:flex-none h-10 rounded-xl font-bold uppercase tracking-widest text-[10px] border-2"
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="destructive" 
+                onClick={handleClearAllReports}
+                disabled={isClearing}
+                className="flex-1 sm:flex-none h-10 rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 shadow-lg shadow-destructive/20"
+              >
+                {isClearing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                Confirm Clear
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsLoggedIn(false)}
-            className="h-10 rounded-xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:text-destructive transition-colors"
-          >
-            Logout
-          </Button>
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search feedback..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-10 pl-9 pr-4 rounded-xl border-2 bg-card focus:ring-2 focus:ring-primary outline-none text-xs font-medium transition-all"
+          />
         </div>
+        
+        <Select value={filterType} onValueChange={(v: any) => setFilterType(v)}>
+          <SelectTrigger className="h-10 w-32 rounded-xl border-2 font-bold text-[10px] uppercase tracking-widest">
+            <Filter className="h-3.5 w-3.5 mr-2" />
+            <SelectValue placeholder="Filter" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="All" className="rounded-lg">All Types</SelectItem>
+            <SelectItem value="Suggestion" className="rounded-lg">Suggestions</SelectItem>
+            <SelectItem value="Bug" className="rounded-lg">Bugs</SelectItem>
+            <SelectItem value="Improvement" className="rounded-lg">Improvements</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+          className="h-10 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] gap-2"
+        >
+          <ArrowUpDown className="h-3.5 w-3.5" />
+          {sortOrder === 'desc' ? 'New' : 'Old'}
+        </Button>
       </div>
 
       <AnimatePresence>
@@ -259,7 +299,7 @@ export const AdminDashboard = () => {
             className="bg-green-500/10 border border-green-500/20 p-3 rounded-xl flex items-center justify-center gap-2 text-green-600 text-[10px] font-black uppercase tracking-widest"
           >
             <CheckCircle2 className="h-4 w-4" />
-            All bug reports cleared successfully
+            All reports cleared successfully ✅
           </motion.div>
         )}
       </AnimatePresence>
