@@ -29,12 +29,32 @@ export const FeedbackForm = () => {
     setIsSubmitting(true);
     setStatus('idle');
 
+    const feedbackData = {
+      message: message.trim(),
+      type,
+      rating,
+      name: name.trim() || null,
+      createdAt: new Date().toISOString(),
+    };
+
     try {
+      if (!navigator.onLine) {
+        // Queue feedback offline
+        const pending = JSON.parse(localStorage.getItem('pending-feedback') || '[]');
+        localStorage.setItem('pending-feedback', JSON.stringify([...pending, feedbackData]));
+        
+        setMessage('');
+        setName('');
+        setRating(0);
+        setStatus('success');
+        setErrorMessage('You are offline. Your feedback has been saved locally and will sync when you are online.');
+        
+        setTimeout(() => navigate('/'), 3000);
+        return;
+      }
+
       await addDoc(collection(db, 'feedback'), {
-        message: message.trim(),
-        type,
-        rating,
-        name: name.trim() || null,
+        ...feedbackData,
         createdAt: serverTimestamp(),
       });
       
@@ -43,10 +63,7 @@ export const FeedbackForm = () => {
       setRating(0);
       setStatus('success');
       
-      // Auto redirect after 3 seconds
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
+      setTimeout(() => navigate('/'), 3000);
     } catch (error) {
       setErrorMessage('Failed to submit feedback. Please try again.');
       setStatus('error');

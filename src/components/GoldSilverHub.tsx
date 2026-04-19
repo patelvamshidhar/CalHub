@@ -19,11 +19,14 @@ import {
   Zap,
   ChevronRight,
   Scale,
-  Search
+  Search,
+  Lock,
+  Unlock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
 import { ExportActions } from './ExportActions';
+import { useLocalStorage } from '@/lib/pwa';
 
 // Mock data as fallback and starting point
 const MOCK_RATES: Record<string, { gold24: number; gold22: number; silver: number }> = {
@@ -59,13 +62,31 @@ const GST_RATE = 0.03; // 3% GST
 type WeightUnit = 'g' | 'kg';
 
 export const GoldSilverHub = () => {
-  const [searchCity, setSearchCity] = useState<string>('Hyderabad');
-  const [debouncedCity, setDebouncedCity] = useState<string>('hyderabad');
+  const [searchCity, setSearchCity] = useLocalStorage<string>('gs-search-city', 'Hyderabad');
+  const [debouncedCity, setDebouncedCity] = useLocalStorage<string>('gs-debounced-city', 'hyderabad');
   const [isFallback, setIsFallback] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [lastUpdated, setLastUpdated] = useLocalStorage<string>('gs-last-updated', new Date().toISOString());
   const [loading, setLoading] = useState(false);
-  const [showGST, setShowGST] = useState(true);
+  const [showGST, setShowGST] = useLocalStorage<boolean>('gs-show-gst', true);
+
+  // Manual Input Mode
+  const [manualMode, setManualMode] = useLocalStorage<boolean>('gs-manual-mode', false);
+  const [manualGold24, setManualGold24] = useLocalStorage<string>('gs-manual-gold24', '6500');
+  const [manualGold22, setManualGold22] = useLocalStorage<string>('gs-manual-gold22', '5950');
+  const [manualSilver, setManualSilver] = useLocalStorage<string>('gs-manual-silver', '75');
+
+  // Gold State
+  const [goldWeight, setGoldWeight] = useLocalStorage<string>('gs-gold-weight', '10');
+  const [goldUnit, setGoldUnit] = useLocalStorage<WeightUnit>('gs-gold-unit', 'g');
+  const [goldPurity, setGoldPurity] = useLocalStorage<'24K' | '22K'>('gs-gold-purity', '24K');
+  const [makingCharges, setMakingCharges] = useLocalStorage<string>('gs-making-charges', '0');
+  
+  // Silver State
+  const [silverWeight, setSilverWeight] = useLocalStorage<string>('gs-silver-weight', '100');
+  const [silverUnit, setSilverUnit] = useLocalStorage<WeightUnit>('gs-silver-unit', 'g');
+
+  const [history, setHistory] = useLocalStorage<HistoryItem[]>('gs-history', []);
 
   // Get matching cities for suggestions
   const suggestions = useMemo(() => {
@@ -88,7 +109,7 @@ export const GoldSilverHub = () => {
         setDebouncedCity('hyderabad');
         setIsFallback(true);
       }
-      setLastUpdated(new Date());
+      setLastUpdated(new Date().toISOString());
     }, 500);
 
     return () => clearTimeout(timer);
@@ -103,29 +124,26 @@ export const GoldSilverHub = () => {
     setShowSuggestions(false);
   };
 
-  // Gold State
-  const [goldWeight, setGoldWeight] = useState<string>('10');
-  const [goldUnit, setGoldUnit] = useState<WeightUnit>('g');
-  const [goldPurity, setGoldPurity] = useState<'24K' | '22K'>('24K');
-  const [makingCharges, setMakingCharges] = useState<string>('0');
-  
-  // Silver State
-  const [silverWeight, setSilverWeight] = useState<string>('100');
-  const [silverUnit, setSilverUnit] = useState<WeightUnit>('g');
-
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-
   // Simulation of live data fetch
   const refreshRates = () => {
     setLoading(true);
     // Simulate API delay
     setTimeout(() => {
-      setLastUpdated(new Date());
+      setLastUpdated(new Date().toISOString());
       setLoading(false);
     }, 800);
   };
 
-  const rates = MOCK_RATES[debouncedCity] || DEFAULT_RATES;
+  const rates = useMemo(() => {
+    if (manualMode) {
+      return {
+        gold24: parseFloat(manualGold24) || 0,
+        gold22: parseFloat(manualGold22) || 0,
+        silver: parseFloat(manualSilver) || 0
+      };
+    }
+    return MOCK_RATES[debouncedCity] || DEFAULT_RATES;
+  }, [manualMode, manualGold24, manualGold22, manualSilver, debouncedCity]);
 
   // Gold Calculation Logic
   const goldCalc = useMemo(() => {
@@ -291,22 +309,32 @@ export const GoldSilverHub = () => {
               {isFallback ? (
                 <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest">⚠️ Using average India rates</span>
               ) : (
-                <span className="text-[8px] font-black text-primary uppercase tracking-widest flex items-center gap-1">
-                   <MapPin className="h-2 w-2" /> Showing rates for: {debouncedCity}
-                </span>
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-[8px] font-black text-primary uppercase tracking-widest flex items-center gap-1">
+                    <MapPin className="h-2 w-2" /> Showing rates for: {debouncedCity}
+                  </span>
+                  {['visakhapatnam', 'vijayawada', 'tirupati', 'guntur', 'kurnool', 'nellore', 'kadapa', 'anantapur'].includes(debouncedCity) && (
+                    <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">👉 Andhra Pradesh Cities</span>
+                  )}
+                </div>
               )}
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 bg-muted/50 p-2 rounded-2xl border">
+            <Label className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Manual Rates</Label>
+            <Switch checked={manualMode} onCheckedChange={setManualMode} />
+          </div>
+
           <div className="text-right hidden sm:block">
             <div className="flex items-center gap-1.5 justify-end text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
               <Clock className="h-3 w-3" />
-              Last Updated: {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              Last Updated: {new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
             <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-1 justify-end">
-              <TrendingUp className="h-3 w-3" /> Live Market Data
+              <TrendingUp className="h-3 w-3" /> {manualMode ? 'Manual Override Active' : 'Live Market Data'}
             </div>
           </div>
           <Button 
@@ -320,6 +348,52 @@ export const GoldSilverHub = () => {
           </Button>
         </div>
       </div>
+
+      {/* Manual Rate Override Panel */}
+      <AnimatePresence>
+        {manualMode && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-primary/5 border-2 border-primary/20 rounded-[2rem] p-6 space-y-4 overflow-hidden"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Lock className="h-4 w-4 text-primary" />
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Manual Price Overrides (Rate/Gram)</h4>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">Gold 24K (₹/g)</Label>
+                <Input 
+                  type="number" 
+                  value={manualGold24} 
+                  onChange={(e) => setManualGold24(e.target.value)}
+                  className="h-10 border-2 rounded-xl font-black bg-background"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">Gold 22K (₹/g)</Label>
+                <Input 
+                  type="number" 
+                  value={manualGold22} 
+                  onChange={(e) => setManualGold22(e.target.value)}
+                  className="h-10 border-2 rounded-xl font-black bg-background"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">Silver (₹/g)</Label>
+                <Input 
+                  type="number" 
+                  value={manualSilver} 
+                  onChange={(e) => setManualSilver(e.target.value)}
+                  className="h-10 border-2 rounded-xl font-black bg-background"
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">

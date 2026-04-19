@@ -8,7 +8,7 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins, Download, WifiOff, Wifi } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
@@ -17,6 +17,9 @@ import { GoldSilverHub } from './components/GoldSilverHub';
 import { FeedbackForm } from './components/FeedbackForm';
 import { AdminDashboard } from './components/AdminDashboard';
 import { motion, AnimatePresence } from 'motion/react';
+import { useOfflineStatus, usePWAInstall } from '@/lib/pwa';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const LAST_UPDATED = "14-04-2026 09:30";
 const IS_MAINTENANCE = false; // Set to true to show maintenance banner
@@ -103,6 +106,34 @@ const MainApp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+  const isOnline = useOfflineStatus();
+  const { isInstallable, installApp } = usePWAInstall();
+
+  // Background Sync for Feedback
+  useEffect(() => {
+    if (isOnline) {
+      const syncFeedback = async () => {
+        const pending = JSON.parse(localStorage.getItem('pending-feedback') || '[]');
+        if (pending.length === 0) return;
+
+        console.log(`Syncing ${pending.length} feedback items...`);
+        for (const item of pending) {
+          try {
+            await addDoc(collection(db, 'feedback'), {
+              ...item,
+              createdAt: serverTimestamp(),
+              syncedAt: serverTimestamp(),
+              isOfflineSubmitted: true
+            });
+          } catch (e) {
+            console.error('Failed to sync item:', e);
+          }
+        }
+        localStorage.removeItem('pending-feedback');
+      };
+      syncFeedback();
+    }
+  }, [isOnline]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -138,6 +169,21 @@ const MainApp = () => {
         )}
       </AnimatePresence>
 
+      {/* Offline Banner */}
+      <AnimatePresence>
+        {!isOnline && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-red-500 text-white px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden"
+          >
+            <WifiOff className="h-3.5 w-3.5" />
+            🔴 You are offline. Showing saved data from local storage.
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-xl shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -145,12 +191,32 @@ const MainApp = () => {
             <div className="bg-primary text-primary-foreground p-2 rounded-xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
               <LayoutGrid className="h-5 w-5" />
             </div>
-            <h1 className="text-lg font-black tracking-tighter leading-none group-hover:text-primary transition-colors">
-              CAL<span className="text-primary">HUB</span>
-            </h1>
+            <div className="flex flex-col">
+              <h1 className="text-lg font-black tracking-tighter leading-none group-hover:text-primary transition-colors">
+                CAL<span className="text-primary">HUB</span>
+              </h1>
+              <div className="flex items-center gap-1 mt-0.5">
+                <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-red-500 animate-pulse'}`} />
+                <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground">
+                  {isOnline ? '🟢 Online' : '🔴 Offline'}
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            {isInstallable && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={installApp}
+                className="rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 px-3 h-9 border-2 border-primary/20 hover:bg-primary/5 text-primary animate-pulse"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Download App</span>
+              </Button>
+            )}
+
             {activeTab !== 'home' && (
               <Button
                 variant="ghost"

@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
 import { ExportActions } from './ExportActions';
+import { useLocalStorage } from '@/lib/pwa';
 
 const FALLBACK_FUEL_PRICES = {
   petrol: {
@@ -33,11 +34,11 @@ const FALLBACK_FUEL_PRICES = {
 
 export const VehicleHub = () => {
   // Fuel Cost Calculator State
-  const [fuelType, setFuelType] = useState<'petrol' | 'diesel' | null>(null);
-  const [fuelDistance, setFuelDistance] = useState<string>('');
-  const [fuelMileage, setFuelMileage] = useState<string>('');
-  const [manualFuelPrice, setManualFuelPrice] = useState<string>('');
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [fuelType, setFuelType] = useLocalStorage<'petrol' | 'diesel' | null>('vh-fuel-type', null);
+  const [fuelDistance, setFuelDistance] = useLocalStorage<string>('vh-fuel-distance', '');
+  const [fuelMileage, setFuelMileage] = useLocalStorage<string>('vh-fuel-mileage', '');
+  const [manualFuelPrice, setManualFuelPrice] = useLocalStorage<string>('vh-fuel-price', '');
+  const [history, setHistory] = useLocalStorage<HistoryItem[]>('vh-history', []);
   const [error, setError] = useState<string | null>(null);
 
   const [results, setResults] = useState<{
