@@ -3,7 +3,7 @@ import { db } from '@/lib/firebase';
 
 const STATS_DOC_PATH = 'stats/visitors';
 
-export const trackVisitor = async () => {
+export const trackVisitor = async (userName?: string) => {
   try {
     // 1. Generate / Get Unique User ID
     let userId = localStorage.getItem('calhub_user_id');
@@ -16,8 +16,19 @@ export const trackVisitor = async () => {
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     const lastVisitDate = localStorage.getItem('calhub_last_visit');
 
+    // We still update the visitor_list if name is provided, even if already counted for stats
+    if (userName) {
+      const visitorRef = doc(db, `visitor_list/${userId}_${today}`);
+      await setDoc(visitorRef, {
+        userId,
+        name: userName,
+        timestamp: serverTimestamp(),
+        date: today
+      });
+    }
+
     if (lastVisitDate === today) {
-      console.log('Already counted today');
+      console.log('Already counted today for stats');
       return;
     }
 

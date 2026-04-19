@@ -8,7 +8,7 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins, Download, WifiOff, Wifi } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins, Download, WifiOff, Wifi, User, Star } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
@@ -108,12 +108,28 @@ const MainApp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [userName, setUserName] = useState('');
   const isOnline = useOfflineStatus();
   const { isInstallable, installApp } = usePWAInstall();
 
+  const handleNameSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (userName.trim()) {
+      localStorage.setItem('calhub_user_name', userName.trim());
+      setShowNameModal(false);
+      trackVisitor(userName.trim());
+    }
+  };
+
   // Background Sync for Feedback
   useEffect(() => {
-    trackVisitor();
+    const savedName = localStorage.getItem('calhub_user_name');
+    if (!savedName) {
+      setShowNameModal(true);
+    } else {
+      trackVisitor(savedName);
+    }
     
     // Initial Price Fetch
     fetchAllPrices();
@@ -400,6 +416,59 @@ const MainApp = () => {
           </div>
         </div>
       </footer>
+
+      {/* Name Capture Modal */}
+      <AnimatePresence>
+        {showNameModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="w-full max-w-md bg-card border-2 border-primary/20 p-8 rounded-[2.5rem] shadow-2xl shadow-primary/10 relative overflow-hidden"
+            >
+              <div className="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
+              <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-secondary/5 rounded-full blur-3xl" />
+              
+              <div className="relative space-y-6">
+                <div className="flex justify-center">
+                  <div className="bg-primary/10 p-4 rounded-3xl">
+                    <User className="h-8 w-8 text-primary" />
+                  </div>
+                </div>
+                
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-black tracking-tighter uppercase">Welcome to CalHub!</h2>
+                  <p className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Please enter your name to personalize your experience.</p>
+                </div>
+
+                <form onSubmit={handleNameSubmit} className="space-y-4">
+                  <div className="relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                      <Star className="h-4 w-4" />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="YOUR AWESOME NAME"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      required
+                      className="w-full h-14 bg-muted/50 border-2 border-transparent focus:border-primary/50 focus:bg-background rounded-2xl pl-12 pr-4 font-black uppercase tracking-wider transition-all outline-none"
+                    />
+                  </div>
+                  <Button type="submit" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    Get Started
+                  </Button>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

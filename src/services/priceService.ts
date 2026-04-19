@@ -14,13 +14,13 @@ export interface LivePrices {
   source: 'api' | 'fallback';
 }
 
-// Fallback data for Andhra Pradesh / India Average
+// Fallback data for Andhra Pradesh / India Average (Updated for 2026)
 const FALLBACK_PRICES: LivePrices = {
-  gold24: 6500,
-  gold22: 5950,
-  silver: 75,
-  petrol: 111.50,
-  diesel: 99.40,
+  gold24: 7350,
+  gold22: 6740,
+  silver: 88,
+  petrol: 115.50,
+  diesel: 103.20,
   lastUpdated: new Date().toISOString(),
   source: 'fallback'
 };
@@ -37,15 +37,18 @@ export const fetchAllPrices = async (): Promise<LivePrices> => {
     if (metalsKey) {
       try {
         const res = await fetch(`https://metals-api.com/api/latest?access_key=${metalsKey}&base=INR&symbols=XAU,XAG`);
-        const json = await res.json();
-        if (json.success) {
-          // XAU is per ounce. 1 ounce = 31.1035 grams.
-          const pricePerGram24k = json.rates.INR / 31.1035;
-          goldData = {
-            gold24: Math.round(pricePerGram24k),
-            gold22: Math.round(pricePerGram24k * 0.916), // 22k is ~91.6% purity
-            silver: Math.round(json.rates.INR_SILVER / 31.1035 || 75) // Metals API often has symbols for silver too
-          };
+        const contentType = res.headers.get('content-type');
+        if (res.ok && contentType && contentType.includes('application/json')) {
+          const json = await res.json();
+          if (json.success) {
+            // XAU is per ounce. 1 ounce = 31.1035 grams.
+            const pricePerGram24k = json.rates.INR / 31.1035;
+            goldData = {
+              gold24: Math.round(pricePerGram24k),
+              gold22: Math.round(pricePerGram24k * 0.916), // 22k is ~91.6% purity
+              silver: Math.round(json.rates.INR_SILVER / 31.1035 || 75) // Metals API often has symbols for silver too
+            };
+          }
         }
       } catch (e) {
         console.error('Gold API failed', e);
@@ -53,10 +56,15 @@ export const fetchAllPrices = async (): Promise<LivePrices> => {
     }
 
     // 2. Fetch Fuel Prices (Example placeholder)
-    if (fuelUrl) {
+    if (fuelUrl && fuelUrl.startsWith('http')) {
       try {
         const res = await fetch(fuelUrl);
-        fuelData = await res.json();
+        const contentType = res.headers.get('content-type');
+        if (res.ok && contentType && contentType.includes('application/json')) {
+          fuelData = await res.json();
+        } else {
+          console.warn('Fuel API returned non-JSON response or error status');
+        }
       } catch (e) {
         console.error('Fuel API failed', e);
       }

@@ -30,6 +30,17 @@
       },
       "required": ["message", "type", "createdAt"]
     },
+    "Visitor": {
+      "title": "Visitor Log",
+      "description": "Information about a specific user visit",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "timestamp"]
+    },
     "AppStats": {
       "title": "Application Statistics",
       "description": "Aggregated stats like visitor counts",
@@ -62,6 +73,10 @@
     "/stats/daily/{dateStr}": {
       "schema": "AppStats",
       "description": "Daily visitor statistics"
+    },
+    "/visitor_list/{visitorDocId}": {
+      "schema": "Visitor",
+      "description": "List of recent visitor names and IDs"
     }
   }
 }

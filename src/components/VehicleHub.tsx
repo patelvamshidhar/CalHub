@@ -16,20 +16,20 @@ import { getCachedPrices } from '@/services/priceService';
 
 const FALLBACK_FUEL_PRICES = {
   petrol: {
-    delhi: 96.72,
-    mumbai: 106.31,
-    bangalore: 101.94,
-    chennai: 102.63,
-    hyderabad: 109.66,
-    andhra: 111.50
+    delhi: 102.15,
+    mumbai: 111.45,
+    bangalore: 107.20,
+    chennai: 108.40,
+    hyderabad: 114.80,
+    andhra: 115.50
   },
   diesel: {
-    delhi: 89.62,
-    mumbai: 94.27,
-    bangalore: 87.89,
-    chennai: 94.24,
-    hyderabad: 97.82,
-    andhra: 99.40
+    delhi: 94.30,
+    mumbai: 99.10,
+    bangalore: 92.45,
+    chennai: 98.60,
+    hyderabad: 101.50,
+    andhra: 103.20
   }
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, handleFirestoreError, OperationType } from '@/lib/firebase';
-import { collection, query, orderBy, where, Timestamp, getDocs, writeBatch, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, where, Timestamp, getDocs, writeBatch, deleteDoc, limit } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,6 +44,7 @@ interface FeedbackItem {
 export const AdminDashboard = () => {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [visitorStats, setVisitorStats] = useState<{ totalCount: number; dailyCount: number }>({ totalCount: 0, dailyCount: 0 });
+  const [recentVisitors, setRecentVisitors] = useState<{ name: string; timestamp: Timestamp; userId: string; date: string }[]>([]);
   const [priceHealth, setPriceHealth] = useState<{ lastFetchTime: any; status: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -151,6 +152,21 @@ export const AdminDashboard = () => {
       if (doc.exists()) {
         setPriceHealth(doc.data() as any);
       }
+    });
+
+    return () => unsubscribe();
+  }, [isLoggedIn]);
+
+  // Fetch Recent Visitors
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const vRef = collection(db, 'visitor_list');
+    const q = query(vRef, orderBy('timestamp', 'desc'), limit(20));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      setRecentVisitors(docs);
     });
 
     return () => unsubscribe();
@@ -415,6 +431,50 @@ export const AdminDashboard = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Visitor Activity Log */}
+      <Card className="border-2 shadow-sm overflow-hidden bg-muted/30">
+        <CardHeader className="pb-2 border-b bg-muted/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-primary" />
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em]">Recent Visitor Activity</CardTitle>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Live Tracking</span>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="max-h-[200px] overflow-y-auto divide-y">
+            {recentVisitors.length === 0 ? (
+              <div className="py-8 text-center text-muted-foreground text-[10px] font-bold uppercase">No activity logged yet</div>
+            ) : (
+              recentVisitors.map((visitor, idx) => (
+                <div key={idx} className="p-3 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary">
+                      {visitor.name?.[0]?.toUpperCase() || 'U'}
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-black uppercase tracking-tighter truncate max-w-[150px]">{visitor.name || 'Anonymous User'}</h4>
+                      <p className="text-[8px] font-bold text-muted-foreground uppercase opacity-60">ID: {visitor.userId?.substring(0, 8)}...</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-1.5 text-primary text-[9px] font-bold uppercase">
+                      <Clock className="h-3 w-3" />
+                      {visitor.timestamp ? format(visitor.timestamp.toDate(), 'HH:mm:ss') : 'Just now'}
+                    </div>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase">{visitor.date || 'Today'}</p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {loading ? (
         <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
