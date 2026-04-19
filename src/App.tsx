@@ -8,11 +8,12 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
 import { InterestCalculator } from './components/InterestCalculator';
+import { GoldSilverHub } from './components/GoldSilverHub';
 import { FeedbackForm } from './components/FeedbackForm';
 import { AdminDashboard } from './components/AdminDashboard';
 import { motion, AnimatePresence } from 'motion/react';
@@ -55,9 +56,10 @@ const HomePage = () => {
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
         {[
           { id: 'finance', title: 'Finance Hub', icon: IndianRupee, desc: 'Interest, EMI & Rate Conversion', color: 'from-blue-500 to-indigo-600', delay: 0.1 },
+          { id: 'gold-silver', title: 'Gold Hub', icon: Coins, desc: 'Live Rates & Auto-Calculator', color: 'from-amber-500 to-orange-600', delay: 0.15 },
           { id: 'vehicle', title: 'Vehicle Hub', icon: Navigation, desc: 'Fuel, Trip & Travel Planning', color: 'from-orange-500 to-red-600', delay: 0.2 },
           { id: 'land', title: 'Land Hub', icon: MapIcon, desc: 'Area, Plot & Terminology', color: 'from-emerald-500 to-teal-600', delay: 0.3 },
         ].map((item) => (
@@ -114,7 +116,7 @@ const MainApp = () => {
 
   const getActiveTab = () => {
     const path = location.pathname.substring(1);
-    return ['finance', 'vehicle', 'land', 'feedback', 'admin'].includes(path) ? path : 'home';
+    return ['finance', 'gold-silver', 'vehicle', 'land', 'feedback', 'admin'].includes(path) ? path : 'home';
   };
 
   const activeTab = getActiveTab();
@@ -195,11 +197,15 @@ const MainApp = () => {
               className="space-y-16"
             >
               <div className="flex justify-center">
-                <Tabs value={activeTab} onValueChange={(v) => navigate(`/${v}`)} className="w-full max-w-2xl">
-                  <TabsList className="grid grid-cols-3 w-full h-16 p-2 bg-muted/50 rounded-3xl border shadow-inner">
+                <Tabs value={activeTab} onValueChange={(v) => navigate(`/${v}`)} className="w-full max-w-4xl">
+                  <TabsList className="grid grid-cols-4 w-full h-16 p-2 bg-muted/50 rounded-3xl border shadow-inner">
                     <TabsTrigger value="finance" className="rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-xl data-[state=active]:text-primary transition-all">
                       <IndianRupee className="h-4 w-4 mr-2 hidden sm:block" />
                       <span>Finance</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="gold-silver" className="rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-xl data-[state=active]:text-primary transition-all">
+                      <Coins className="h-4 w-4 mr-2 hidden sm:block" />
+                      <span>Gold & Silver</span>
                     </TabsTrigger>
                     <TabsTrigger value="vehicle" className="rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs data-[state=active]:bg-background data-[state=active]:shadow-xl data-[state=active]:text-primary transition-all">
                       <Navigation className="h-4 w-4 mr-2 hidden sm:block" />
@@ -233,6 +239,11 @@ const MainApp = () => {
                         <InterestCalculator />
                       </section>
                     </div>
+                  </div>
+                )}
+                {activeTab === 'gold-silver' && (
+                  <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <GoldSilverHub />
                   </div>
                 )}
                 {activeTab === 'vehicle' && (
@@ -317,6 +328,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<MainApp />} />
         <Route path="/finance" element={<MainApp />} />
+        <Route path="/gold-silver" element={<MainApp />} />
         <Route path="/vehicle" element={<MainApp />} />
         <Route path="/land" element={<MainApp />} />
         <Route path="/feedback" element={<MainApp />} />
