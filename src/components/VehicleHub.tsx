@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map } from 'lucide-react';
+import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
 import { ExportActions } from './ExportActions';
 import { useLocalStorage } from '@/lib/pwa';
+import { getCachedPrices } from '@/services/priceService';
 
 const FALLBACK_FUEL_PRICES = {
   petrol: {
@@ -253,6 +254,23 @@ export const VehicleHub = () => {
                         className="h-12 border-2 font-black text-base pl-10 rounded-xl focus-visible:ring-primary focus-visible:border-primary transition-all"
                       />
                       <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      
+                      <AnimatePresence>
+                        {fuelType && (
+                          <motion.button
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            onClick={() => {
+                              const live = getCachedPrices();
+                              setManualFuelPrice(fuelType === 'petrol' ? live.petrol.toString() : live.diesel.toString());
+                            }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-2 bg-primary/10 text-primary rounded-lg text-[8px] font-black uppercase tracking-widest hover:bg-primary/20 transition-all flex items-center gap-1"
+                          >
+                            <Zap className="h-3 w-3" />
+                            Use Live
+                          </motion.button>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
 

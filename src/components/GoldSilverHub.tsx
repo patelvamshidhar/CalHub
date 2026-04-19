@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
 import { ExportActions } from './ExportActions';
 import { useLocalStorage } from '@/lib/pwa';
+import { getCachedPrices, fetchAllPrices, LivePrices } from '@/services/priceService';
 
 // Mock data as fallback and starting point
 const MOCK_RATES: Record<string, { gold24: number; gold22: number; silver: number }> = {
@@ -125,16 +126,16 @@ export const GoldSilverHub = () => {
   };
 
   // Simulation of live data fetch
-  const refreshRates = () => {
+  const refreshRates = async () => {
     setLoading(true);
-    // Simulate API delay
-    setTimeout(() => {
-      setLastUpdated(new Date().toISOString());
-      setLoading(false);
-    }, 800);
+    const updated = await fetchAllPrices();
+    setLastUpdated(updated.lastUpdated);
+    setLoading(false);
   };
 
   const rates = useMemo(() => {
+    const live = getCachedPrices();
+    
     if (manualMode) {
       return {
         gold24: parseFloat(manualGold24) || 0,
@@ -142,7 +143,29 @@ export const GoldSilverHub = () => {
         silver: parseFloat(manualSilver) || 0
       };
     }
-    return MOCK_RATES[debouncedCity] || DEFAULT_RATES;
+    
+    // If it's a known city, we might have specific mock offsets, 
+    // but for "Live" we favor the global Live price if city isn't found
+    const cityData = MOCK_RATES[debouncedCity];
+    if (cityData) {
+      // Blend live with city variation (simple strategy: use live but keep city relative diff if any)
+      // Actually per requirement: "Load corresponing rates"
+      // If no API, use mock. If API, we use API.
+      if (live.source === 'api') {
+        return {
+          gold24: live.gold24,
+          gold22: live.gold22,
+          silver: live.silver
+        };
+      }
+      return cityData;
+    }
+
+    return {
+      gold24: live.gold24,
+      gold22: live.gold22,
+      silver: live.silver
+    };
   }, [manualMode, manualGold24, manualGold22, manualSilver, debouncedCity]);
 
   // Gold Calculation Logic

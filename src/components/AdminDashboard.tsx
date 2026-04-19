@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, handleFirestoreError, OperationType } from '@/lib/firebase';
-import { collection, query, orderBy, onSnapshot, where, Timestamp, getDocs, writeBatch, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, where, Timestamp, getDocs, writeBatch, deleteDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,11 +24,13 @@ import {
   Trash2,
   CheckCircle2,
   Users,
-  CalendarDays
+  CalendarDays,
+  RefreshCcw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
-import { doc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { fetchAllPrices } from '@/services/priceService';
 
 interface FeedbackItem {
   id: string;
@@ -42,6 +44,7 @@ interface FeedbackItem {
 export const AdminDashboard = () => {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [visitorStats, setVisitorStats] = useState<{ totalCount: number; dailyCount: number }>({ totalCount: 0, dailyCount: 0 });
+  const [priceHealth, setPriceHealth] = useState<{ lastFetchTime: any; status: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<'All' | 'Suggestion' | 'Bug' | 'Improvement'>('All');
@@ -137,6 +140,20 @@ export const AdminDashboard = () => {
       unsubStats();
       unsubDaily();
     };
+  }, [isLoggedIn]);
+
+  // Fetch Price Health
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const healthRef = doc(db, 'system/price_health');
+    const unsubscribe = onSnapshot(healthRef, (doc) => {
+      if (doc.exists()) {
+        setPriceHealth(doc.data() as any);
+      }
+    });
+
+    return () => unsubscribe();
   }, [isLoggedIn]);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -267,6 +284,38 @@ export const AdminDashboard = () => {
             <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Unique visits today</p>
           </CardContent>
         </Card>
+
+        {priceHealth && (
+          <Card className={`border-2 shadow-sm relative overflow-hidden col-span-1 sm:col-span-2 ${priceHealth.status === 'Success' ? 'bg-blue-500/5 border-blue-500/10' : 'bg-red-500/5 border-red-500/10'}`}>
+            <div className="absolute right-0 top-0 p-4 opacity-10">
+              <RefreshCcw className={`h-16 w-16 ${priceHealth.status === 'Success' ? 'text-blue-500' : 'text-red-500'} ${priceHealth.status === 'Success' ? '' : 'animate-pulse'}`} />
+            </div>
+            <CardHeader className="pb-2">
+              <CardTitle className={`text-[10px] font-black uppercase tracking-[0.2em] ${priceHealth.status === 'Success' ? 'text-blue-600' : 'text-red-600'}`}>
+                Price API Health
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${priceHealth.status === 'Success' ? 'bg-emerald-500' : 'bg-red-500 animate-ping'}`} />
+                  <span className="text-2xl font-black uppercase tracking-tighter">Status: {priceHealth.status}</span>
+                </div>
+                <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">
+                  Last Sync: {priceHealth.lastFetchTime ? format(priceHealth.lastFetchTime.toDate(), 'HH:mm:ss') : 'Never'}
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => fetchAllPrices()}
+                className="h-9 rounded-xl font-black uppercase tracking-widest text-[9px] border-2 border-primary/20"
+              >
+                Force Sync Now
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Unified Clear Button */}
