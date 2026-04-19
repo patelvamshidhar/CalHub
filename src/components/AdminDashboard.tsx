@@ -22,10 +22,13 @@ import {
   User,
   Star,
   Trash2,
-  CheckCircle2
+  CheckCircle2,
+  Users,
+  CalendarDays
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
+import { doc } from 'firebase/firestore';
 
 interface FeedbackItem {
   id: string;
@@ -38,6 +41,7 @@ interface FeedbackItem {
 
 export const AdminDashboard = () => {
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
+  const [visitorStats, setVisitorStats] = useState<{ totalCount: number; dailyCount: number }>({ totalCount: 0, dailyCount: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<'All' | 'Suggestion' | 'Bug' | 'Improvement'>('All');
@@ -108,6 +112,32 @@ export const AdminDashboard = () => {
 
     return () => unsubscribe();
   }, [isLoggedIn, filterType, sortOrder]);
+
+  // Fetch Visitor Stats
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const statsRef = doc(db, 'stats/visitors');
+    const dailyRef = doc(db, `stats/daily_${today}`);
+
+    const unsubStats = onSnapshot(statsRef, (doc) => {
+      if (doc.exists()) {
+        setVisitorStats(prev => ({ ...prev, totalCount: doc.data().totalCount || 0 }));
+      }
+    });
+
+    const unsubDaily = onSnapshot(dailyRef, (doc) => {
+      if (doc.exists()) {
+        setVisitorStats(prev => ({ ...prev, dailyCount: doc.data().dailyCount || 0 }));
+      }
+    });
+
+    return () => {
+      unsubStats();
+      unsubDaily();
+    };
+  }, [isLoggedIn]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -204,6 +234,39 @@ export const AdminDashboard = () => {
         >
           Logout
         </Button>
+      </div>
+
+      {/* Visitor Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card className="border-2 shadow-sm bg-primary/5 border-primary/10 overflow-hidden relative">
+          <div className="absolute right-0 top-0 p-4 opacity-10">
+            <Users className="h-16 w-16" />
+          </div>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Total Visitors</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-4xl font-black tracking-tighter text-foreground">
+              {visitorStats.totalCount.toLocaleString()}
+            </div>
+            <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Unique lifetime visits</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 shadow-sm bg-emerald-500/5 border-emerald-500/10 overflow-hidden relative">
+          <div className="absolute right-0 top-0 p-4 opacity-10">
+            <CalendarDays className="h-16 w-16 text-emerald-500" />
+          </div>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Today's Visitors</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-4xl font-black tracking-tighter text-foreground">
+              {visitorStats.dailyCount.toLocaleString()}
+            </div>
+            <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Unique visits today</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Unified Clear Button */}

@@ -29,12 +29,39 @@
         }
       },
       "required": ["message", "type", "createdAt"]
+    },
+    "AppStats": {
+      "title": "Application Statistics",
+      "description": "Aggregated stats like visitor counts",
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "description": "Total unique visitor count across all time"
+        },
+        "dailyCount": {
+          "type": "integer",
+          "description": "Unique visitor count for a specific day"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     }
   },
   "firestore": {
     "/feedback/{feedbackId}": {
       "schema": "Feedback",
       "description": "Collection of all user feedback"
+    },
+    "/stats/visitors": {
+      "schema": "AppStats",
+      "description": "Global visitor statistics"
+    },
+    "/stats/daily/{dateStr}": {
+      "schema": "AppStats",
+      "description": "Daily visitor statistics"
     }
   }
 }
