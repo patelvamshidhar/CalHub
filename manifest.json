@@ -1,0 +1,21 @@
+{
+  "name": "CalHub",
+  "short_name": "CalHub",
+  "description": "CalHub - Precision calculators for finance, gold & silver rates, travel, and land.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/calhub192/192/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://picsum.photos/seed/calhub512/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
