@@ -29,32 +29,32 @@ import { ExportActions } from './ExportActions';
 import { useLocalStorage } from '@/lib/pwa';
 import { getCachedPrices, fetchAllPrices, LivePrices } from '@/services/priceService';
 
-// Mock data as fallback and starting point
+// Mock data as fallback and starting point (Updated for 2026)
 const MOCK_RATES: Record<string, { gold24: number; gold22: number; silver: number }> = {
-  'hyderabad': { gold24: 6500, gold22: 5950, silver: 75 },
-  'mumbai': { gold24: 6520, gold22: 5970, silver: 76 },
-  'delhi': { gold24: 6510, gold22: 5960, silver: 75.5 },
-  'chennai': { gold24: 6530, gold22: 5980, silver: 76.5 },
-  'bangalore': { gold24: 6515, gold22: 5965, silver: 75.8 },
-  'kolkata': { gold24: 6525, gold22: 5975, silver: 76.2 },
-  'pune': { gold24: 6505, gold22: 5955, silver: 75.3 },
-  'ahmedabad': { gold24: 6495, gold22: 5945, silver: 74.8 },
-  'visakhapatnam': { gold24: 6480, gold22: 5930, silver: 74 },
-  'vijayawada': { gold24: 6470, gold22: 5920, silver: 74 },
-  'tirupati': { gold24: 6475, gold22: 5925, silver: 73.8 },
-  'guntur': { gold24: 6465, gold22: 5915, silver: 73.5 },
-  'kurnool': { gold24: 6460, gold22: 5910, silver: 73.2 },
-  'nellore': { gold24: 6472, gold22: 5922, silver: 74.1 },
-  'rajamahendravaram': { gold24: 6478, gold22: 5928, silver: 74.3 },
-  'kakinada': { gold24: 6482, gold22: 5932, silver: 74.4 },
-  'kadapa': { gold24: 6458, gold22: 5908, silver: 73.0 },
-  'anantapur': { gold24: 6455, gold22: 5905, silver: 72.8 },
-  'eluru': { gold24: 6468, gold22: 5918, silver: 73.7 },
-  'vizianagaram': { gold24: 6485, gold22: 5935, silver: 74.5 },
-  'ongole': { gold24: 6462, gold22: 5912, silver: 73.4 },
-  'chittoor': { gold24: 6472, gold22: 5922, silver: 73.6 },
-  'machilipatnam': { gold24: 6474, gold22: 5924, silver: 74.2 },
-  'tenali': { gold24: 6466, gold22: 5916, silver: 73.6 },
+  'hyderabad': { gold24: 7350, gold22: 6740, silver: 88 },
+  'mumbai': { gold24: 7370, gold22: 6760, silver: 89 },
+  'delhi': { gold24: 7360, gold22: 6750, silver: 88.5 },
+  'chennai': { gold24: 7380, gold22: 6770, silver: 89.5 },
+  'bangalore': { gold24: 7365, gold22: 6755, silver: 88.8 },
+  'kolkata': { gold24: 7375, gold22: 6765, silver: 89.2 },
+  'pune': { gold24: 7355, gold22: 6745, silver: 88.3 },
+  'ahmedabad': { gold24: 7345, gold22: 6735, silver: 87.8 },
+  'visakhapatnam': { gold24: 7330, gold22: 6720, silver: 87 },
+  'vijayawada': { gold24: 7320, gold22: 6710, silver: 87 },
+  'tirupati': { gold24: 7325, gold22: 6715, silver: 86.8 },
+  'guntur': { gold24: 7315, gold22: 6705, silver: 86.5 },
+  'kurnool': { gold24: 7310, gold22: 6700, silver: 86.2 },
+  'nellore': { gold24: 7322, gold22: 6712, silver: 87.1 },
+  'rajamahendravaram': { gold24: 7328, gold22: 6718, silver: 87.3 },
+  'kakinada': { gold24: 7332, gold22: 6722, silver: 87.4 },
+  'kadapa': { gold24: 7308, gold22: 6698, silver: 86.0 },
+  'anantapur': { gold24: 7305, gold22: 6695, silver: 85.8 },
+  'eluru': { gold24: 7318, gold22: 6708, silver: 86.7 },
+  'vizianagaram': { gold24: 7335, gold22: 6725, silver: 87.5 },
+  'ongole': { gold24: 7312, gold22: 6702, silver: 86.4 },
+  'chittoor': { gold24: 7322, gold22: 6712, silver: 86.6 },
+  'machilipatnam': { gold24: 7324, gold22: 6714, silver: 87.2 },
+  'tenali': { gold24: 7316, gold22: 6706, silver: 86.6 },
 };
 
 const DEFAULT_RATES = MOCK_RATES['hyderabad'];
@@ -73,9 +73,9 @@ export const GoldSilverHub = () => {
 
   // Manual Input Mode
   const [manualMode, setManualMode] = useLocalStorage<boolean>('gs-manual-mode', false);
-  const [manualGold24, setManualGold24] = useLocalStorage<string>('gs-manual-gold24', '6500');
-  const [manualGold22, setManualGold22] = useLocalStorage<string>('gs-manual-gold22', '5950');
-  const [manualSilver, setManualSilver] = useLocalStorage<string>('gs-manual-silver', '75');
+  const [manualGold24, setManualGold24] = useLocalStorage<string>('gs-manual-gold24', '7350');
+  const [manualGold22, setManualGold22] = useLocalStorage<string>('gs-manual-gold22', '6740');
+  const [manualSilver, setManualSilver] = useLocalStorage<string>('gs-manual-silver', '88');
 
   // Gold State
   const [goldWeight, setGoldWeight] = useLocalStorage<string>('gs-gold-weight', '10');
