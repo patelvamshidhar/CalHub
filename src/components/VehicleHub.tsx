@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
 import { ExportActions } from './ExportActions';
 import { useLocalStorage } from '@/lib/pwa';
-import { getCachedPrices } from '@/services/priceService';
+import { getCachedPrices, fetchAllPrices } from '@/services/priceService';
 
 const FALLBACK_FUEL_PRICES = {
   petrol: {
@@ -35,7 +35,17 @@ const FALLBACK_FUEL_PRICES = {
 
 export const VehicleHub = () => {
   // Fuel Cost Calculator State
+  const [fuelCity, setFuelCity] = useLocalStorage<string>('vh-fuel-city', 'Hyderabad');
   const [fuelType, setFuelType] = useLocalStorage<'petrol' | 'diesel' | null>('vh-fuel-type', null);
+
+  const updatePriceByCity = (city: string, type: 'petrol' | 'diesel' | null) => {
+    if (!type) return;
+    const normalized = city.toLowerCase().trim();
+    const cityRates = FALLBACK_FUEL_PRICES[type] as Record<string, number>;
+    if (cityRates[normalized]) {
+      setManualFuelPrice(cityRates[normalized].toString());
+    }
+  };
   const [fuelDistance, setFuelDistance] = useLocalStorage<string>('vh-fuel-distance', '');
   const [fuelMileage, setFuelMileage] = useLocalStorage<string>('vh-fuel-mileage', '');
   const [manualFuelPrice, setManualFuelPrice] = useLocalStorage<string>('vh-fuel-price', '');
@@ -51,6 +61,22 @@ export const VehicleHub = () => {
   const [lastSavedTrip, setLastSavedTrip] = useState<HistoryItem | null>(null);
 
   const [prices, setPrices] = useState(getCachedPrices());
+  const [loading, setLoading] = useState(false);
+
+  const refreshFuelPrices = async () => {
+    setLoading(true);
+    try {
+      const updated = await fetchAllPrices(fuelCity || 'Andhra Pradesh');
+      setPrices(updated);
+      if (fuelType) {
+        setManualFuelPrice(fuelType === 'petrol' ? updated.petrol.toString() : updated.diesel.toString());
+      }
+    } catch (e) {
+      console.error('Failed to refresh fuel prices', e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Listen for storage changes if multiple tabs open, or just local updates
@@ -161,6 +187,41 @@ export const VehicleHub = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
+          {/* Fuel Data Status Notification */}
+          <AnimatePresence>
+            {!prices.fuelSynced && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="mb-8 overflow-hidden"
+              >
+                <div className="p-4 rounded-3xl border-2 flex items-center gap-4 bg-amber-500/10 border-amber-500/20 text-amber-700">
+                  <div className="p-2 rounded-xl shrink-0 bg-amber-500 text-white">
+                    <Info className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">
+                      Fuel Sync Notice
+                    </p>
+                    <p className="text-sm font-medium leading-tight">
+                      {prices.fuelError || 'City-specific fuel rates currently unavailable'}. Using regional averages for Andhra Pradesh.
+                    </p>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={refreshFuelPrices} 
+                    disabled={loading}
+                    className="rounded-2xl h-10 px-4 font-black uppercase tracking-widest text-[10px] hover:bg-black/5"
+                  >
+                    Retry Sync
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="text-center space-y-2">
             <h2 className="text-4xl sm:text-5xl font-black tracking-tighter uppercase flex items-center justify-center gap-3">
               <div className="p-2 bg-primary/10 rounded-xl">
@@ -182,8 +243,12 @@ export const VehicleHub = () => {
                         <Clock className="h-2.5 w-2.5" />
                         Updated: {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                      </div>
-                     <div className="text-[8px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Daily Sync Active
+                     <div className="text-[8px] font-black text-emerald-500 uppercase tracking-widest flex flex-col items-end gap-1">
+                        <div className="flex items-center gap-1">
+                          <div className={`w-1.5 h-1.5 rounded-full ${prices.source === 'api' ? 'bg-emerald-500 animate-pulse' : 'bg-muted-foreground/30'}`} /> 
+                          {prices.source === 'api' ? 'Daily Sync Active' : 'Fallback Mode'}
+                        </div>
+                        <span className="text-[6px] font-bold text-muted-foreground/40 text-right">Prices may slightly vary by location</span>
                      </div>
                   </div>
                   <CardTitle className="text-xl font-black flex items-center justify-between">
@@ -194,12 +259,26 @@ export const VehicleHub = () => {
                       Trip Details
                     </div>
                     <div className="flex flex-col items-end">
-                      <Button variant="ghost" size="sm" onClick={reset} className="h-8 text-[9px] font-black uppercase tracking-widest gap-2 rounded-xl hover:bg-primary/5">
-                        <RefreshCcw className="h-3 w-3" />
-                        Reset
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={refreshFuelPrices}
+                          disabled={loading}
+                          className="h-8 text-[9px] font-black uppercase tracking-widest gap-2 rounded-xl hover:bg-primary/5 text-emerald-600"
+                        >
+                          {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCcw className="h-3 w-3" />}
+                          Live Sync
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={reset} className="h-8 text-[9px] font-black uppercase tracking-widest gap-2 rounded-xl hover:bg-primary/5">
+                          <RefreshCcw className="h-3 w-3" />
+                          Reset
+                        </Button>
+                      </div>
                       <div className="hidden sm:flex flex-col items-end mt-1">
-                        <span className="text-[7px] font-black text-muted-foreground/40 uppercase tracking-widest">Last Sync: {new Date(prices.lastUpdated).toLocaleDateString()} {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="text-[7px] font-black text-muted-foreground/40 uppercase tracking-widest leading-tight">Last Sync: {new Date(prices.lastUpdated).toLocaleDateString()} {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="text-[6px] font-bold text-muted-foreground/30 uppercase tracking-tighter">Prices may slightly vary by location</span>
+                        {prices.error && <span className="text-[6px] font-black text-red-500/60 uppercase tracking-widest mt-0.5">{prices.error}</span>}
                       </div>
                     </div>
                   </CardTitle>
@@ -257,6 +336,29 @@ export const VehicleHub = () => {
                         />
                         <RefreshCcw className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                       </div>
+                    </div>
+                  </div>
+
+                  {/* City Selection */}
+                  <div className="space-y-2">
+                    <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Enter City</Label>
+                    <div className="relative group">
+                      <Input
+                        value={fuelCity}
+                        onChange={(e) => {
+                          setFuelCity(e.target.value);
+                          updatePriceByCity(e.target.value, fuelType);
+                        }}
+                        placeholder="e.g. Hyderabad"
+                        className="h-12 border-2 font-black text-base pl-10 rounded-xl focus-visible:ring-primary focus-visible:border-primary transition-all"
+                      />
+                      <Map className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                      
+                      {fuelType && FALLBACK_FUEL_PRICES[fuelType][fuelCity.toLowerCase()] && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[8px] font-black uppercase tracking-widest">
+                          City Rate Found
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -321,40 +423,6 @@ export const VehicleHub = () => {
                 </CardContent>
               </Card>
 
-              {/* Reference Price List Card */}
-              <AnimatePresence>
-                {fuelType && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                  >
-                    <Card className="border-2 shadow-lg rounded-[2rem] overflow-hidden">
-                      <CardHeader className="pb-3 pt-5 bg-muted/30 px-6">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                            <Map className="h-3.5 w-3.5 text-primary" />
-                            {fuelType} Estimated 2026 Rates
-                          </CardTitle>
-                          <div className="px-2 py-0.5 bg-primary/10 rounded-full text-[8px] font-black uppercase text-primary tracking-widest">
-                            Fallback Projections
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-4 px-6 pb-6">
-                        <div className="grid grid-cols-2 gap-2">
-                          {Object.entries(FALLBACK_FUEL_PRICES[fuelType]).map(([city, price]) => (
-                            <div key={city} className={`p-3 rounded-xl border-2 flex flex-col transition-all ${city === 'andhra' ? 'bg-primary/5 border-primary/20' : 'bg-muted/30 border-transparent'}`}>
-                              <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">{city}</span>
-                              <span className="text-base font-black text-foreground tracking-tight">₹{(price as number).toFixed(2)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
             {/* Right Column: Results Display */}
@@ -430,18 +498,6 @@ export const VehicleHub = () => {
         </motion.section>
       </div>
 
-      {/* Info Banner & 2026 Methodology */}
-      <div className="bg-primary/5 border-2 border-primary/10 p-6 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-6">
-        <div className="bg-primary text-primary-foreground p-4 rounded-2xl shadow-xl shrink-0">
-          <Zap className="h-6 w-6" />
-        </div>
-        <div className="space-y-1 text-center md:text-left">
-          <h3 className="text-lg font-black uppercase tracking-tight">2026 Fuel Projections</h3>
-          <p className="text-sm text-muted-foreground font-medium leading-relaxed max-w-3xl">
-            The fallback rates shown are calculated based on <span className="text-foreground font-bold">2026 market projections</span>, accounting for inflation and historical price trends in major Indian hubs. These estimates help in long-term financial planning for travel and logistics.
-          </p>
-        </div>
-      </div>
 
       <CalculationHistory 
         history={history} 

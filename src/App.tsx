@@ -136,12 +136,12 @@ const MainApp = () => {
     // Initial Price Fetch
     fetchAllPrices();
 
-    // Auto-Update Prices every hour
+    // Auto-Update Prices every 2 hours (per user requirement)
     const priceTimer = setInterval(() => {
       if (navigator.onLine) {
         fetchAllPrices();
       }
-    }, 1 * 60 * 60 * 1000);
+    }, 2 * 60 * 60 * 1000);
 
     // Immediate check if refresh needed
     const lastSyncStr = localStorage.getItem('gs-last-updated');

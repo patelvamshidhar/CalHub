@@ -12,7 +12,15 @@ export interface LivePrices {
   diesel: number;
   lastUpdated: string;
   source: 'api' | 'fallback';
+  metalsSynced: boolean;
+  fuelSynced: boolean;
+  metalsError?: string;
+  fuelError?: string;
+  error?: string; // Legacy field for overall status
 }
+
+const OUNCE_TO_GRAM = 31.1035;
+const INDIA_ADJUSTMENT = 1.05; // 5% adjustment for India
 
 // Fallback data for Andhra Pradesh / India Average (Updated for Today: April 23, 2026)
 const FALLBACK_PRICES: LivePrices = {
@@ -22,55 +30,130 @@ const FALLBACK_PRICES: LivePrices = {
   petrol: 136.20,
   diesel: 121.50,
   lastUpdated: new Date().toISOString(),
-  source: 'fallback'
+  source: 'fallback',
+  metalsSynced: false,
+  fuelSynced: false
 };
 
-export const fetchAllPrices = async (): Promise<LivePrices> => {
+export const fetchAllPrices = async (city: string = 'Andhra Pradesh'): Promise<LivePrices> => {
+  let metalsErrorMessage = '';
+  let fuelErrorMessage = '';
   try {
     const metalsKey = (import.meta as any).env.VITE_METALS_API_KEY;
-    const fuelUrl = (import.meta as any).env.VITE_FUEL_API_URL;
-
+    const forexKey = (import.meta as any).env.VITE_FOREX_API_KEY || '6ea7c3569c7308ca3d5806c9';
+    const rapidApiKey = (import.meta as any).env.VITE_RAPID_API_KEY;
+    
     let goldData: any = null;
     let fuelData: any = null;
+    let inrRate = 83.5;
 
-    // 1. Fetch Gold/Silver (Example using Metals-API)
-    if (metalsKey) {
+    // 1. Fetch Exchange Rate (USD to INR)
+    try {
+      const forexRes = await fetch(`https://v6.exchangerate-api.com/v6/${forexKey}/latest/USD`);
+      if (forexRes.ok && forexRes.headers.get('content-type')?.includes('application/json')) {
+        const forexJson = await forexRes.json();
+        if (forexJson.result === 'success') {
+          inrRate = forexJson.conversion_rates.INR;
+        }
+      }
+    } catch (e) {
+      console.warn('Forex API failed, using fallback rate');
+    }
+
+    // 2. Fetch Gold/Silver from gold-api.com (New Requirement)
+    try {
+      const [goldRes, silverRes] = await Promise.all([
+        fetch('https://api.gold-api.com/price/XAU'),
+        fetch('https://api.gold-api.com/price/XAG')
+      ]);
+
+      if (goldRes.ok && silverRes.ok) {
+        const goldJson = await goldRes.json();
+        const silverJson = await silverRes.json();
+
+        // Formula: gold_inr = (usd_price / 31.1035) * usd_to_inr * 1.05
+        const goldGramInr = (goldJson.price / OUNCE_TO_GRAM) * inrRate * INDIA_ADJUSTMENT;
+        const silverGramInr = (silverJson.price / OUNCE_TO_GRAM) * inrRate; // Silver usually has less premium or different logic, but following per-gram req
+
+        goldData = {
+          gold24: Math.round(goldGramInr),
+          gold22: Math.round(goldGramInr * 0.916),
+          silver: Number((silverGramInr * 1.05).toFixed(2))
+        };
+      }
+    } catch (e) {
+      console.warn('Gold-API.com failed, attempting MetalPrice API fallback');
+      metalsErrorMessage = 'Metals API unavailable. ';
+      if (metalsKey) {
+        try {
+          const res = await fetch(`https://metals-api.com/api/latest?access_key=${metalsKey}&base=USD&symbols=XAU,XAG`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.rates) {
+              const goldGramInr = (json.rates.XAU * inrRate) / OUNCE_TO_GRAM * INDIA_ADJUSTMENT;
+              const silverGramInr = (json.rates.XAG * inrRate) / OUNCE_TO_GRAM * 1.05;
+              goldData = {
+                gold24: Math.round(goldGramInr),
+                gold22: Math.round(goldGramInr * 0.916),
+                silver: Number(silverGramInr.toFixed(2))
+              };
+            }
+          }
+        } catch (e2) {
+          console.error('MetalPrice API failed', e2);
+          metalsErrorMessage = 'Metal price sync failed. ';
+        }
+      }
+    }
+
+    // 3. Fetch Fuel Prices (India City Level)
+    if (rapidApiKey) {
       try {
-        const res = await fetch(`https://metals-api.com/api/latest?access_key=${metalsKey}&base=INR&symbols=XAU,XAG`);
-        const contentType = res.headers.get('content-type');
-        if (res.ok && contentType && contentType.includes('application/json')) {
-          const json = await res.json();
-          if (json.success) {
-            // XAU is per ounce. 1 ounce = 31.1035 grams.
-            const pricePerGram24k = json.rates.INR / 31.1035;
-            goldData = {
-              gold24: Math.round(pricePerGram24k),
-              gold22: Math.round(pricePerGram24k * 0.916), // 22k is ~91.6% purity
-              silver: Math.round(json.rates.INR_SILVER / 31.1035 || 75) // Metals API often has symbols for silver too
+        // Using a representative Indian Fuel API on RapidAPI
+        const fuelRes = await fetch(`https://fuel-prices-india.p.rapidapi.com/fuel/${encodeURIComponent(city)}`, {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-key': rapidApiKey,
+            'x-rapidapi-host': 'fuel-prices-india.p.rapidapi.com'
+          }
+        });
+        
+        if (fuelRes.ok && fuelRes.headers.get('content-type')?.includes('application/json')) {
+          const fuelResJson = await fuelRes.json();
+          if (fuelResJson && fuelResJson.petrol) {
+            fuelData = {
+              petrol: parseFloat(fuelResJson.petrol) || FALLBACK_PRICES.petrol,
+              diesel: parseFloat(fuelResJson.diesel) || FALLBACK_PRICES.diesel
             };
           }
         }
       } catch (e) {
-        console.error('Gold API failed', e);
+        console.error('Fuel RapidAPI failed', e);
+        fuelErrorMessage = 'Fuel API connection error. ';
       }
+    } else {
+      fuelErrorMessage = 'RapidAPI Key missing. ';
     }
 
-    // 2. Fetch Fuel Prices (Example placeholder)
-    if (fuelUrl && fuelUrl.startsWith('http')) {
-      try {
-        const res = await fetch(fuelUrl);
-        const contentType = res.headers.get('content-type');
-        if (res.ok && contentType && contentType.includes('application/json')) {
-          fuelData = await res.json();
-        } else {
-          console.warn('Fuel API returned non-JSON response or error status');
+    // Secondary Fuel Fallback (State level or current configured URL)
+    if (!fuelData) {
+      const fuelUrl = (import.meta as any).env.VITE_FUEL_API_URL;
+      if (fuelUrl && fuelUrl.startsWith('http')) {
+        try {
+          const res = await fetch(fuelUrl);
+          if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
+            fuelData = await res.json();
+          }
+        } catch (e) {
+          console.warn('Secondary fuel API failed');
         }
-      } catch (e) {
-        console.error('Fuel API failed', e);
       }
     }
 
     // Aggregate Data
+    const isMetalsLive = !!goldData;
+    const isFuelLive = !!fuelData;
+
     const liveData: LivePrices = {
       gold24: goldData?.gold24 || FALLBACK_PRICES.gold24,
       gold22: goldData?.gold22 || FALLBACK_PRICES.gold22,
@@ -78,24 +161,27 @@ export const fetchAllPrices = async (): Promise<LivePrices> => {
       petrol: fuelData?.petrol || FALLBACK_PRICES.petrol,
       diesel: fuelData?.diesel || FALLBACK_PRICES.diesel,
       lastUpdated: new Date().toISOString(),
-      source: (goldData || fuelData) ? 'api' : 'fallback'
+      source: (isMetalsLive || isFuelLive) ? 'api' : 'fallback',
+      metalsSynced: isMetalsLive,
+      fuelSynced: isFuelLive,
+      metalsError: isMetalsLive ? undefined : (metalsErrorMessage || 'Metals sync unsuccessful'),
+      fuelError: isFuelLive ? undefined : (fuelErrorMessage || 'Fuel sync unsuccessful'),
+      error: (!isMetalsLive || !isFuelLive) ? 'Partial data unavailable' : undefined
     };
 
     // Cache locally for offline use
     localStorage.setItem(PRICES_CACHE_KEY, JSON.stringify(liveData));
-
-    // Update Admin/System Health in Firestore (Server-side tracking)
     await updateSystemHealth(true);
-
     return liveData;
 
   } catch (error) {
     console.error('Error in fetchAllPrices:', error);
     await updateSystemHealth(false);
     
-    // Load from cache or fallback
     const cached = localStorage.getItem(PRICES_CACHE_KEY);
-    return cached ? JSON.parse(cached) : FALLBACK_PRICES;
+    const result = cached ? JSON.parse(cached) : { ...FALLBACK_PRICES };
+    result.error = 'Unable to fetch live data - Showing last cached values';
+    return result;
   }
 };
 

@@ -93,8 +93,37 @@ export const GoldSilverHub = () => {
   const suggestions = useMemo(() => {
     const input = searchCity.toLowerCase().trim();
     if (!input || !showSuggestions) return [];
-    return Object.keys(MOCK_RATES).filter(c => c.includes(input)).slice(0, 5);
+    return Object.keys(MOCK_RATES)
+      .filter(c => c.includes(input))
+      .sort((a, b) => {
+        // Boost cities that start with the input
+        const aStart = a.startsWith(input) ? 1 : 0;
+        const bStart = b.startsWith(input) ? 1 : 0;
+        return bStart - aStart || a.localeCompare(b);
+      })
+      .slice(0, 6);
   }, [searchCity, showSuggestions]);
+
+  const cityInfo = useMemo(() => {
+    const city = debouncedCity.toLowerCase();
+    const andhraCities = ['visakhapatnam', 'vijayawada', 'tirupati', 'guntur', 'kurnool', 'nellore', 'kadapa', 'anantapur', 'eluru', 'vizianagaram', 'ongole', 'chittoor', 'machilipatnam', 'tenali'];
+    
+    if (andhraCities.includes(city)) {
+      return {
+        label: 'Andhra Pradesh City',
+        note: 'Live local market rates applied',
+        icon: '🏠'
+      };
+    }
+    if (city === 'hyderabad') {
+      return {
+        label: 'Primary Hub',
+        note: 'Real-time Telangana market rates',
+        icon: '⭐'
+      };
+    }
+    return null;
+  }, [debouncedCity]);
 
   // Debounce city input
   useEffect(() => {
@@ -128,13 +157,17 @@ export const GoldSilverHub = () => {
   // Simulation of live data fetch
   const refreshRates = async () => {
     setLoading(true);
-    const updated = await fetchAllPrices();
+    // Passing searchCity to get localized fuel prices if needed, 
+    // though this hub is mainly for gold/silver.
+    const updated = await fetchAllPrices(searchCity || 'Andhra Pradesh');
     setLastUpdated(updated.lastUpdated);
     setLoading(false);
   };
 
+  const currentData = useMemo(() => getCachedPrices(), [lastUpdated]);
+
   const rates = useMemo(() => {
-    const live = getCachedPrices();
+    const live = currentData;
     
     if (manualMode) {
       return {
@@ -172,20 +205,30 @@ export const GoldSilverHub = () => {
   const goldCalc = useMemo(() => {
     const rawWeight = parseFloat(goldWeight) || 0;
     const weightInGrams = goldUnit === 'kg' ? rawWeight * 1000 : rawWeight;
-    const ratePerGram = goldPurity === '24K' ? rates.gold24 : rates.gold22;
     const making = parseFloat(makingCharges) || 0;
     
-    const basePrice = (weightInGrams * ratePerGram) + making;
-    const gstPrice = showGST ? basePrice * GST_RATE : 0;
-    const totalPrice = basePrice + gstPrice;
+    const calculateForRate = (rate: number) => {
+      const base = (weightInGrams * rate) + making;
+      const gst = showGST ? base * GST_RATE : 0;
+      return base + gst;
+    };
+
+    const price24K = calculateForRate(rates.gold24);
+    const price22K = calculateForRate(rates.gold22);
+    
+    const selectedPrice = goldPurity === '24K' ? price24K : price22K;
+    const gstPrice = showGST ? ((weightInGrams * (goldPurity === '24K' ? rates.gold24 : rates.gold22)) + making) * GST_RATE : 0;
 
     return {
-      basePrice,
+      basePrice: selectedPrice - gstPrice,
       gstPrice,
-      totalPrice,
-      ratePerGram,
+      totalPrice: selectedPrice,
+      price24K,
+      price22K,
+      difference: Math.abs(price24K - price22K),
+      ratePerGram: goldPurity === '24K' ? rates.gold24 : rates.gold22,
       weightInGrams,
-      isValid: rawWeight > 0
+      isValid: rawWeight > 0 && rates.gold24 > 0 && rates.gold22 > 0
     };
   }, [goldWeight, goldUnit, goldPurity, makingCharges, rates, showGST]);
 
@@ -205,7 +248,7 @@ export const GoldSilverHub = () => {
       totalPrice,
       ratePerGram,
       weightInGrams,
-      isValid: rawWeight > 0
+      isValid: rawWeight > 0 && rates.silver > 0
     };
   }, [silverWeight, silverUnit, rates, showGST]);
 
@@ -311,36 +354,75 @@ export const GoldSilverHub = () => {
                     exit={{ opacity: 0, y: -10 }}
                     className="absolute top-full left-0 w-full mt-2 bg-card border-2 rounded-2xl shadow-2xl z-50 overflow-hidden"
                   >
-                    {suggestions.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => handleSelectCity(s)}
-                        className="w-full px-4 py-3 text-left hover:bg-primary/5 text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-between group"
-                      >
-                        <span className="flex items-center gap-2">
-                          <MapPin className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
-                          {s}
-                        </span>
-                        <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </button>
-                    ))}
+                    {suggestions.map((s) => {
+                      const inputMatch = searchCity.toLowerCase().trim();
+                      const matchIdx = s.toLowerCase().indexOf(inputMatch);
+                      
+                      return (
+                        <button
+                          key={s}
+                          onClick={() => handleSelectCity(s)}
+                          className="w-full px-4 py-3 text-left hover:bg-primary/10 text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-between group border-b last:border-b-0"
+                        >
+                          <span className="flex items-center gap-2">
+                            <div className="p-1.5 rounded-lg bg-muted group-hover:bg-primary/20 transition-colors">
+                              <MapPin className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
+                            </div>
+                            {matchIdx !== -1 ? (
+                              <span className="flex whitespace-pre">
+                                <span>{s.substring(0, matchIdx)}</span>
+                                <span className="text-primary bg-primary/10 px-0.5 rounded-sm">{s.substring(matchIdx, matchIdx + inputMatch.length)}</span>
+                                <span>{s.substring(matchIdx + inputMatch.length)}</span>
+                              </span>
+                            ) : (
+                              <span>{s}</span>
+                            )}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            {['visakhapatnam', 'vijayawada', 'tirupati'].includes(s) && (
+                              <span className="text-[7px] text-emerald-500/60 font-bold border border-emerald-500/20 px-1 rounded uppercase">AP</span>
+                            )}
+                            <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-all translate-x-[-4px] group-hover:translate-x-0" />
+                          </div>
+                        </button>
+                      );
+                    })}
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-            <div className="flex items-center gap-1.5 leading-none mt-1">
-              {isFallback ? (
-                <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest">⚠️ Using average India rates</span>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  <span className="text-[8px] font-black text-primary uppercase tracking-widest flex items-center gap-1">
-                    <MapPin className="h-2 w-2" /> Showing rates for: {debouncedCity}
-                  </span>
-                  {['visakhapatnam', 'vijayawada', 'tirupati', 'guntur', 'kurnool', 'nellore', 'kadapa', 'anantapur'].includes(debouncedCity) && (
-                    <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">👉 Andhra Pradesh Cities</span>
-                  )}
-                </div>
-              )}
+            <div className="flex items-center gap-2 leading-none mt-1.5 overflow-hidden">
+              <AnimatePresence mode="wait">
+                {isFallback ? (
+                  <motion.span 
+                    key="fallback"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-[8px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1"
+                  >
+                    <Info className="h-2.5 w-2.5" /> Using average India rates
+                  </motion.span>
+                ) : (
+                  <motion.div 
+                    key="live"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-wrap gap-2 items-center"
+                  >
+                    <span className="text-[8px] font-black text-primary uppercase tracking-widest flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
+                      <MapPin className="h-2 w-2" /> {debouncedCity}
+                    </span>
+                    {cityInfo && (
+                      <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-1.5 animate-in fade-in slide-in-from-left-2 transition-all">
+                        <span className="text-[10px]">{cityInfo.icon}</span>
+                        <span className="opacity-40">|</span>
+                        <span>{cityInfo.label}:</span>
+                        <span className="text-muted-foreground font-bold tracking-tight lowercase italic">{cityInfo.note}</span>
+                      </span>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -418,6 +500,47 @@ export const GoldSilverHub = () => {
         )}
       </AnimatePresence>
 
+      {/* Data Status Notification */}
+      <AnimatePresence>
+        {!currentData.metalsSynced && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="mb-8 overflow-hidden"
+          >
+            <div className={`p-4 rounded-3xl border-2 flex items-center gap-4 ${
+              currentData.source === 'fallback' 
+                ? 'bg-amber-500/10 border-amber-500/20 text-amber-700' 
+                : 'bg-destructive/10 border-destructive/20 text-destructive'
+            }`}>
+              <div className={`p-2 rounded-xl shrink-0 ${
+                currentData.source === 'fallback' ? 'bg-amber-500 text-white' : 'bg-destructive text-white'
+              }`}>
+                <Info className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">
+                  {currentData.source === 'fallback' ? 'Sync Notice: Metals Info' : 'Metal Synchronization Error'}
+                </p>
+                <p className="text-sm font-medium leading-tight">
+                  {currentData.metalsError || 'Metals synchronization unavailable'}. Using internal fallback logic.
+                </p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={refreshRates} 
+                disabled={loading}
+                className="rounded-2xl h-10 px-4 font-black uppercase tracking-widest text-[10px] hover:bg-black/5"
+              >
+                Retry Sync
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         
@@ -439,14 +562,27 @@ export const GoldSilverHub = () => {
                   </div>
                   <div>
                     <CardTitle className="text-2xl font-black tracking-tighter uppercase">Gold Hub</CardTitle>
-                    <CardDescription className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1.5">
-                      <Zap className="h-3 w-3 text-amber-500" /> Auto-Calculation Active
-                    </CardDescription>
+                    <div className="flex flex-col gap-1">
+                      <CardDescription className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1.5 leading-none">
+                        <Zap className={`h-3 w-3 ${currentData.source === 'api' ? 'text-amber-500' : 'text-muted-foreground/30'}`} /> 
+                        {currentData.source === 'api' ? 'Live Market Sync' : 'Fallback Mode'}
+                      </CardDescription>
+                      <span className="text-[8px] font-black text-muted-foreground/50 uppercase tracking-widest">
+                        {currentData.error ? currentData.error : `Last Updated: ${new Date(currentData.lastUpdated).toLocaleTimeString()}`}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-[9px] font-black text-muted-foreground uppercase block mb-1">Today's Rate (24K)</span>
-                  <span className="text-xl font-black text-amber-600">{formatCurrency(rates.gold24)}/g</span>
+                <div className="text-right flex flex-col items-end gap-2">
+                  <div className="flex flex-col items-end">
+                    <span className="text-[9px] font-black text-muted-foreground uppercase leading-none mb-1">24K Gold</span>
+                    <span className="text-xl font-black text-amber-600 leading-none">{formatCurrency(rates.gold24)}/g</span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-[9px] font-black text-muted-foreground uppercase leading-none mb-1">22K Gold</span>
+                    <span className="text-lg font-black text-amber-500 leading-none">{formatCurrency(rates.gold22)}/g</span>
+                  </div>
+                  <span className="text-[7px] font-bold text-muted-foreground/40 uppercase tracking-tight mt-1">Prices vary by location</span>
                 </div>
               </div>
             </CardHeader>
@@ -562,6 +698,31 @@ export const GoldSilverHub = () => {
                         <span>+ {formatCurrency(goldCalc.gstPrice)}</span>
                       </div>
                     )}
+                    {goldCalc.isValid && (
+                      <div className="mt-4 p-3 bg-primary/5 rounded-2xl border-2 border-primary/10 animate-in fade-in slide-in-from-top-2">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Purity Comparison</span>
+                          <span className="text-[8px] font-black uppercase tracking-widest text-primary">Price Difference</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <div className="text-[10px] font-bold text-muted-foreground">
+                            {goldPurity === '24K' ? '22K Total' : '24K Total'}
+                          </div>
+                          <div className="text-[10px] font-black">
+                            {formatCurrency(goldPurity === '24K' ? goldCalc.price22K : goldCalc.price24K)}
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center mt-1 pt-1 border-t border-primary/10">
+                          <div className={`text-[10px] font-black ${goldPurity === '24K' ? 'text-emerald-500' : 'text-amber-500'}`}>
+                            {goldPurity === '24K' ? 'Potential Saving' : 'Extra for 24K'}
+                          </div>
+                          <div className={`text-[10px] font-black ${goldPurity === '24K' ? 'text-emerald-500' : 'text-amber-500'} flex items-center gap-1`}>
+                            {goldPurity === '24K' ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
+                            {formatCurrency(goldCalc.difference)}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-4 border-t border-amber-500/10 flex justify-between items-end">
@@ -572,9 +733,9 @@ export const GoldSilverHub = () => {
                           key={goldCalc.totalPrice}
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="text-3xl font-black text-emerald-500 tracking-tighter"
+                          className={`text-3xl font-black tracking-tighter ${goldCalc.isValid ? 'text-emerald-500' : 'text-muted-foreground/30'}`}
                         >
-                          {goldCalc.isValid ? formatCurrency(goldCalc.totalPrice) : '--'}
+                          {goldCalc.isValid ? formatCurrency(goldCalc.totalPrice) : (parseFloat(goldWeight) > 0 ? 'Rate Missing' : '--')}
                         </motion.div>
                       </AnimatePresence>
                     </div>
@@ -696,9 +857,9 @@ export const GoldSilverHub = () => {
                       key={silverCalc.totalPrice}
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="text-5xl font-black text-emerald-500 tracking-tighter"
+                      className={`text-5xl font-black tracking-tighter ${silverCalc.isValid ? 'text-emerald-500' : 'text-muted-foreground/30'}`}
                     >
-                      {silverCalc.isValid ? formatCurrency(silverCalc.totalPrice) : '--'}
+                      {silverCalc.isValid ? formatCurrency(silverCalc.totalPrice) : (parseFloat(silverWeight) > 0 ? 'Rate Missing' : '--')}
                     </motion.div>
                   </AnimatePresence>
                   
