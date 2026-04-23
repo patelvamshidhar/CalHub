@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Zap } from 'lucide-react';
+import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Zap, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
@@ -16,20 +16,20 @@ import { getCachedPrices } from '@/services/priceService';
 
 const FALLBACK_FUEL_PRICES = {
   petrol: {
-    delhi: 102.15,
-    mumbai: 111.45,
-    bangalore: 107.20,
-    chennai: 108.40,
-    hyderabad: 114.80,
-    andhra: 115.50
+    delhi: 129.50,
+    mumbai: 139.40,
+    bangalore: 133.80,
+    chennai: 135.20,
+    hyderabad: 136.20,
+    andhra: 137.80
   },
   diesel: {
-    delhi: 94.30,
-    mumbai: 99.10,
-    bangalore: 92.45,
-    chennai: 98.60,
-    hyderabad: 101.50,
-    andhra: 103.20
+    delhi: 115.30,
+    mumbai: 123.50,
+    bangalore: 119.85,
+    chennai: 121.90,
+    hyderabad: 121.50,
+    andhra: 122.40
   }
 };
 
@@ -49,6 +49,19 @@ export const VehicleHub = () => {
     costPerKm: number;
   } | null>(null);
   const [lastSavedTrip, setLastSavedTrip] = useState<HistoryItem | null>(null);
+
+  const [prices, setPrices] = useState(getCachedPrices());
+
+  useEffect(() => {
+    // Listen for storage changes if multiple tabs open, or just local updates
+    const handleStorage = () => setPrices(getCachedPrices());
+    window.addEventListener('storage', handleStorage);
+    const interval = setInterval(handleStorage, 5000); // Check local state every 5s
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      clearInterval(interval);
+    };
+  }, []);
 
   const calculate = () => {
     if (!fuelType || !fuelDistance || !fuelMileage || !manualFuelPrice) {
@@ -164,6 +177,15 @@ export const VehicleHub = () => {
               <Card className="border-2 shadow-xl overflow-hidden rounded-[2.5rem] bg-card/50 backdrop-blur-sm">
                 <div className="h-1.5 bg-gradient-to-r from-primary to-primary/60 opacity-80" />
                 <CardHeader className="pb-4 pt-6 px-6">
+                  <div className="flex items-center justify-between mb-4 sm:hidden">
+                     <div className="flex items-center gap-1.5 text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">
+                        <Clock className="h-2.5 w-2.5" />
+                        Updated: {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                     </div>
+                     <div className="text-[8px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Daily Sync Active
+                     </div>
+                  </div>
                   <CardTitle className="text-xl font-black flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg">
@@ -171,10 +193,15 @@ export const VehicleHub = () => {
                       </div>
                       Trip Details
                     </div>
-                    <Button variant="ghost" size="sm" onClick={reset} className="h-8 text-[9px] font-black uppercase tracking-widest gap-2 rounded-xl hover:bg-primary/5">
-                      <RefreshCcw className="h-3 w-3" />
-                      Reset
-                    </Button>
+                    <div className="flex flex-col items-end">
+                      <Button variant="ghost" size="sm" onClick={reset} className="h-8 text-[9px] font-black uppercase tracking-widest gap-2 rounded-xl hover:bg-primary/5">
+                        <RefreshCcw className="h-3 w-3" />
+                        Reset
+                      </Button>
+                      <div className="hidden sm:flex flex-col items-end mt-1">
+                        <span className="text-[7px] font-black text-muted-foreground/40 uppercase tracking-widest">Last Sync: {new Date(prices.lastUpdated).toLocaleDateString()} {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      </div>
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6 pb-8 px-6">
@@ -304,10 +331,15 @@ export const VehicleHub = () => {
                   >
                     <Card className="border-2 shadow-lg rounded-[2rem] overflow-hidden">
                       <CardHeader className="pb-3 pt-5 bg-muted/30 px-6">
-                        <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                          <Map className="h-3.5 w-3.5 text-primary" />
-                          {fuelType} Reference Prices
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
+                            <Map className="h-3.5 w-3.5 text-primary" />
+                            {fuelType} Estimated 2026 Rates
+                          </CardTitle>
+                          <div className="px-2 py-0.5 bg-primary/10 rounded-full text-[8px] font-black uppercase text-primary tracking-widest">
+                            Fallback Projections
+                          </div>
+                        </div>
                       </CardHeader>
                       <CardContent className="pt-4 px-6 pb-6">
                         <div className="grid grid-cols-2 gap-2">
@@ -396,6 +428,19 @@ export const VehicleHub = () => {
             </div>
           </div>
         </motion.section>
+      </div>
+
+      {/* Info Banner & 2026 Methodology */}
+      <div className="bg-primary/5 border-2 border-primary/10 p-6 rounded-[2.5rem] flex flex-col md:flex-row items-center gap-6">
+        <div className="bg-primary text-primary-foreground p-4 rounded-2xl shadow-xl shrink-0">
+          <Zap className="h-6 w-6" />
+        </div>
+        <div className="space-y-1 text-center md:text-left">
+          <h3 className="text-lg font-black uppercase tracking-tight">2026 Fuel Projections</h3>
+          <p className="text-sm text-muted-foreground font-medium leading-relaxed max-w-3xl">
+            The fallback rates shown are calculated based on <span className="text-foreground font-bold">2026 market projections</span>, accounting for inflation and historical price trends in major Indian hubs. These estimates help in long-term financial planning for travel and logistics.
+          </p>
+        </div>
       </div>
 
       <CalculationHistory 

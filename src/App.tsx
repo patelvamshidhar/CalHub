@@ -16,6 +16,7 @@ import { InterestCalculator } from './components/InterestCalculator';
 import { GoldSilverHub } from './components/GoldSilverHub';
 import { FeedbackForm } from './components/FeedbackForm';
 import { AdminDashboard } from './components/AdminDashboard';
+import { SplashScreen } from './components/SplashScreen';
 import { motion, AnimatePresence } from 'motion/react';
 import { useOfflineStatus, usePWAInstall } from '@/lib/pwa';
 import { db } from '@/lib/firebase';
@@ -110,6 +111,7 @@ const MainApp = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
   const [showNameModal, setShowNameModal] = useState(false);
   const [userName, setUserName] = useState('');
+  const [isLaunching, setIsLaunching] = useState(true);
   const isOnline = useOfflineStatus();
   const { isInstallable, installApp } = usePWAInstall();
 
@@ -134,12 +136,23 @@ const MainApp = () => {
     // Initial Price Fetch
     fetchAllPrices();
 
-    // Auto-Update Prices every 2 hours
+    // Auto-Update Prices every hour
     const priceTimer = setInterval(() => {
       if (navigator.onLine) {
         fetchAllPrices();
       }
-    }, 2 * 60 * 60 * 1000);
+    }, 1 * 60 * 60 * 1000);
+
+    // Immediate check if refresh needed
+    const lastSyncStr = localStorage.getItem('gs-last-updated');
+    if (lastSyncStr) {
+      const lastSync = new Date(lastSyncStr);
+      const now = new Date();
+      // If it's a different day, refresh immediately
+      if (lastSync.getDate() !== now.getDate() || lastSync.getMonth() !== now.getMonth()) {
+        fetchAllPrices();
+      }
+    }
 
     if (isOnline) {
       const syncFeedback = async () => {
@@ -185,96 +198,106 @@ const MainApp = () => {
   const activeTab = getActiveTab();
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-300 selection:bg-primary selection:text-primary-foreground">
-      {/* Maintenance Banner */}
-      <AnimatePresence>
-        {IS_MAINTENANCE && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-amber-500 text-amber-950 px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden"
-          >
-            <Construction className="h-3.5 w-3.5" />
-            🚧 Application Under Maintenance - Some features may be temporarily disabled
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <AnimatePresence mode="wait">
+      {isLaunching ? (
+        <SplashScreen key="splash" onComplete={() => setIsLaunching(false)} />
+      ) : (
+        <motion.div
+          key="app-root"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="min-h-screen bg-background transition-colors duration-300 selection:bg-primary selection:text-primary-foreground"
+        >
+          {/* Maintenance Banner */}
+          <AnimatePresence>
+            {IS_MAINTENANCE && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="bg-amber-500 text-amber-950 px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden"
+              >
+                <Construction className="h-3.5 w-3.5" />
+                🚧 Application Under Maintenance - Some features may be temporarily disabled
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      {/* Offline Banner */}
-      <AnimatePresence>
-        {!isOnline && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-red-500 text-white px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden"
-          >
-            <WifiOff className="h-3.5 w-3.5" />
-            🔴 You are offline. Showing saved data from local storage.
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Offline Banner */}
+          <AnimatePresence>
+            {!isOnline && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="bg-red-500 text-white px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 overflow-hidden"
+              >
+                <WifiOff className="h-3.5 w-3.5" />
+                🔴 You are offline. Showing saved data from local storage.
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      {/* Header */}
-      <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-xl shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-            <div className="bg-primary text-primary-foreground p-2 rounded-xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
-              <LayoutGrid className="h-5 w-5" />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-lg font-black tracking-tighter leading-none group-hover:text-primary transition-colors">
-                CAL<span className="text-primary">HUB</span>
-              </h1>
-              <div className="flex items-center gap-1 mt-0.5">
-                <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-red-500 animate-pulse'}`} />
-                <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground">
-                  {isOnline ? '🟢 Online' : '🔴 Offline'}
-                </span>
+          {/* Header */}
+          <header className="border-b sticky top-0 z-50 bg-background/80 backdrop-blur-xl shadow-sm">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
+                <div className="bg-primary text-primary-foreground p-2 rounded-xl shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
+                  <LayoutGrid className="h-5 w-5" />
+                </div>
+                <div className="flex flex-col">
+                  <h1 className="text-lg font-black tracking-tighter leading-none group-hover:text-primary transition-colors">
+                    CAL<span className="text-primary">HUB</span>
+                  </h1>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-red-500 animate-pulse'}`} />
+                    <span className="text-[7px] font-black uppercase tracking-widest text-muted-foreground">
+                      {isOnline ? '🟢 Online' : '🔴 Offline'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 sm:gap-3">
+                {isInstallable && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={installApp}
+                    className="rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 px-3 h-9 border-2 border-primary/20 hover:bg-primary/5 text-primary animate-pulse"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Download App</span>
+                  </Button>
+                )}
+
+                {activeTab !== 'home' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/')}
+                    className="rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 px-3 h-9 hover:bg-primary/10 hover:text-primary transition-all"
+                  >
+                    <Home className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Home</span>
+                  </Button>
+                )}
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="rounded-xl w-9 h-9 hover:bg-muted transition-colors"
+                >
+                  {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                </Button>
               </div>
             </div>
-          </div>
+          </header>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            {isInstallable && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={installApp}
-                className="rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 px-3 h-9 border-2 border-primary/20 hover:bg-primary/5 text-primary animate-pulse"
-              >
-                <Download className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Download App</span>
-              </Button>
-            )}
-
-            {activeTab !== 'home' && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/')}
-                className="rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 px-3 h-9 hover:bg-primary/10 hover:text-primary transition-all"
-              >
-                <Home className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Home</span>
-              </Button>
-            )}
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className="rounded-xl w-9 h-9 hover:bg-muted transition-colors"
-            >
-              {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          {/* Main Content */}
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <AnimatePresence mode="wait">
           {activeTab === 'home' ? (
             <motion.div
@@ -469,7 +492,9 @@ const MainApp = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

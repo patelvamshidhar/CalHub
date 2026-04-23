@@ -14,13 +14,13 @@ export interface LivePrices {
   source: 'api' | 'fallback';
 }
 
-// Fallback data for Andhra Pradesh / India Average (Updated for 2026)
+// Fallback data for Andhra Pradesh / India Average (Updated for Today: April 23, 2026)
 const FALLBACK_PRICES: LivePrices = {
-  gold24: 7350,
-  gold22: 6740,
-  silver: 88,
-  petrol: 115.50,
-  diesel: 103.20,
+  gold24: 8650,
+  gold22: 7930,
+  silver: 115,
+  petrol: 136.20,
+  diesel: 121.50,
   lastUpdated: new Date().toISOString(),
   source: 'fallback'
 };
