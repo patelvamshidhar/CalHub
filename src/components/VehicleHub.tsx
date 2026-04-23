@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Zap, Clock } from 'lucide-react';
+import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Clock, WifiOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
@@ -189,23 +189,23 @@ export const VehicleHub = () => {
         >
           {/* Fuel Data Status Notification */}
           <AnimatePresence>
-            {!prices.fuelSynced && (
+            {prices.fuelSyncStatus === 'error' && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 className="mb-8 overflow-hidden"
               >
-                <div className="p-4 rounded-3xl border-2 flex items-center gap-4 bg-amber-500/10 border-amber-500/20 text-amber-700">
-                  <div className="p-2 rounded-xl shrink-0 bg-amber-500 text-white">
-                    <Info className="h-5 w-5" />
+                <div className="p-4 rounded-3xl border-2 flex items-center gap-4 bg-destructive/10 border-destructive/20 text-destructive">
+                  <div className="p-2 rounded-xl shrink-0 bg-destructive text-white">
+                    <WifiOff className="h-5 w-5" />
                   </div>
                   <div className="flex-1">
                     <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">
-                      Fuel Sync Notice
+                      Hub Connection Lost
                     </p>
                     <p className="text-sm font-medium leading-tight">
-                      {prices.fuelError || 'City-specific fuel rates currently unavailable'}. Using regional averages for Andhra Pradesh.
+                      {prices.fuelError || 'Connection lost to fuel services'}. Please check your internet.
                     </p>
                   </div>
                   <Button 
@@ -395,7 +395,6 @@ export const VehicleHub = () => {
                             }}
                             className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-2 bg-primary/10 text-primary rounded-lg text-[8px] font-black uppercase tracking-widest hover:bg-primary/20 transition-all flex items-center gap-1"
                           >
-                            <Zap className="h-3 w-3" />
                             Use Live
                           </motion.button>
                         )}

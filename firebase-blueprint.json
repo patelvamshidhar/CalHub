@@ -1,5 +1,34 @@
 {
   "entities": {
+    "PriceData": {
+      "title": "Market Prices",
+      "description": "Manual pricing for metals",
+      "type": "object",
+      "properties": {
+        "gold24": { "type": "number" },
+        "gold24Prev": { "type": "number" },
+        "gold22": { "type": "number" },
+        "gold22Prev": { "type": "number" },
+        "silver": { "type": "number" },
+        "silverPrev": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["gold24", "gold22", "silver", "updatedAt"]
+    },
+    "CityFuelPrice": {
+      "title": "City Fuel Rate",
+      "description": "Manual pricing for fuel by city",
+      "type": "object",
+      "properties": {
+        "city": { "type": "string" },
+        "petrol": { "type": "number" },
+        "petrolPrev": { "type": "number" },
+        "diesel": { "type": "number" },
+        "dieselPrev": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["city", "petrol", "diesel", "updatedAt"]
+    },
     "Feedback": {
       "title": "User Feedback",
       "description": "Suggestions and bug reports from users",
@@ -74,9 +103,17 @@
       "schema": "AppStats",
       "description": "Daily visitor statistics"
     },
-    "/visitor_list/{visitorDocId}": {
+    "visitor_list/{visitorDocId}": {
       "schema": "Visitor",
       "description": "List of recent visitor names and IDs"
+    },
+    "metadata/prices": {
+      "schema": "PriceData",
+      "description": "Global gold and silver market prices"
+    },
+    "fuel_rates/{cityId}": {
+      "schema": "CityFuelPrice",
+      "description": "City-specific petrol and diesel rates"
     }
   }
 }

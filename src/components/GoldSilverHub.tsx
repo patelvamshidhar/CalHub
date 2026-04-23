@@ -16,7 +16,6 @@ import {
   IndianRupee, 
   Calculator, 
   ShieldCheck,
-  Zap,
   ChevronRight,
   Scale,
   Search,
@@ -65,7 +64,6 @@ type WeightUnit = 'g' | 'kg';
 export const GoldSilverHub = () => {
   const [searchCity, setSearchCity] = useLocalStorage<string>('gs-search-city', 'Hyderabad');
   const [debouncedCity, setDebouncedCity] = useLocalStorage<string>('gs-debounced-city', 'hyderabad');
-  const [isFallback, setIsFallback] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [lastUpdated, setLastUpdated] = useLocalStorage<string>('gs-last-updated', new Date().toISOString());
   const [loading, setLoading] = useState(false);
@@ -104,40 +102,16 @@ export const GoldSilverHub = () => {
       .slice(0, 6);
   }, [searchCity, showSuggestions]);
 
-  const cityInfo = useMemo(() => {
-    const city = debouncedCity.toLowerCase();
-    const andhraCities = ['visakhapatnam', 'vijayawada', 'tirupati', 'guntur', 'kurnool', 'nellore', 'kadapa', 'anantapur', 'eluru', 'vizianagaram', 'ongole', 'chittoor', 'machilipatnam', 'tenali'];
-    
-    if (andhraCities.includes(city)) {
-      return {
-        label: 'Andhra Pradesh City',
-        note: 'Live local market rates applied',
-        icon: '🏠'
-      };
-    }
-    if (city === 'hyderabad') {
-      return {
-        label: 'Primary Hub',
-        note: 'Real-time Telangana market rates',
-        icon: '⭐'
-      };
-    }
-    return null;
-  }, [debouncedCity]);
-
   // Debounce city input
   useEffect(() => {
     const timer = setTimeout(() => {
       const normalized = searchCity.toLowerCase().trim();
       if (!normalized) {
         setDebouncedCity('hyderabad');
-        setIsFallback(true);
       } else if (MOCK_RATES[normalized]) {
         setDebouncedCity(normalized);
-        setIsFallback(false);
       } else {
         setDebouncedCity('hyderabad');
-        setIsFallback(true);
       }
       setLastUpdated(new Date().toISOString());
     }, 500);
@@ -150,7 +124,6 @@ export const GoldSilverHub = () => {
     const capitalized = cityName.charAt(0).toUpperCase() + cityName.slice(1);
     setSearchCity(capitalized);
     setDebouncedCity(cityName);
-    setIsFallback(false);
     setShowSuggestions(false);
   };
 
@@ -391,38 +364,8 @@ export const GoldSilverHub = () => {
                 )}
               </AnimatePresence>
             </div>
-            <div className="flex items-center gap-2 leading-none mt-1.5 overflow-hidden">
-              <AnimatePresence mode="wait">
-                {isFallback ? (
-                  <motion.span 
-                    key="fallback"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-[8px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1"
-                  >
-                    <Info className="h-2.5 w-2.5" /> Using average India rates
-                  </motion.span>
-                ) : (
-                  <motion.div 
-                    key="live"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-wrap gap-2 items-center"
-                  >
-                    <span className="text-[8px] font-black text-primary uppercase tracking-widest flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
-                      <MapPin className="h-2 w-2" /> {debouncedCity}
-                    </span>
-                    {cityInfo && (
-                      <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-1.5 animate-in fade-in slide-in-from-left-2 transition-all">
-                        <span className="text-[10px]">{cityInfo.icon}</span>
-                        <span className="opacity-40">|</span>
-                        <span>{cityInfo.label}:</span>
-                        <span className="text-muted-foreground font-bold tracking-tight lowercase italic">{cityInfo.note}</span>
-                      </span>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div className="flex items-center gap-2 leading-none mt-1.5 overflow-hidden h-4">
+              {/* Regional notices removed for cleanliness */}
             </div>
           </div>
         </div>
@@ -521,7 +464,7 @@ export const GoldSilverHub = () => {
               </div>
               <div className="flex-1">
                 <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">
-                  {currentData.source === 'fallback' ? 'Sync Notice: Metals Info' : 'Metal Synchronization Error'}
+                  {currentData.source === 'fallback' ? 'Hub Connection Error' : 'System Sync Notice'}
                 </p>
                 <p className="text-sm font-medium leading-tight">
                   {currentData.metalsError || 'Metals synchronization unavailable'}. Using internal fallback logic.
@@ -564,7 +507,6 @@ export const GoldSilverHub = () => {
                     <CardTitle className="text-2xl font-black tracking-tighter uppercase">Gold Hub</CardTitle>
                     <div className="flex flex-col gap-1">
                       <CardDescription className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1.5 leading-none">
-                        <Zap className={`h-3 w-3 ${currentData.source === 'api' ? 'text-amber-500' : 'text-muted-foreground/30'}`} /> 
                         {currentData.source === 'api' ? 'Live Market Sync' : 'Fallback Mode'}
                       </CardDescription>
                       <span className="text-[8px] font-black text-muted-foreground/50 uppercase tracking-widest">

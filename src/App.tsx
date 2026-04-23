@@ -22,8 +22,6 @@ import { useOfflineStatus, usePWAInstall } from '@/lib/pwa';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { trackVisitor } from '@/services/analyticsService';
-import { fetchAllPrices } from '@/services/priceService';
-
 const LAST_UPDATED = "14-04-2026 09:30";
 const IS_MAINTENANCE = false; // Set to true to show maintenance banner
 
@@ -132,27 +130,6 @@ const MainApp = () => {
     } else {
       trackVisitor(savedName);
     }
-    
-    // Initial Price Fetch
-    fetchAllPrices();
-
-    // Auto-Update Prices every 2 hours (per user requirement)
-    const priceTimer = setInterval(() => {
-      if (navigator.onLine) {
-        fetchAllPrices();
-      }
-    }, 2 * 60 * 60 * 1000);
-
-    // Immediate check if refresh needed
-    const lastSyncStr = localStorage.getItem('gs-last-updated');
-    if (lastSyncStr) {
-      const lastSync = new Date(lastSyncStr);
-      const now = new Date();
-      // If it's a different day, refresh immediately
-      if (lastSync.getDate() !== now.getDate() || lastSync.getMonth() !== now.getMonth()) {
-        fetchAllPrices();
-      }
-    }
 
     if (isOnline) {
       const syncFeedback = async () => {
@@ -177,7 +154,7 @@ const MainApp = () => {
       syncFeedback();
     }
 
-    return () => clearInterval(priceTimer);
+    return () => {};
   }, [isOnline]);
 
   useEffect(() => {

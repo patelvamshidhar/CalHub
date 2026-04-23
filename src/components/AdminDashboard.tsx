@@ -301,37 +301,6 @@ export const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        {priceHealth && (
-          <Card className={`border-2 shadow-sm relative overflow-hidden col-span-1 sm:col-span-2 ${priceHealth.status === 'Success' ? 'bg-blue-500/5 border-blue-500/10' : 'bg-red-500/5 border-red-500/10'}`}>
-            <div className="absolute right-0 top-0 p-4 opacity-10">
-              <RefreshCcw className={`h-16 w-16 ${priceHealth.status === 'Success' ? 'text-blue-500' : 'text-red-500'} ${priceHealth.status === 'Success' ? '' : 'animate-pulse'}`} />
-            </div>
-            <CardHeader className="pb-2">
-              <CardTitle className={`text-[10px] font-black uppercase tracking-[0.2em] ${priceHealth.status === 'Success' ? 'text-blue-600' : 'text-red-600'}`}>
-                Price API Health
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${priceHealth.status === 'Success' ? 'bg-emerald-500' : 'bg-red-500 animate-ping'}`} />
-                  <span className="text-2xl font-black uppercase tracking-tighter">Status: {priceHealth.status}</span>
-                </div>
-                <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">
-                  Last Sync: {priceHealth.lastFetchTime ? format(priceHealth.lastFetchTime.toDate(), 'HH:mm:ss') : 'Never'}
-                </p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => fetchAllPrices()}
-                className="h-9 rounded-xl font-black uppercase tracking-widest text-[9px] border-2 border-primary/20"
-              >
-                Force Sync Now
-              </Button>
-            </CardContent>
-          </Card>
-        )}
       </div>
 
       {/* Unified Clear Button */}
