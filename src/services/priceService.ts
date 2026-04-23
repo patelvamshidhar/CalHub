@@ -46,9 +46,12 @@ export const fetchAllPrices = async (city: string = 'Andhra Pradesh'): Promise<L
     const metalsData = metalsSnap.exists() ? metalsSnap.data() : null;
 
     // 2. Fetch City Fuel Prices
+    const METRO_CITIES = ['delhi', 'mumbai', 'chennai', 'kolkata', 'bengaluru', 'hyderabad', 'vijayawada', 'visakhapatnam', 'andhra_pradesh'];
     // Normalize city for firestore doc ID (lowercase, trimmed)
-    const cityId = city.toLowerCase().trim().replace(/\s+/g, '_');
-    const fuelRef = doc(db, 'fuel_rates', cityId || 'andhra_pradesh');
+    const normalizedCity = city.toLowerCase().trim().replace(/\s+/g, '_');
+    const cityId = METRO_CITIES.includes(normalizedCity) ? normalizedCity : 'andhra_pradesh';
+    
+    const fuelRef = doc(db, 'fuel_rates', cityId);
     const fuelSnap = await getDoc(fuelRef);
     const fuelData = fuelSnap.exists() ? fuelSnap.data() : null;
 
@@ -61,7 +64,8 @@ export const fetchAllPrices = async (city: string = 'Andhra Pradesh'): Promise<L
     }
 
     const lastUpdatedDate = metalsData?.updatedAt ? new Date(metalsData.updatedAt) : new Date();
-    const isStale = (new Date().getTime() - lastUpdatedDate.getTime()) > (2 * 60 * 60 * 1000);
+    // 6 hours for stale check
+    const isStale = (new Date().getTime() - lastUpdatedDate.getTime()) > (6 * 60 * 60 * 1000);
 
     const liveData: LivePrices = {
       gold24: metalsData?.gold24 || FALLBACK_PRICES.gold24,
