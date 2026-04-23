@@ -367,7 +367,9 @@ export const VehicleHub = () => {
                     <div className="flex items-center justify-between">
                       <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Fuel Price (₹/L)</Label>
                       <Tooltip>
-                        <TooltipTrigger render={<Info className="h-3 w-3 text-muted-foreground cursor-help" />} />
+                        <TooltipTrigger>
+                          <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
                         <TooltipContent>
                           <p className="text-[9px] font-bold">Enter the current fuel price in your area.</p>
                         </TooltipContent>

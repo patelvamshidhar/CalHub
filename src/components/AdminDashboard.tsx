@@ -30,7 +30,6 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { fetchAllPrices } from '@/services/priceService';
 
 interface FeedbackItem {
   id: string;
