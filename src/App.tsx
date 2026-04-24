@@ -8,7 +8,7 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins, Download, WifiOff, Wifi, User, Star, QrCode, Smartphone, Laptop, X } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins, Download, WifiOff, Wifi, User, Star } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
@@ -22,147 +22,14 @@ import { useOfflineStatus, usePWAInstall } from '@/lib/pwa';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { trackVisitor } from '@/services/analyticsService';
-import { QRCodeCanvas } from 'qrcode.react';
 const LAST_UPDATED = "14-04-2026 09:30";
 const IS_MAINTENANCE = false; // Set to true to show maintenance banner
 
-const DownloadModal = ({ isOpen, onClose, onInstall }: { isOpen: boolean, onClose: () => void, onInstall: () => void }) => {
-  const currentUrl = window.location.origin;
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
-        >
-          <motion.div
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 20 }}
-            className="w-full max-w-2xl bg-card border-2 border-border p-8 sm:p-12 rounded-[3.5rem] shadow-2xl relative overflow-hidden"
-          >
-            <button 
-              onClick={onClose}
-              className="absolute right-8 top-8 p-3 bg-muted rounded-2xl hover:bg-muted/80 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-black uppercase tracking-widest">
-                    <Laptop className="h-4 w-4" /> Cross-Platform Sync
-                  </div>
-                  <h3 className="text-4xl font-black tracking-tighter uppercase italic text-foreground">
-                    Get <span className="text-blue-500">CalHub</span>
-                  </h3>
-                  <p className="text-muted-foreground text-sm font-medium leading-relaxed">
-                    Access precision computations on any device. Install the app for the full zero-latency experience.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <Button 
-                    onClick={onInstall}
-                    className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-blue-500/20 transition-all"
-                  >
-                    Download Web App
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    className="w-full h-14 rounded-2xl border-2 border-border bg-transparent hover:bg-muted font-black uppercase tracking-widest text-[10px] transition-all"
-                    onClick={() => alert('Play Store listing coming soon. Use the Web App for now!')}
-                  >
-                    Direct Android Link
-                  </Button>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center gap-6 p-8 bg-muted rounded-[2.5rem] border-2 border-dashed border-border/50">
-                <div className="p-4 bg-white rounded-3xl shadow-2xl">
-                  <QRCodeCanvas value={currentUrl} size={160} level="H" />
-                </div>
-                <div className="text-center space-y-2">
-                  <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground">
-                    <QrCode className="h-4 w-4 text-blue-500" /> Scan to Mobile
-                  </div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase opacity-60">
-                    Open camera on your phone to install instantly.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
 const HomePage = () => {
   const navigate = useNavigate();
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const { isInstallable, installApp } = usePWAInstall();
-
-  const handleDownloadClick = () => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      setIsRedirecting(true);
-      // Simulate/Trigger PWA install or store redirect
-      setTimeout(() => {
-        const installBtn = document.getElementById('pwa-install-trigger');
-        if (installBtn) {
-          installBtn.click();
-          setIsRedirecting(false);
-        } else {
-          setIsRedirecting(false);
-          alert('Initializing Download... Please check your browser menu for "Install App" if the prompt doesn\'t appear.');
-        }
-      }, 1500);
-    } else {
-      setIsDownloadModalOpen(true);
-    }
-  };
 
   return (
     <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      <DownloadModal 
-        isOpen={isDownloadModalOpen} 
-        onClose={() => setIsDownloadModalOpen(false)} 
-        onInstall={() => {
-          installApp();
-          setIsDownloadModalOpen(false);
-        }}
-      />
-
-      <AnimatePresence>
-        {isRedirecting && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-background/90 backdrop-blur-xl flex flex-col items-center justify-center space-y-8"
-          >
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full border-4 border-muted border-t-blue-500 animate-spin" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Smartphone className="h-10 w-10 text-blue-500 animate-pulse" />
-              </div>
-            </div>
-            <div className="text-center space-y-2">
-              <h3 className="text-2xl font-black uppercase italic tracking-tighter text-foreground">Analyzing System...</h3>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Preparing Mobile Installation Packet</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <div className="text-center space-y-6 max-w-4xl mx-auto pt-10">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -201,17 +68,7 @@ const HomePage = () => {
             <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Encryption</span>
           </div>
         </motion.div>
- 
-         <div className="pt-12 flex justify-center">
-           <Button 
-             onClick={handleDownloadClick}
-             className="h-16 px-10 rounded-2xl bg-gradient-to-r from-blue-600 to-violet-700 hover:from-blue-500 hover:to-violet-600 text-white font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl shadow-blue-500/30 group transition-all"
-           >
-             <Download className="h-5 w-5 mr-3 group-hover:bounce group-hover:-translate-y-1 transition-transform" />
-             Download Desktop / Mobile App
-           </Button>
-         </div>
-       </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
         {[
