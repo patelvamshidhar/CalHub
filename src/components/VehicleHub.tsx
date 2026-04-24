@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Clock, WifiOff, Zap, Share2, TrendingUp, RefreshCw } from 'lucide-react';
+import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Clock, WifiOff, Zap, Share2, TrendingUp, RefreshCw, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
@@ -188,64 +188,30 @@ export const VehicleHub = () => {
           transition={{ duration: 0.8 }}
           className="space-y-12"
         >
-          {/* Status Notifications */}
           <AnimatePresence>
-            {prices.fuelSyncStatus === 'error' && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="mb-8 overflow-hidden"
-              >
-                <div className="p-5 rounded-[2rem] border-2 flex items-center gap-4 bg-red-500/10 border-red-500/20 text-red-500 backdrop-blur-xl">
-                  <div className="p-3 rounded-2xl shrink-0 bg-red-500 text-white shadow-lg shadow-red-500/20">
-                    <WifiOff className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-1">
-                      Signal Loss Detected
-                    </p>
-                    <p className="text-sm font-medium leading-tight text-red-400/80">
-                      Sync failed with global fuel metrics. Using local cached data.
-                    </p>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={refreshFuelPrices} 
-                    disabled={loading}
-                    className="rounded-xl h-12 px-6 font-black uppercase tracking-widest text-[10px] bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30"
-                  >
-                    Reconnect Sync
-                  </Button>
-                </div>
-              </motion.div>
-            )}
+            {/* Sync logic replaced with premium static status */}
           </AnimatePresence>
 
-          <div className="flex flex-col md:flex-row items-end justify-between gap-6 pb-2 border-b border-border">
+          <div className="flex flex-col md:flex-row items-end justify-between gap-6 pb-2">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest">
-                <Navigation className="h-3 w-3" />
-                Transit Neural Network
+              <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-500/10 border-2 border-emerald-500/20 text-emerald-600 dark:text-emerald-500 text-[11px] font-black uppercase tracking-[0.2em] shadow-lg">
+                <Navigation className="h-4 w-4" />
+                Transit Logistics Protocol
               </div>
-              <h2 className="text-5xl font-black tracking-tighter text-foreground dark:text-white uppercase italic leading-none">
-                Vehicle <span className="text-blue-500">Hub</span>
+              <h2 className="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-[0.8] mb-4">
+                Vehicle <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-cyan-600">Hub</span>
               </h2>
-              <p className="text-muted-foreground text-sm font-medium">Enterprise-grade fuel expenditure and distance analytics terminal.</p>
+              <p className="text-muted-foreground text-sm font-bold uppercase tracking-tight opacity-50">Fuel expenditure and distance analytics terminal.</p>
             </div>
             
-            <div className="flex items-center gap-4 bg-muted/50 p-2 rounded-2xl border border-border backdrop-blur-md">
-               <div className="text-right px-2">
-                 <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Last Index Sync</div>
-                 <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2 justify-end">
-                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_emerald]" />
-                   {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                 </div>
+            <div className="flex items-center gap-4 bg-zinc-950 dark:bg-white p-3 rounded-2xl shadow-2xl border-2 border-border/50">
+               <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg">
+                 <ShieldCheck className="h-6 w-6" />
                </div>
-               <Button onClick={refreshFuelPrices} disabled={loading} variant="ghost" className="h-12 w-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20">
-                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <RefreshCcw className="h-5 w-5" />}
-               </Button>
+               <div className="px-2">
+                 <div className="text-[10px] font-black text-muted-foreground dark:text-zinc-400 uppercase tracking-widest opacity-60">System Ready</div>
+                 <div className="text-xs font-black text-white dark:text-zinc-950 uppercase tracking-tighter">Operational</div>
+               </div>
             </div>
           </div>
 
@@ -296,7 +262,7 @@ export const VehicleHub = () => {
                          value={manualFuelPrice}
                          onChange={(e) => setManualFuelPrice(e.target.value)}
                          placeholder="110.00"
-                         className="h-24 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-[2rem] pl-16 pr-28 text-4xl font-black text-foreground dark:text-zinc-100 outline-none shadow-2xl transition-all"
+                         className="h-16 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-[2rem] pl-16 pr-28 text-xl font-black text-foreground dark:text-zinc-100 outline-none shadow-2xl transition-all"
                        />
                       <button 
                         onClick={() => {
@@ -395,7 +361,7 @@ export const VehicleHub = () => {
                      
                      <div className="relative">
                        <div className="absolute inset-0 blur-3xl bg-blue-500/20 rounded-full" />
-                       <h3 className="relative text-8xl sm:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-blue-700 dark:via-blue-300 to-blue-900 dark:to-blue-600 drop-shadow-2xl">
+                       <h3 className="relative text-5xl sm:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-blue-700 dark:via-blue-300 to-blue-900 dark:to-blue-600 drop-shadow-2xl">
                          ₹{results ? Math.round(results.totalCost).toLocaleString() : '0'}
                        </h3>
                      </div>
@@ -411,14 +377,14 @@ export const VehicleHub = () => {
                    <div className="grid grid-cols-2 gap-6">
                      <div className="p-8 rounded-[2.5rem] bg-muted/20 dark:bg-zinc-900 border border-border dark:border-zinc-800/50 hover:border-blue-500/30 transition-colors group">
                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-600 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Cost Efficiency</p>
-                       <p className="text-4xl font-black text-foreground dark:text-zinc-100">
+                       <p className="text-2xl font-black text-foreground dark:text-zinc-100">
                          ₹{results ? results.costPerKm.toFixed(2) : '0.00'}
                        </p>
                        <span className="text-[9px] font-black text-muted-foreground dark:text-zinc-700 uppercase tracking-widest">Per Kilometer</span>
                      </div>
                      <div className="p-8 rounded-[2.5rem] bg-muted/20 dark:bg-zinc-900 border border-border dark:border-zinc-800/50 hover:border-emerald-500/30 transition-colors group text-right">
                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-600 mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Fuel Index</p>
-                       <p className="text-4xl font-black text-foreground dark:text-zinc-100">
+                       <p className="text-2xl font-black text-foreground dark:text-zinc-100">
                          {results ? results.fuelReq.toFixed(1) : '0.0'}L
                        </p>
                        <span className="text-[9px] font-black text-muted-foreground dark:text-zinc-700 uppercase tracking-widest">Total Volume</span>

@@ -161,17 +161,17 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
         {/* Input Controls */}
         <div className="lg:col-span-7 space-y-8">
           <div className="space-y-4 mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest">
-              <MapPin className="h-3 w-3" />
-              Neural Topography Analysis
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-500/10 border-2 border-emerald-500/20 text-emerald-600 dark:text-emerald-500 text-[11px] font-black uppercase tracking-[0.2em] shadow-lg">
+              <MapPin className="h-4 w-4" />
+              Spatial Logistics Protocol
             </div>
-            <h2 className="text-4xl font-black tracking-tighter text-foreground dark:text-white uppercase italic leading-none">
-              Estate <span className="text-emerald-500">Hub</span>
+            <h2 className="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-[0.8] mb-4">
+              Estate <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-cyan-500">Hub</span>
             </h2>
-            <p className="text-muted-foreground text-sm font-medium">Professional geospatial area conversion and holographic valuation mapping.</p>
+            <p className="text-muted-foreground text-sm font-bold uppercase tracking-tight opacity-50">Spatial valuation and area optimization terminal.</p>
           </div>
 
-          <Card className="relative border-none shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
+          <Card className="relative border-none shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[3.5rem] border-2 border-border/10">
             {/* Top Accents */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-600 shadow-[0_0_20px_emerald]" />
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/5 blur-[100px] pointer-events-none" />
@@ -199,7 +199,7 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
                       onChange={(e) => setLength(e.target.value)}
                       placeholder="50"
                       autoComplete="off"
-                      className="h-20 pl-12 pr-4 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-3xl font-black text-3xl text-foreground dark:text-zinc-100 transition-all outline-none"
+                      className="h-16 pl-12 pr-4 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-3xl font-black text-2xl text-foreground dark:text-zinc-100 transition-all outline-none"
                     />
                   </div>
                 </div>
@@ -216,7 +216,7 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
                       onChange={(e) => setWidth(e.target.value)}
                       placeholder="30"
                       autoComplete="off"
-                      className="h-20 pl-12 pr-4 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-3xl font-black text-3xl text-foreground dark:text-zinc-100 transition-all outline-none"
+                      className="h-16 pl-12 pr-4 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-3xl font-black text-2xl text-foreground dark:text-zinc-100 transition-all outline-none"
                     />
                   </div>
                 </div>
@@ -270,7 +270,7 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
                       onChange={(e) => setPricePerUnit(e.target.value)}
                       placeholder="2000"
                       autoComplete="off"
-                      className="h-24 pl-16 pr-6 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-amber-600 dark:focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 rounded-[2rem] font-black text-4xl text-foreground dark:text-zinc-100 transition-all outline-none"
+                      className="h-20 pl-16 pr-6 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-amber-600 dark:focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 rounded-[2rem] font-black text-2xl text-foreground dark:text-zinc-100 transition-all outline-none"
                     />
                   </div>
                   <Select value={priceUnit} onValueChange={(v: any) => setPriceUnit(v)}>
@@ -342,7 +342,7 @@ export const LandCalculator = ({ currency }: LandCalculatorProps) => {
                  </div>
                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Projected Valuation</span>
                </div>
-               <CardTitle className="text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 dark:to-emerald-700 drop-shadow-2xl">
+               <CardTitle className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 dark:to-emerald-700 drop-shadow-2xl">
                 {results ? formatCurrency(results.totalPrice, currency) : '---'}
                </CardTitle>
             </CardHeader>

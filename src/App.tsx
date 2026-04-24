@@ -30,100 +30,91 @@ const HomePage = () => {
 
   return (
     <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      <div className="text-center space-y-6 max-w-4xl mx-auto pt-10">
+      <div className="text-center space-y-8 max-w-5xl mx-auto pt-20">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4 shadow-[0_0_20px_rgba(59,130,246,0.15)]"
+          className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[11px] font-black uppercase tracking-[0.4em] mb-6 shadow-2xl"
         >
-          <div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-          Neural Computation Engine V2.0
+          Institutional Grade Utility Suite
         </motion.div>
-        <h2 className="text-6xl sm:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.8] text-foreground uppercase italic transition-colors">
-          CAL<span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-400 via-violet-500 to-purple-600 drop-shadow-[0_0_30px_rgba(99,102,241,0.3)]">HUB</span>
+        <h2 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.75] text-foreground uppercase italic drop-shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
+          CAL<span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-violet-600 to-fuchsia-700">HUB</span>
         </h2>
-        <p className="text-muted-foreground text-lg sm:text-xl font-medium leading-relaxed max-w-2xl mx-auto pt-4">
-          The definitive fintech utility suite. Precision analytics for <span className="text-foreground font-bold">finance</span>, <span className="text-foreground font-bold">bullion</span>, and <span className="text-foreground font-bold">estate</span>. 
+        <p className="text-lg sm:text-xl font-bold leading-tight max-w-4xl mx-auto pt-10 opacity-60">
+          The sovereign utility matrix. <br className="hidden sm:block" /> Engineered for <span className="text-foreground">precision and speed</span>. 
         </p>
         
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="pt-6 flex items-center justify-center gap-8"
+          className="pt-8 flex items-center justify-center gap-12"
         >
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-black text-foreground">100%</span>
-            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Accuracy</span>
+          <div className="flex flex-col items-center group">
+            <span className="text-3xl font-black text-foreground group-hover:text-blue-500 transition-colors">100%</span>
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Accuracy</span>
           </div>
-          <div className="w-px h-8 bg-border" />
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-black text-foreground">Zero</span>
-            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Latency</span>
+          <div className="w-px h-10 bg-border/50" />
+          <div className="flex flex-col items-center group">
+            <span className="text-3xl font-black text-foreground group-hover:text-violet-500 transition-colors">Zero</span>
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Latency</span>
           </div>
-          <div className="w-px h-8 bg-border" />
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-black text-foreground">SSL</span>
-            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Encryption</span>
+          <div className="w-px h-10 bg-border/50" />
+          <div className="flex flex-col items-center group">
+            <span className="text-3xl font-black text-foreground group-hover:text-emerald-500 transition-colors">AES</span>
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Ready</span>
           </div>
         </motion.div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
         {[
-          { id: 'finance', title: 'Finance Hub', icon: IndianRupee, desc: 'Dynamic Yield & Rate Matrix', color: 'from-blue-500 via-indigo-600 to-purple-700', shadow: 'shadow-blue-500/40', delay: 0.1, accent: 'bg-blue-500/20' },
-          { id: 'gold-silver', title: 'Gold & Silver Hub', icon: Coins, desc: 'Real-time Precious Metals Hub', color: 'from-amber-400 via-orange-500 to-yellow-600', shadow: 'shadow-orange-500/40', delay: 0.15, accent: 'bg-orange-500/20' },
-          { id: 'vehicle', title: 'Vehicle Hub', icon: Navigation, desc: 'Logistics & Fuel Optimization', color: 'from-emerald-400 via-teal-500 to-cyan-600', shadow: 'shadow-emerald-500/40', delay: 0.2, accent: 'bg-emerald-500/20' },
-          { id: 'land', title: 'Estate Hub', icon: MapIcon, desc: 'Spatial Valuation & Metrics', color: 'from-rose-400 via-pink-500 to-purple-600', shadow: 'shadow-pink-500/40', delay: 0.3, accent: 'bg-rose-500/20' },
+          { id: 'finance', title: 'Finance', icon: IndianRupee, desc: 'Yield & Fiscal Matrix', color: 'from-blue-500 via-indigo-600 to-purple-700', shadow: 'shadow-blue-500/30', delay: 0.1 },
+          { id: 'gold-silver', title: 'Metals', icon: Coins, desc: 'Bullion Appraisal Suite', color: 'from-amber-400 via-orange-500 to-yellow-600', shadow: 'shadow-orange-500/30', delay: 0.15 },
+          { id: 'vehicle', title: 'Transit', icon: Navigation, desc: 'Logistics & Fuel Logic', color: 'from-emerald-400 via-teal-500 to-cyan-600', shadow: 'shadow-emerald-500/30', delay: 0.2 },
+          { id: 'land', title: 'Estate', icon: MapIcon, desc: 'Spatial Valuation Matrix', color: 'from-rose-400 via-pink-500 to-purple-600', shadow: 'shadow-pink-500/30', delay: 0.3 },
         ].map((item) => (
           <motion.div
             key={item.id}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: item.delay, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -16, scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            className="h-full group perspective-1000"
+            transition={{ delay: item.delay, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -25, transition: { duration: 0.4 } }}
+            whileTap={{ scale: 0.95 }}
+            className="h-full"
           >
             <Card 
-              className={`cursor-pointer border-none transition-all duration-500 group h-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:${item.shadow} bg-card dark:bg-zinc-950/80 backdrop-blur-xl relative overflow-hidden rounded-[3.5rem] p-1 border border-white/5`}
+              className={`cursor-pointer border-none h-full shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] bg-card text-foreground relative overflow-hidden rounded-[4rem] border-2 border-border/10 hover:border-border transition-all duration-500 group`}
               onClick={() => navigate(`/${item.id}`)}
             >
-              <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${item.color} shadow-[0_4px_20px_-2px_rgba(0,0,0,0.3)] z-20`} />
+              <div className={`absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r ${item.color} z-20`} />
               
               <CardHeader className="pb-4 pt-12 px-10 relative z-10">
-                <div className="relative mb-10 group-hover:transform-style-3d group-hover:rotate-y-12 transition-transform duration-700">
-                  {/* 3D Icon Container */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-3xl opacity-20 group-hover:opacity-60 transition-opacity rounded-full`} />
-                  <div className={`relative w-28 h-28 rounded-[2.5rem] bg-muted/50 dark:bg-zinc-900 border-2 border-white/10 dark:border-zinc-800/50 flex items-center justify-center text-foreground dark:text-zinc-100 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] group-hover:shadow-[0_40px_60px_-12px_rgba(0,0,0,0.7)] group-hover:-translate-y-2 transition-all duration-500 overflow-hidden`}>
-                    <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
-                    <item.icon className="h-14 w-14 text-foreground/80 dark:text-zinc-100 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)]" />
-                    
-                    {/* Glass Reflect */}
-                    <div className="absolute top-0 left-0 w-full h-1/2 bg-white/5 skew-y-[-15deg] translate-y-[-50%] group-hover:translate-y-[-30%] transition-transform duration-1000" />
+                <div className="relative mb-10">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-[80px] opacity-10 group-hover:opacity-40 transition-opacity rounded-full`} />
+                  <div className={`relative w-28 h-28 rounded-[2.5rem] bg-white dark:bg-zinc-950 border-2 border-border flex items-center justify-center text-foreground shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-700`}>
+                    <item.icon className="h-12 w-12 opacity-80 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <CardTitle className="text-4xl font-black tracking-tighter text-foreground dark:text-zinc-100 uppercase italic leading-none">
-                    {item.title.split(' ')[0]} <br />
-                    <span className="text-blue-500 group-hover:text-blue-400 transition-colors">{item.title.split(' ').slice(1).join(' ')}</span>
+                  <CardTitle className="text-3xl font-black tracking-tighter uppercase italic leading-[0.8]">
+                    {item.title}
                   </CardTitle>
-                  <CardDescription className="text-[13px] font-bold leading-relaxed text-muted-foreground group-hover:text-foreground/80 transition-colors uppercase tracking-tight">
+                  <CardDescription className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-60">
                     {item.desc}
                   </CardDescription>
                 </div>
               </CardHeader>
 
-              <CardContent className="px-10 pb-12 relative z-10">
-                <div className="flex items-center text-muted-foreground/60 dark:text-zinc-500 font-black text-[11px] uppercase tracking-[0.3em] group-hover:translate-x-4 transition-all duration-500">
-                  Enter Hub <ArrowRight className="h-4 w-4 ml-4 text-blue-500 group-hover:translate-x-2 transition-transform" />
+              <CardContent className="px-10 pb-12 relative z-10 flex items-center justify-between">
+                <div className="inline-flex items-center text-[9px] font-black uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 transition-all">
+                  Initialize <ArrowRight className="h-4 w-4 ml-3 group-hover:translate-x-2 transition-transform" />
                 </div>
+                <div className={`w-3 h-3 rounded-full bg-gradient-to-br ${item.color} shadow-lg`} />
               </CardContent>
-
-              {/* Abstract 3D depth shapes */}
-              <div className={`absolute -bottom-16 -right-16 w-56 h-56 bg-gradient-to-br ${item.color} opacity-[0.03] rounded-full blur-[80px] group-hover:opacity-[0.12] transition-all duration-700 group-hover:scale-125`} />
             </Card>
           </motion.div>
         ))}
@@ -394,12 +385,52 @@ const MainApp = () => {
         </AnimatePresence>
       </main>
 
-      {/* Floating Feedback Button */}
+      {/* Floating Bottom Navigation (Mobile/Tablet) */}
+      <AnimatePresence>
+        {activeTab !== 'home' && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-[400px] sm:hidden"
+          >
+            <div className="bg-zinc-950/80 dark:bg-zinc-100/10 backdrop-blur-3xl rounded-full border border-white/20 p-2 shadow-[0_30px_60px_-10px_rgba(0,0,0,0.5)] flex items-center justify-between">
+              {[
+                { id: 'finance', icon: IndianRupee, color: 'text-blue-500' },
+                { id: 'gold-silver', icon: Coins, color: 'text-amber-500' },
+                { id: 'home', icon: Home, color: 'text-zinc-500' },
+                { id: 'vehicle', icon: Navigation, color: 'text-emerald-500' },
+                { id: 'land', icon: MapIcon, color: 'text-rose-500' },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(item.id === 'home' ? '/' : `/${item.id}`)}
+                  className={`relative p-4 rounded-full transition-all group ${
+                    activeTab === item.id 
+                    ? 'bg-white dark:bg-zinc-950 shadow-2xl scale-110' 
+                    : 'hover:bg-white/10'
+                  }`}
+                >
+                  <item.icon className={`h-6 w-6 ${activeTab === item.id ? item.color : 'text-muted-foreground/60'}`} />
+                  {activeTab === item.id && (
+                    <motion.div
+                      layoutId="nav-active"
+                      className="absolute inset-0 rounded-full border-2 border-white/20"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Feedback Button (Desktop) */}
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1, type: 'spring' }}
-        className="fixed bottom-6 right-6 z-[60]"
+        className="fixed bottom-8 right-8 z-[60] hidden sm:block"
       >
         <Button
           onClick={() => navigate('/feedback')}
@@ -470,22 +501,22 @@ const MainApp = () => {
                   <p className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Please enter your name to personalize your experience.</p>
                 </div>
 
-                <form onSubmit={handleNameSubmit} className="space-y-4">
+                <form onSubmit={handleNameSubmit} className="space-y-6">
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
-                      <Star className="h-4 w-4" />
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-blue-500 transition-colors z-10">
+                      <Star className="h-5 w-5" />
                     </div>
                     <input
                       type="text"
-                      placeholder="YOUR AWESOME NAME"
+                      placeholder="Enter Identification Name"
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
                       required
-                      className="w-full h-14 bg-muted/50 border-2 border-transparent focus:border-primary/50 focus:bg-background rounded-2xl pl-12 pr-4 font-black uppercase tracking-wider transition-all outline-none"
+                      className="w-full h-16 bg-white dark:bg-zinc-950 border-2 border-border focus:border-blue-500/50 rounded-[1.8rem] pl-14 pr-6 font-black uppercase tracking-wider transition-all outline-none shadow-xl group-hover:shadow-2xl group-hover:-translate-y-1 dark:text-white dark:placeholder:text-zinc-600"
                     />
                   </div>
-                  <Button type="submit" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                    Get Started
+                  <Button type="submit" className="w-full h-16 rounded-[1.8rem] bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl shadow-blue-500/30 hover:scale-[1.05] active:scale-[0.95] transition-all">
+                    Establish Protocol
                   </Button>
                 </form>
               </div>

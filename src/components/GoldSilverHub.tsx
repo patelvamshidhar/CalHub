@@ -110,63 +110,26 @@ export const GoldSilverHub = () => {
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
         <div className="space-y-1 text-center md:text-left">
           <div className="flex items-center gap-3 justify-center md:justify-start mb-2">
-            <div className="p-1.5 bg-amber-500 text-white rounded-lg shadow-lg shadow-amber-500/20">
-              <Coins className="h-4 w-4" />
+            <div className="p-1.5 bg-zinc-950 dark:bg-white rounded-lg shadow-lg">
+              <Coins className="h-4 w-4 text-white dark:text-zinc-950" />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-500">Global Metals Authority</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground opacity-60">Metallic Evaluation Hub</span>
           </div>
-          <h1 className="text-5xl font-black tracking-tighter text-foreground dark:text-zinc-100 uppercase italic leading-none">
-            Gold & Silver <span className="text-amber-500">Hub</span>
+          <h1 className="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-[0.8] mb-4">
+            Gold & Silver <span className="text-transparent bg-clip-text bg-gradient-to-br from-amber-400 to-orange-600">Hub</span>
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">Real-time metallic evaluation and neural market analytics.</p>
+          <p className="text-muted-foreground text-sm font-bold uppercase tracking-tight opacity-50">Precision metallic analysis terminal.</p>
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="text-right hidden sm:block">
-            <div className="flex items-center gap-2 justify-end text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-              <Clock className="h-3 w-3" />
-              Pulse Sync: {new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </div>
-            <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2 justify-end mt-1">
-              <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_emerald]" />
-               Vault Data Active
-            </div>
+          <div className="w-16 h-16 rounded-[2rem] bg-secondary border-2 border-border flex items-center justify-center">
+            <ShieldCheck className="h-7 w-7 text-emerald-500 opacity-60" />
           </div>
-          <div className="w-px h-10 bg-border hidden sm:block" />
-          <Button 
-            variant="ghost" 
-            className="h-16 w-16 rounded-[1.5rem] bg-secondary border border-border text-amber-500 hover:bg-accent hover:text-amber-400 transition-all group"
-            onClick={() => window.location.reload()}
-          >
-            <RefreshCcw className="h-6 w-6 group-active:rotate-180 transition-transform duration-500" />
-          </Button>
         </div>
       </motion.div>
 
-      {/* Data Status Notification */}
       <AnimatePresence>
-        {!currentData.metalsSynced && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className={`p-5 rounded-[2rem] border-2 flex items-center gap-4 bg-amber-500/10 border-amber-500/20 text-amber-500 backdrop-blur-xl`}>
-              <div className="p-3 rounded-2xl shrink-0 bg-amber-500 text-white shadow-lg shadow-amber-500/20">
-                <Info className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-1">
-                  System Connection Notice
-                </p>
-                <p className="text-sm font-medium leading-tight text-amber-400/80">
-                  {currentData.metalsError || 'Synchronizing with global vaults...'}. Price metrics are now in safe-mode.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
+        {/* Connection logic removed for pure offline-first experience */}
       </AnimatePresence>
 
       {/* Main Grid */}

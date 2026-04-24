@@ -134,14 +134,14 @@ export const InterestCalculator = () => {
 
         <CardContent className="p-0 text-foreground dark:text-zinc-100">
           <div className="p-8 pb-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-purple-500/10 rounded-2xl border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
-                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            <div className="flex items-center gap-5">
+              <div className="p-4 bg-purple-500/10 rounded-[1.5rem] border-2 border-purple-500/30 flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                <Sparkles className="h-7 w-7 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <h3 className="text-2xl font-black text-foreground dark:text-zinc-100 uppercase tracking-tighter leading-none">Interest <span className="text-purple-600 dark:text-purple-400">Planner</span></h3>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1.5 mt-1">
-                  <Clock className="h-3 w-3" /> Finance Hub Growth Protocol
+                <h3 className="text-2xl font-black text-foreground dark:text-zinc-100 uppercase tracking-tighter leading-none italic">Interest <span className="text-purple-600 dark:text-purple-400">Planner</span></h3>
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground flex items-center gap-2 mt-2 opacity-60">
+                  <Clock className="h-3.5 w-3.5" /> Finance Hub Growth Protocol
                 </p>
               </div>
             </div>
@@ -149,39 +149,37 @@ export const InterestCalculator = () => {
               variant="ghost" 
               size="icon" 
               onClick={reset}
-              className="h-10 w-10 border border-border dark:border-zinc-800 rounded-full hover:bg-muted dark:hover:bg-white/5 text-muted-foreground"
+              className="h-12 w-12 border-2 border-border/50 rounded-full hover:bg-muted dark:hover:bg-white/5 text-muted-foreground transition-all"
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="h-5 w-5" />
             </Button>
           </div>
 
-          <div className="p-10 space-y-10">
+          <div className="p-12 space-y-12">
             {/* Input Grid */}
-            <div className="space-y-8">
+            <div className="space-y-10">
               {/* Principal Input */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center px-1">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Principal Capital</Label>
-                  <div className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20">₹{parseFloat(principal).toLocaleString()}</div>
+              <div className="space-y-5">
+                <div className="flex justify-between items-end px-2">
+                  <Label className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-50">Principal Capital</Label>
+                  <div className="text-[12px] font-black text-emerald-600 dark:text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border-2 border-emerald-500/20 shadow-lg">₹{parseFloat(principal).toLocaleString()}</div>
                 </div>
                 <div className="relative group">
-                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-black text-muted-foreground/30 dark:text-zinc-700 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-500 transition-colors">₹</div>
+                  <div className="absolute left-8 top-1/2 -translate-y-1/2 text-4xl font-black text-muted-foreground/20 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors z-10">₹</div>
                   <Input
                     type="number"
                     value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
-                    className="h-24 pl-16 pr-6 text-4xl bg-muted/20 dark:bg-zinc-950 font-black border-2 border-border dark:border-zinc-800 shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] rounded-3xl focus-visible:ring-2 focus-visible:ring-purple-500/30 focus-visible:border-purple-600 dark:focus-visible:border-purple-500 transition-all text-foreground dark:text-zinc-100 hover:border-border/80 dark:hover:border-zinc-700 outline-none"
+                    className="h-24 pl-20 pr-8 text-3xl bg-white dark:bg-zinc-950 font-black border-2 border-border shadow-xl group-hover:shadow-2xl rounded-[2.5rem] focus-visible:ring-0 focus-visible:border-purple-500/50 transition-all text-foreground dark:text-zinc-100 group-hover:-translate-y-1 outline-none"
                     placeholder="50,000"
                   />
-                  {/* Visual Glow */}
-                  <div className="absolute inset-0 rounded-3xl group-focus-within:shadow-[0_0_40px_rgba(168,85,247,0.15)] pointer-events-none transition-shadow" />
                 </div>
-                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide px-1">
                   {['10000', '50000', '100000', '500000'].map((amt) => (
                     <button
                       key={amt}
                       onClick={() => setPrincipal(amt)}
-                      className={`flex-shrink-0 px-4 py-2 bg-muted/30 dark:bg-zinc-900 border border-border dark:border-zinc-800 rounded-xl text-[10px] font-black transition-all active:scale-95 ${principal === amt ? 'text-purple-600 dark:text-zinc-100 border-purple-600 dark:border-purple-500 bg-purple-500/10' : 'text-muted-foreground hover:text-foreground dark:hover:text-zinc-200'}`}
+                      className={`flex-shrink-0 px-6 py-3 bg-muted/40 dark:bg-zinc-900 border-2 border-border rounded-2xl text-[11px] font-black transition-all active:scale-95 hover:border-purple-500/50 ${principal === amt ? 'text-white border-purple-600 bg-purple-600 shadow-xl shadow-purple-500/30' : 'text-muted-foreground hover:text-foreground hover:shadow-lg'}`}
                     >
                       +₹{parseInt(amt).toLocaleString()}
                     </button>
@@ -293,7 +291,7 @@ export const InterestCalculator = () => {
                            <Layers className="h-4 w-4 text-purple-600 dark:text-purple-500 shadow-[0_0_10px_purple]" />
                            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground/60 dark:text-zinc-600">Growth Maturity</span>
                         </div>
-                        <h2 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 dark:to-emerald-700 tracking-tighter drop-shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                        <h2 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 dark:to-emerald-700 tracking-tighter drop-shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                           ₹{Math.round(results.ciTotal).toLocaleString()}
                         </h2>
                       </div>
