@@ -1,156 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { CalendarIcon, TrendingUp, DollarSign, Clock, Info, ChevronDown, ChevronUp, RefreshCcw, History, FileText, Share2 } from 'lucide-react';
-import { format, differenceInDays, addMonths, addYears, isAfter } from 'date-fns';
+import { 
+  TrendingUp, 
+  Clock, 
+  RefreshCcw, 
+  ChevronRight,
+  IndianRupee,
+  Calendar as CalendarIcon,
+  Layers,
+  ArrowUpRight,
+  Info,
+  Sparkles,
+  RefreshCw,
+  ArrowRightLeft
+} from 'lucide-react';
+import { format, differenceInDays, addYears, isAfter } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
 import { ExportActions } from './ExportActions';
 
-interface CalculationStep {
-  period: string;
-  interest: number;
-  balance: number;
-}
+// Hook for number count up animation
+const useCountUp = (end: number, duration: number = 500) => {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const increment = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [end, duration]);
+  return count;
+};
 
 export const InterestCalculator = () => {
-  const [principal, setPrincipal] = useState<string>('');
-  const [rate, setRate] = useState<string>('');
+  const [principal, setPrincipal] = useState<string>('50000');
+  const [rate, setRate] = useState<string>('12');
   const [startDate, setStartDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState<string>(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
-  const [compounding, setCompounding] = useState<'monthly' | 'yearly'>('yearly');
-  const [showSteps, setShowSteps] = useState(false);
+  const [compounding, setCompounding] = useState<'monthly' | 'quarterly' | 'yearly'>('yearly');
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
-  const [results, setResults] = useState<{
-    siInterest: number;
-    siTotal: number;
-    ciInterest: number;
-    ciTotal: number;
-    duration: { years: number; months: number; days: number };
-    siSteps: CalculationStep[];
-    ciSteps: CalculationStep[];
-  } | null>(null);
-
-  // Debounce logic
-  const [debouncedValues, setDebouncedValues] = useState({ principal, rate });
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedValues({ principal, rate });
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [principal, rate]);
-
-  const calculate = () => {
-    if (!principal || !rate) {
-      setError("Enter all details to see results");
-      setResults(null);
-      return null;
-    }
-
-    const P = Number(principal);
-    const R = Number(rate);
+  // Calculate results
+  const results = useMemo(() => {
+    const P = parseFloat(principal);
+    const R = parseFloat(rate);
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    if (isNaN(P) || P <= 0) {
-      setError("Principal amount must be a positive number");
-      setResults(null);
-      return null;
-    }
-
-    if (isNaN(R) || R < 0) {
-      setError("Interest rate cannot be negative");
-      setResults(null);
-      return null;
-    }
-
-    if (!isAfter(end, start)) {
-      setError("End date must be after the start date");
-      setResults(null);
-      return null;
-    }
-
-    setError(null);
+    if (isNaN(P) || P <= 0 || isNaN(R) || R < 0 || !isAfter(end, start)) return null;
 
     const totalDays = differenceInDays(end, start);
-    const T = totalDays / 365; // Time in years
+    const T = totalDays / 365;
 
-    // Duration breakdown
+    const nMap = { monthly: 12, quarterly: 4, yearly: 1 };
+    const n = nMap[compounding];
+    
+    // SI
+    const siInterest = (P * R * T) / 100;
+    const siTotal = P + siInterest;
+
+    // CI
+    const ciTotal = P * Math.pow(1 + (R / 100) / n, n * T);
+    const ciInterest = ciTotal - P;
+
+    // Duration
     const years = Math.floor(totalDays / 365);
     const months = Math.floor((totalDays % 365) / 30);
     const days = totalDays % 30;
 
-    // Simple Interest
-    const siInterest = (P * R * T) / 100;
-    const siTotal = P + siInterest;
-
-    // SI Steps (Yearly breakdown)
-    const siSteps: CalculationStep[] = [];
-    for (let i = 1; i <= Math.ceil(T); i++) {
-      const time = Math.min(i, T);
-      const interest = (P * R * time) / 100;
-      siSteps.push({
-         period: `Year ${i}`,
-         interest: interest,
-         balance: P + interest
-      });
-    }
-
-    // Compound Interest
-    const n = compounding === 'monthly' ? 12 : 1;
-    const ciTotal = P * Math.pow(1 + (R / 100) / n, n * T);
-    const ciInterest = ciTotal - P;
-
-    // CI Steps
-    const ciSteps: CalculationStep[] = [];
-    let currentBalance = P;
-    const periods = Math.ceil(T * n);
-    for (let i = 1; i <= periods; i++) {
-      const interest = currentBalance * ((R / 100) / n);
-      currentBalance += interest;
-      ciSteps.push({
-        period: compounding === 'monthly' ? `Month ${i}` : `Year ${i}`,
-        interest: interest,
-        balance: currentBalance
-      });
-    }
-
-    const res = {
-      siInterest,
-      siTotal,
-      ciInterest,
-      ciTotal,
-      duration: { years, months, days },
-      siSteps,
-      ciSteps
+    return {
+      siInterest, siTotal, ciInterest, ciTotal,
+      duration: `${years}Y ${months}M ${days}D`,
+      totalDays
     };
-    setResults(res);
-
-    return res;
-  };
+  }, [principal, rate, startDate, endDate, compounding]);
 
   const handleSaveToHistory = () => {
-    const res = calculate();
-    if (res) {
+    if (results) {
       const newItem: HistoryItem = {
         id: Date.now().toString(),
         type: 'Finance',
-        inputs: {
-          principal,
-          rate,
-          startDate,
-          endDate,
-          compounding
-        },
-        result: `₹${res.ciTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })} (CI)`,
+        inputs: { principal, rate, startDate, endDate, compounding },
+        result: `Total: ₹${Math.round(results.ciTotal).toLocaleString()}`,
         timestamp: new Date().toISOString()
       };
       const newHistory = [newItem, ...history].slice(0, 10);
@@ -167,286 +108,268 @@ export const InterestCalculator = () => {
     setCompounding(item.inputs.compounding);
   };
 
-  const clearHistory = () => {
-    setHistory([]);
-    localStorage.removeItem('ic_history');
-  };
-
-  useEffect(() => {
-    calculate();
-  }, [debouncedValues, startDate, endDate, compounding]);
-
   const reset = () => {
-    setPrincipal('');
-    setRate('');
+    setPrincipal('50000');
+    setRate('12');
     setStartDate(format(new Date(), 'yyyy-MM-dd'));
     setEndDate(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
     setCompounding('yearly');
-    setResults(null);
-    setError(null);
   };
 
+  useEffect(() => {
+    const saved = localStorage.getItem('ic_history');
+    if (saved) setHistory(JSON.parse(saved));
+  }, []);
+
   return (
-    <TooltipProvider>
-      <div className="w-full space-y-6">
-        <Card className="w-full border-2 shadow-xl overflow-hidden bg-card/50 backdrop-blur-sm rounded-[2.5rem]">
-          <div className="h-1.5 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-80" />
-          <CardHeader className="pb-4 pt-6 px-6">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-black flex items-center gap-3 uppercase tracking-tight">
-                <div className="p-2 bg-purple-500/10 rounded-xl">
-                  <TrendingUp className="h-5 w-5 text-purple-500" />
-                </div>
-                Interest Planner
-              </CardTitle>
-            </div>
-          </CardHeader>
+    <div className="w-full max-w-xl mx-auto">
+      <Card className="relative overflow-hidden border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] rounded-[2.5rem] bg-card dark:bg-zinc-950/60 backdrop-blur-2xl group">
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-emerald-500/5 -z-10 transition-opacity" />
+        
+        {/* Neon Accents */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-violet-500 to-emerald-500 opacity-80" />
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-500/10 blur-[100px] pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-500/10 blur-[100px] pointer-events-none" />
 
-          <CardContent className="p-6 space-y-6">
-            {/* Inputs */}
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="principal" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">
-                    Principal Amount (₹)
-                  </Label>
-                  <div className="relative group">
-                    <Input
-                      id="principal"
-                      type="number"
-                      value={principal}
-                      onChange={(e) => setPrincipal(e.target.value)}
-                      placeholder="e.g. 50000"
-                      className="text-base h-12 pl-10 font-black border-2 rounded-xl focus-visible:ring-purple-500 transition-all"
-                    />
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">₹</span>
+        <CardContent className="p-0 text-foreground dark:text-zinc-100">
+          <div className="p-8 pb-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-purple-500/10 rounded-2xl border border-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-foreground dark:text-zinc-100 uppercase tracking-tighter leading-none">Interest <span className="text-purple-600 dark:text-purple-400">Planner</span></h3>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-1.5 mt-1">
+                  <Clock className="h-3 w-3" /> Finance Hub Growth Protocol
+                </p>
+              </div>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={reset}
+              className="h-10 w-10 border border-border dark:border-zinc-800 rounded-full hover:bg-muted dark:hover:bg-white/5 text-muted-foreground"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="p-10 space-y-10">
+            {/* Input Grid */}
+            <div className="space-y-8">
+              {/* Principal Input */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center px-1">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Principal Capital</Label>
+                  <div className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20">₹{parseFloat(principal).toLocaleString()}</div>
+                </div>
+                <div className="relative group">
+                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-black text-muted-foreground/30 dark:text-zinc-700 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-500 transition-colors">₹</div>
+                  <Input
+                    type="number"
+                    value={principal}
+                    onChange={(e) => setPrincipal(e.target.value)}
+                    className="h-24 pl-16 pr-6 text-4xl bg-muted/20 dark:bg-zinc-950 font-black border-2 border-border dark:border-zinc-800 shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] dark:shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] rounded-3xl focus-visible:ring-2 focus-visible:ring-purple-500/30 focus-visible:border-purple-600 dark:focus-visible:border-purple-500 transition-all text-foreground dark:text-zinc-100 hover:border-border/80 dark:hover:border-zinc-700 outline-none"
+                    placeholder="50,000"
+                  />
+                  {/* Visual Glow */}
+                  <div className="absolute inset-0 rounded-3xl group-focus-within:shadow-[0_0_40px_rgba(168,85,247,0.15)] pointer-events-none transition-shadow" />
+                </div>
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                  {['10000', '50000', '100000', '500000'].map((amt) => (
+                    <button
+                      key={amt}
+                      onClick={() => setPrincipal(amt)}
+                      className={`flex-shrink-0 px-4 py-2 bg-muted/30 dark:bg-zinc-900 border border-border dark:border-zinc-800 rounded-xl text-[10px] font-black transition-all active:scale-95 ${principal === amt ? 'text-purple-600 dark:text-zinc-100 border-purple-600 dark:border-purple-500 bg-purple-500/10' : 'text-muted-foreground hover:text-foreground dark:hover:text-zinc-200'}`}
+                    >
+                      +₹{parseInt(amt).toLocaleString()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                {/* Interest Rate */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center ml-1">
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Yield % P.A.</Label>
+                    <span className="text-[10px] font-black text-purple-600 dark:text-purple-400">{rate}%</span>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="relative group">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-muted-foreground/30 dark:text-zinc-700 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors uppercase tracking-widest text-sm">%</div>
+                      <Input
+                        type="number"
+                        value={rate}
+                        onChange={(e) => setRate(e.target.value)}
+                        className="h-14 pl-10 pr-4 bg-muted/20 dark:bg-zinc-950 text-xl font-black border-2 border-border dark:border-zinc-800 rounded-2xl focus-visible:ring-2 focus-visible:ring-purple-500/30 focus-visible:border-purple-600 dark:focus-visible:border-purple-500 transition-all text-foreground dark:text-zinc-100 outline-none"
+                        placeholder="12"
+                      />
+                    </div>
+                    <div className="px-2">
+                       <input 
+                        type="range" 
+                        min="0" 
+                        max="30" 
+                        step="0.5"
+                        value={rate} 
+                        onChange={(e) => setRate(e.target.value)}
+                        className="w-full h-1.5 bg-muted dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-purple-600 dark:accent-purple-500"
+                       />
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="rate" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">
-                    Interest Rate (% P.A.)
-                  </Label>
+                {/* Compounding Selector */}
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Compounding Cycle</Label>
+                  <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-muted/20 dark:bg-zinc-950 rounded-2xl border border-border dark:border-zinc-800 h-14">
+                    {['monthly', 'quarterly', 'yearly'].map(item => (
+                      <button
+                        key={item}
+                        onClick={() => setCompounding(item as any)}
+                        className={`rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${compounding === item ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'text-muted-foreground hover:text-foreground dark:hover:text-zinc-300'}`}
+                      >
+                        {item.charAt(0)}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="text-[8px] font-bold text-muted-foreground/60 dark:text-zinc-600 uppercase text-center">{compounding} frequency</div>
+                </div>
+              </div>
+
+              {/* Date Selection */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center ml-1">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Temporal Range</Label>
+                  {results && (
+                    <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <Clock className="h-3 w-3" />
+                      <span className="text-[9px] font-black uppercase tracking-widest">{results.duration}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div className="relative group">
+                    <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/30 dark:text-zinc-700 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-500 transition-colors pointer-events-none" />
                     <Input
-                      id="rate"
-                      type="number"
-                      value={rate}
-                      onChange={(e) => setRate(e.target.value)}
-                      placeholder="e.g. 12"
-                      className="text-base h-12 pr-10 font-black border-2 rounded-xl focus-visible:ring-purple-500 transition-all"
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="h-14 pl-12 pr-4 bg-muted/20 dark:bg-zinc-950 font-black border-2 border-border dark:border-zinc-800 rounded-2xl focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-600 dark:focus-visible:border-emerald-500 transition-all text-sm text-foreground dark:text-zinc-100 outline-none"
                     />
-                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 font-black text-muted-foreground group-focus-within:text-purple-500 transition-colors">%</span>
+                  </div>
+                  <div className="relative group">
+                    <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/30 dark:text-zinc-700 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-500 transition-colors pointer-events-none" />
+                    <Input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="h-14 pl-12 pr-4 bg-muted/20 dark:bg-zinc-950 font-black border-2 border-border dark:border-zinc-800 rounded-2xl focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-600 dark:focus-visible:border-emerald-500 transition-all text-sm text-foreground dark:text-zinc-100 outline-none"
+                    />
                   </div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">Start Date</Label>
-                  <Input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="h-12 font-bold border-2 rounded-xl focus-visible:ring-purple-500 transition-all text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">End Date</Label>
-                  <Input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="h-12 font-bold border-2 rounded-xl focus-visible:ring-purple-500 transition-all text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/70">Compounding</Label>
-                <div className="flex gap-2 p-1 bg-muted/50 rounded-xl border-2 shadow-inner">
-                  <Button
-                    variant={compounding === 'yearly' ? 'default' : 'ghost'}
-                    onClick={() => setCompounding('yearly')}
-                    className="flex-1 font-black uppercase tracking-widest text-[8px] rounded-lg h-8 transition-all"
-                  >
-                    Yearly
-                  </Button>
-                  <Button
-                    variant={compounding === 'monthly' ? 'default' : 'ghost'}
-                    onClick={() => setCompounding('monthly')}
-                    className="flex-1 font-black uppercase tracking-widest text-[8px] rounded-lg h-8 transition-all"
-                  >
-                    Monthly
-                  </Button>
-                </div>
-              </div>
             </div>
 
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className={`p-2 border rounded-lg text-[9px] font-black uppercase tracking-widest text-center ${error === "Enter all details to see results" ? "bg-primary/5 border-primary/10 text-primary/60" : "bg-destructive/5 border-destructive/20 text-destructive"}`}
-              >
-                {error}
-              </motion.div>
-            )}
-
-            <div className="flex items-center justify-between gap-4 pt-4 border-t">
-              <Button variant="outline" onClick={reset} className="font-black uppercase tracking-widest text-[9px] h-10 rounded-xl border-2 px-4">
-                <RefreshCcw className="h-3.5 w-3.5 mr-2" />
-                Reset
-              </Button>
-              <Button 
-                onClick={handleSaveToHistory} 
-                disabled={!results}
-                className="font-black uppercase tracking-widest text-[9px] h-10 px-6 rounded-xl bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/20 flex items-center gap-2"
-              >
-                💾 Save
-              </Button>
-            </div>
-
-            <AnimatePresence>
-              {results && (
+            {/* Premium Result Section */}
+            <AnimatePresence mode="wait">
+              {results ? (
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="space-y-6 pt-2"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
+                  className="space-y-6"
                 >
-                  {/* Duration Info */}
-                  <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-xl border-2 border-dashed justify-center">
-                    <Clock className="h-3.5 w-3.5 text-purple-500" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
-                      Duration: {results.duration.years}Y {results.duration.months}M {results.duration.days}D
-                    </span>
+                  <div className="relative p-10 rounded-[3rem] bg-muted/10 dark:bg-zinc-950 overflow-hidden border-2 border-purple-500/20 shadow-2xl group/result">
+                    {/* Background Accents */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 blur-[100px] rounded-full" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] rounded-full" />
+                    
+                    <div className="relative flex flex-col items-center text-center space-y-6">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                           <Layers className="h-4 w-4 text-purple-600 dark:text-purple-500 shadow-[0_0_10px_purple]" />
+                           <span className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground/60 dark:text-zinc-600">Growth Maturity</span>
+                        </div>
+                        <h2 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 dark:to-emerald-700 tracking-tighter drop-shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                          ₹{Math.round(results.ciTotal).toLocaleString()}
+                        </h2>
+                      </div>
+                      
+                      <div className="w-full grid grid-cols-2 gap-8 pt-8 border-t border-border dark:border-zinc-900">
+                        <div className="space-y-1 text-left">
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 dark:text-zinc-600">Interest Accrued</p>
+                          <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 leading-none">+{Math.round(results.ciInterest).toLocaleString()}</p>
+                        </div>
+                        <div className="space-y-1 text-right">
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 dark:text-zinc-600">Operational Log</p>
+                          <p className="text-2xl font-black text-foreground dark:text-zinc-100 leading-none">{results.totalDays}D</p>
+                        </div>
+                      </div>
+
+                      {/* Visual Progress Tag */}
+                      <div className="flex items-center gap-2 bg-muted/30 dark:bg-zinc-900 border border-border dark:border-zinc-800 px-4 py-1.5 rounded-full">
+                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_emerald]" />
+                         <span className="text-[9px] font-black text-muted-foreground dark:text-zinc-400 uppercase tracking-widest">Compounding Phase Active</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Compound Interest Result */}
-                    <Card className="border-2 border-purple-500/20 bg-purple-500/5 rounded-[1.5rem] overflow-hidden">
-                      <CardHeader className="p-4 pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-[9px] font-black uppercase tracking-widest text-purple-600">Compound Interest</CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0 space-y-2">
-                        <div className="flex justify-between items-end">
-                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
-                          <span className="text-lg font-black text-purple-700 tracking-tight">₹{results.ciInterest.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
-                        </div>
-                        <div className="flex justify-between items-end pt-2 border-t border-purple-500/10">
-                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
-                          <span className="text-xl font-black text-purple-800 tracking-tight">₹{results.ciTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Simple Interest Result */}
-                    <Card className="border-2 border-blue-500/20 bg-blue-500/5 rounded-[1.5rem] overflow-hidden">
-                      <CardHeader className="p-4 pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-[9px] font-black uppercase tracking-widest text-blue-600">Simple Interest</CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0 space-y-2">
-                        <div className="flex justify-between items-end">
-                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Interest</span>
-                          <span className="text-lg font-black text-blue-700 tracking-tight">₹{results.siInterest.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
-                        </div>
-                        <div className="flex justify-between items-end pt-2 border-t border-blue-500/10">
-                          <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Total</span>
-                          <span className="text-xl font-black text-blue-800 tracking-tight">₹{results.siTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Export Actions */}
-                  <div className="flex justify-center">
+                  <div className="flex items-center justify-between px-3">
+                    <Button 
+                      variant="ghost" 
+                      onClick={handleSaveToHistory}
+                      className="h-12 px-6 rounded-2xl bg-muted/40 dark:bg-white/5 hover:bg-muted dark:hover:bg-white/10 text-muted-foreground hover:text-foreground dark:text-zinc-400 dark:hover:text-zinc-100 font-black uppercase tracking-widest text-[10px] flex items-center gap-2 transition-all border border-border dark:border-zinc-800"
+                    >
+                      <span>Log Evaluation</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    
                     <ExportActions
-                      title="Interest Calculation"
+                      title="Financial Projection"
                       inputs={[
                         { label: 'Principal', value: `₹${principal}` },
                         { label: 'Rate', value: `${rate}%` },
-                        { label: 'Duration', value: `${results.duration.years}y ${results.duration.months}m ${results.duration.days}d` },
+                        { label: 'Term', value: results.duration }
                       ]}
                       results={[
-                        { label: 'CI Total', value: `₹${results.ciTotal.toFixed(2)}` },
-                        { label: 'SI Total', value: `₹${results.siTotal.toFixed(2)}` },
+                        { label: 'Maturity', value: `₹${Math.round(results.ciTotal).toLocaleString()}` },
+                        { label: 'Growth', value: `₹${Math.round(results.ciInterest).toLocaleString()}` }
                       ]}
                     />
                   </div>
-
-                  <div className="pt-4 border-t border-dashed border-border/50">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowSteps(!showSteps)}
-                      className="w-full flex items-center justify-between p-3 h-auto hover:bg-muted rounded-xl border border-dashed text-[10px] font-black uppercase tracking-widest"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Info className="h-3.5 w-3.5 text-purple-500" />
-                        <span>Calculation Steps</span>
-                      </div>
-                      {showSteps ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                    </Button>
-
-                    <AnimatePresence>
-                      {showSteps && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="space-y-4 pt-2">
-                            <div className="space-y-2">
-                              <h4 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">CI Breakdown ({compounding})</h4>
-                              <div className="max-h-40 overflow-y-auto rounded-xl border bg-background shadow-inner">
-                                <table className="w-full text-[10px]">
-                                  <thead className="sticky top-0 bg-muted z-10">
-                                    <tr>
-                                      <th className="p-2 text-left font-black uppercase tracking-tighter">Period</th>
-                                      <th className="p-2 text-right font-black uppercase tracking-tighter">Interest</th>
-                                      <th className="p-2 text-right font-black uppercase tracking-tighter">Balance</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {results.ciSteps.slice(0, 12).map((step, i) => (
-                                      <tr key={i} className="border-t hover:bg-muted/30 transition-colors">
-                                        <td className="p-2 font-bold">{step.period}</td>
-                                        <td className="p-2 text-right">₹{step.interest.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-                                        <td className="p-2 text-right font-black">₹{step.balance.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
-                                      </tr>
-                                    ))}
-                                    {results.ciSteps.length > 12 && (
-                                      <tr>
-                                        <td colSpan={3} className="p-2 text-center text-muted-foreground italic">... and {results.ciSteps.length - 12} more periods</td>
-                                      </tr>
-                                    )}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
                 </motion.div>
+              ) : (
+                <div className="h-[300px] flex flex-col items-center justify-center gap-6 bg-muted/10 dark:bg-zinc-950/40 rounded-[3rem] border-2 border-dashed border-border dark:border-zinc-900">
+                  <div className="w-20 h-20 rounded-[2rem] bg-muted/30 dark:bg-zinc-900 flex items-center justify-center text-muted-foreground/30 dark:text-zinc-800">
+                    <Info className="h-10 w-10 opacity-20" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <p className="text-[11px] font-black text-muted-foreground/40 dark:text-zinc-700 uppercase tracking-[0.4em]">Awaiting Financial Signal</p>
+                    <p className="text-[9px] font-bold text-muted-foreground/30 dark:text-zinc-800 uppercase tracking-widest">Inputs required for projection</p>
+                  </div>
+                </div>
               )}
             </AnimatePresence>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
 
+      {/* History Section */}
+      <div className="relative">
         <CalculationHistory 
           history={history} 
-          onClear={clearHistory} 
+          onClear={() => {
+            setHistory([]);
+            localStorage.removeItem('ic_history');
+          }} 
           onReuse={handleReuse} 
+          title="Audit Log: Fiscal Ledger"
         />
       </div>
-    </TooltipProvider>
+    </div>
   );
 };
+

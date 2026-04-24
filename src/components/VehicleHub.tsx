@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Clock, WifiOff } from 'lucide-react';
+import { Fuel, MapPin, IndianRupee, Navigation, RefreshCcw, Info, ChevronDown, ChevronUp, Loader2, Car, Truck, History, Map, Clock, WifiOff, Zap, Share2, TrendingUp, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
@@ -180,14 +180,15 @@ export const VehicleHub = () => {
 
   return (
     <TooltipProvider>
-      <div className="space-y-8 w-full max-w-7xl mx-auto">
+      <div className="space-y-12 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-10">
         {/* VehicleHub Trip Planner Section */}
         <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="space-y-12"
         >
-          {/* Fuel Data Status Notification */}
+          {/* Status Notifications */}
           <AnimatePresence>
             {prices.fuelSyncStatus === 'error' && (
               <motion.div
@@ -196,16 +197,16 @@ export const VehicleHub = () => {
                 exit={{ height: 0, opacity: 0 }}
                 className="mb-8 overflow-hidden"
               >
-                <div className="p-4 rounded-3xl border-2 flex items-center gap-4 bg-destructive/10 border-destructive/20 text-destructive">
-                  <div className="p-2 rounded-xl shrink-0 bg-destructive text-white">
+                <div className="p-5 rounded-[2rem] border-2 flex items-center gap-4 bg-red-500/10 border-red-500/20 text-red-500 backdrop-blur-xl">
+                  <div className="p-3 rounded-2xl shrink-0 bg-red-500 text-white shadow-lg shadow-red-500/20">
                     <WifiOff className="h-5 w-5" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">
-                      Hub Connection Lost
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-1">
+                      Signal Loss Detected
                     </p>
-                    <p className="text-sm font-medium leading-tight">
-                      {prices.fuelError || 'Connection lost to fuel services'}. Please check your internet.
+                    <p className="text-sm font-medium leading-tight text-red-400/80">
+                      Sync failed with global fuel metrics. Using local cached data.
                     </p>
                   </div>
                   <Button 
@@ -213,298 +214,272 @@ export const VehicleHub = () => {
                     size="sm" 
                     onClick={refreshFuelPrices} 
                     disabled={loading}
-                    className="rounded-2xl h-10 px-4 font-black uppercase tracking-widest text-[10px] hover:bg-black/5"
+                    className="rounded-xl h-12 px-6 font-black uppercase tracking-widest text-[10px] bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30"
                   >
-                    Retry Sync
+                    Reconnect Sync
                   </Button>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          <div className="text-center space-y-2">
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter uppercase flex items-center justify-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-xl">
-                <Navigation className="h-8 w-8 text-primary" />
+          <div className="flex flex-col md:flex-row items-end justify-between gap-6 pb-2 border-b border-border">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest">
+                <Navigation className="h-3 w-3" />
+                Transit Neural Network
               </div>
-              VehicleHub <span className="text-primary/40">Trip Planner</span>
-            </h2>
-            <p className="text-muted-foreground font-medium text-base">Plan your journey with precision fuel cost estimation</p>
+              <h2 className="text-5xl font-black tracking-tighter text-foreground dark:text-white uppercase italic leading-none">
+                Vehicle <span className="text-blue-500">Hub</span>
+              </h2>
+              <p className="text-muted-foreground text-sm font-medium">Enterprise-grade fuel expenditure and distance analytics terminal.</p>
+            </div>
+            
+            <div className="flex items-center gap-4 bg-muted/50 p-2 rounded-2xl border border-border backdrop-blur-md">
+               <div className="text-right px-2">
+                 <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Last Index Sync</div>
+                 <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2 justify-end">
+                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_emerald]" />
+                   {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                 </div>
+               </div>
+               <Button onClick={refreshFuelPrices} disabled={loading} variant="ghost" className="h-12 w-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20">
+                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <RefreshCcw className="h-5 w-5" />}
+               </Button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-            {/* Left Column: Inputs & Fuel Selection */}
-            <div className="lg:col-span-5 space-y-6">
-              <Card className="border-2 shadow-xl overflow-hidden rounded-[2.5rem] bg-card/50 backdrop-blur-sm">
-                <div className="h-1.5 bg-gradient-to-r from-primary to-primary/60 opacity-80" />
-                <CardHeader className="pb-4 pt-6 px-6">
-                  <div className="flex items-center justify-between mb-4 sm:hidden">
-                     <div className="flex items-center gap-1.5 text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">
-                        <Clock className="h-2.5 w-2.5" />
-                        Updated: {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                     </div>
-                     <div className="text-[8px] font-black text-emerald-500 uppercase tracking-widest flex flex-col items-end gap-1">
-                        <div className="flex items-center gap-1">
-                          <div className={`w-1.5 h-1.5 rounded-full ${prices.source === 'api' ? 'bg-emerald-500 animate-pulse' : 'bg-muted-foreground/30'}`} /> 
-                          {prices.source === 'api' ? 'Daily Sync Active' : 'Fallback Mode'}
-                        </div>
-                        <span className="text-[6px] font-bold text-muted-foreground/40 text-right">Prices may slightly vary by location</span>
-                     </div>
-                  </div>
-                  <CardTitle className="text-xl font-black flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Fuel className="h-5 w-5 text-primary" />
-                      </div>
-                      Trip Details
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Input Side */}
+            <div className="lg:col-span-12 space-y-8">
+              <Card className="relative border-none shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-violet-600 shadow-[0_0_20px_blue]" />
+                
+                <CardHeader className="pb-4 pt-10 px-10">
+                  <CardTitle className="text-xl font-black flex items-center gap-3 text-foreground dark:text-zinc-100 uppercase tracking-tight">
+                    <div className="p-2.5 bg-blue-500/10 rounded-2xl border border-blue-500/20">
+                      <Fuel className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div className="flex flex-col items-end">
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={refreshFuelPrices}
-                          disabled={loading}
-                          className="h-8 text-[9px] font-black uppercase tracking-widest gap-2 rounded-xl hover:bg-primary/5 text-emerald-600"
-                        >
-                          {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCcw className="h-3 w-3" />}
-                          Live Sync
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={reset} className="h-8 text-[9px] font-black uppercase tracking-widest gap-2 rounded-xl hover:bg-primary/5">
-                          <RefreshCcw className="h-3 w-3" />
-                          Reset
-                        </Button>
-                      </div>
-                      <div className="hidden sm:flex flex-col items-end mt-1">
-                        <span className="text-[7px] font-black text-muted-foreground/40 uppercase tracking-widest leading-tight">Last Sync: {new Date(prices.lastUpdated).toLocaleDateString()} {new Date(prices.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                        <span className="text-[6px] font-bold text-muted-foreground/30 uppercase tracking-tighter">Prices may slightly vary by location</span>
-                        {prices.error && <span className="text-[6px] font-black text-red-500/60 uppercase tracking-widest mt-0.5">{prices.error}</span>}
-                      </div>
-                    </div>
+                    Fuel Selection
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6 pb-8 px-6">
-                  {/* Fuel Type Selection */}
-                  <div className="space-y-3">
-                    <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Select Fuel Type</Label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <Button
-                        variant={fuelType === 'petrol' ? 'default' : 'outline'}
-                        onClick={() => setFuelType('petrol')}
-                        className={`h-14 font-black uppercase tracking-widest gap-2 border-2 rounded-2xl transition-all ${fuelType === 'petrol' ? 'shadow-lg shadow-primary/20 scale-[1.02]' : 'hover:border-primary/30'}`}
+                <CardContent className="space-y-8 pb-10 px-10">
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { id: 'petrol', label: 'Petrol', icon: Car },
+                      { id: 'diesel', label: 'Diesel', icon: Truck },
+                    ].map((f) => (
+                      <button
+                        key={f.id}
+                        onClick={() => setFuelType(f.id as any)}
+                        className={`h-24 rounded-3xl border-2 flex flex-col items-center justify-center gap-2 transition-all group ${
+                          fuelType === f.id 
+                            ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20 scale-[1.02]' 
+                            : 'bg-muted dark:bg-zinc-900 border-border dark:border-zinc-800 text-muted-foreground dark:text-zinc-500 hover:border-blue-500/50 hover:text-foreground dark:hover:text-zinc-300 transition-colors'
+                        }`}
                       >
-                        <Car className="h-5 w-5" />
-                        Petrol
-                      </Button>
-                      <Button
-                        variant={fuelType === 'diesel' ? 'default' : 'outline'}
-                        onClick={() => setFuelType('diesel')}
-                        className={`h-14 font-black uppercase tracking-widest gap-2 border-2 rounded-2xl transition-all ${fuelType === 'diesel' ? 'shadow-lg shadow-primary/20 scale-[1.02]' : 'hover:border-primary/30'}`}
-                      >
-                        <Truck className="h-5 w-5" />
-                        Diesel
-                      </Button>
-                    </div>
+                        <f.icon className={`h-6 w-6 transition-transform ${fuelType === f.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+                        <span className="text-[10px] font-black uppercase tracking-widest">{f.label}</span>
+                      </button>
+                    ))}
                   </div>
 
-                  {/* Distance & Mileage Inputs */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Distance (km)</Label>
-                      <div className="relative group">
-                        <Input
-                          type="number"
-                          value={fuelDistance}
-                          onChange={(e) => setFuelDistance(e.target.value)}
-                          placeholder="e.g. 500"
-                          autoComplete="off"
-                          className="h-12 border-2 font-black text-base pl-10 rounded-xl focus-visible:ring-primary focus-visible:border-primary transition-all"
-                        />
-                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                      </div>
+                  <div className="space-y-4 pt-4">
+                    <div className="flex items-center justify-between px-1">
+                      <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground">Live Pump Rate</Label>
+                      <span className="text-[9px] font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest">₹ Per Liter</span>
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Mileage (km/L)</Label>
-                      <div className="relative group">
-                        <Input
-                          type="number"
-                          value={fuelMileage}
-                          onChange={(e) => setFuelMileage(e.target.value)}
-                          placeholder="e.g. 18"
-                          autoComplete="off"
-                          className="h-12 border-2 font-black text-base pl-10 rounded-xl focus-visible:ring-primary focus-visible:border-primary transition-all"
-                        />
-                        <RefreshCcw className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* City Selection */}
-                  <div className="space-y-2">
-                    <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Enter City</Label>
                     <div className="relative group">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-muted-foreground/30 dark:text-zinc-800 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-500 transition-colors">₹</div>
                       <Input
-                        value={fuelCity}
-                        onChange={(e) => {
-                          setFuelCity(e.target.value);
-                          updatePriceByCity(e.target.value, fuelType);
+                         type="number"
+                         value={manualFuelPrice}
+                         onChange={(e) => setManualFuelPrice(e.target.value)}
+                         placeholder="110.00"
+                         className="h-24 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-[2rem] pl-16 pr-28 text-4xl font-black text-foreground dark:text-zinc-100 outline-none shadow-2xl transition-all"
+                       />
+                      <button 
+                        onClick={() => {
+                          const live = getCachedPrices();
+                          if (fuelType) setManualFuelPrice(fuelType === 'petrol' ? live.petrol.toString() : live.diesel.toString());
                         }}
-                        placeholder="e.g. Hyderabad"
-                        className="h-12 border-2 font-black text-base pl-10 rounded-xl focus-visible:ring-primary focus-visible:border-primary transition-all"
-                      />
-                      <Map className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                      
-                      {fuelType && FALLBACK_FUEL_PRICES[fuelType][fuelCity.toLowerCase()] && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg text-[8px] font-black uppercase tracking-widest">
-                          City Rate Found
-                        </div>
-                      )}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 h-12 px-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase text-[9px] tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+                      >
+                        Get Live
+                      </button>
                     </div>
                   </div>
-
-                  {/* Manual Fuel Price Input */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Fuel Price (₹/L)</Label>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-[9px] font-bold">Enter the current fuel price in your area.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <div className="relative group">
-                      <Input
-                        type="number"
-                        value={manualFuelPrice}
-                        onChange={(e) => setManualFuelPrice(e.target.value)}
-                        placeholder="Enter price manually"
-                        autoComplete="off"
-                        className="h-12 border-2 font-black text-base pl-10 rounded-xl focus-visible:ring-primary focus-visible:border-primary transition-all"
-                      />
-                      <IndianRupee className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                      
-                      <AnimatePresence>
-                        {fuelType && (
-                          <motion.button
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            onClick={() => {
-                              const live = getCachedPrices();
-                              setManualFuelPrice(fuelType === 'petrol' ? live.petrol.toString() : live.diesel.toString());
-                            }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 px-2 bg-primary/10 text-primary rounded-lg text-[8px] font-black uppercase tracking-widest hover:bg-primary/20 transition-all flex items-center gap-1"
-                          >
-                            Use Live
-                          </motion.button>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-
-                  {error && (
-                    <motion.p
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className={`text-[9px] font-black uppercase tracking-widest text-center py-2 rounded-lg border ${error === "Enter all details to see results" ? "text-primary/60 bg-primary/5 border-primary/10" : "text-destructive bg-destructive/5 border-destructive/20"}`}
-                    >
-                      {error}
-                    </motion.p>
-                  )}
-
-                  <Button 
-                    onClick={handleSaveTrip} 
-                    disabled={!results}
-                    className="w-full font-black uppercase tracking-widest text-[10px] h-12 rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.01] transition-transform flex items-center justify-center gap-2"
-                  >
-                    💾 Save Trip
-                  </Button>
                 </CardContent>
               </Card>
 
+              <Card className="relative border-none shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-600 shadow-[0_0_20px_emerald]" />
+                <CardContent className="p-10 space-y-8">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                     <div className="space-y-3">
+                       <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Journey Track</Label>
+                       <div className="relative group">
+                         <div className="absolute left-5 top-1/2 -translate-y-1/2 text-sm font-black text-muted-foreground/30 dark:text-zinc-800 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors uppercase">KM</div>
+                         <Input
+                           type="number"
+                           value={fuelDistance}
+                           onChange={(e) => setFuelDistance(e.target.value)}
+                           className="h-16 pl-14 pr-4 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl font-black text-2xl text-foreground dark:text-zinc-100 outline-none transition-all"
+                           placeholder="500"
+                         />
+                       </div>
+                     </div>
+                     <div className="space-y-3">
+                       <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Consumption</Label>
+                       <div className="relative group">
+                         <div className="absolute left-5 top-1/2 -translate-y-1/2 text-sm font-black text-muted-foreground/30 dark:text-zinc-800 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors uppercase">M</div>
+                         <Input
+                           type="number"
+                           value={fuelMileage}
+                           onChange={(e) => setFuelMileage(e.target.value)}
+                           className="h-16 pl-14 pr-4 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl font-black text-2xl text-foreground dark:text-zinc-100 outline-none transition-all"
+                           placeholder="18"
+                         />
+                       </div>
+                     </div>
+                   </div>
+
+                   <div className="space-y-3">
+                     <Label className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Geographical Node</Label>
+                     <div className="relative group">
+                       <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/30 dark:text-zinc-800 group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors" />
+                       <Input
+                         value={fuelCity}
+                         onChange={(e) => {
+                           setFuelCity(e.target.value);
+                           updatePriceByCity(e.target.value, fuelType);
+                         }}
+                         className="h-16 pl-16 pr-4 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl font-black text-xl text-foreground dark:text-zinc-100 outline-none transition-all"
+                         placeholder="City Matrix"
+                       />
+                     </div>
+                   </div>
+
+                   <div className="flex gap-4 pt-4">
+                     <Button 
+                       onClick={reset}
+                       variant="ghost" 
+                       className="h-14 flex-1 rounded-2xl border border-border bg-secondary dark:bg-zinc-900 text-muted-foreground font-black uppercase tracking-widest text-[10px] hover:text-foreground dark:hover:bg-white/5"
+                     >
+                       <RefreshCw className="h-4 w-4 mr-2" />
+                       Flush
+                     </Button>
+                     <Button 
+                       onClick={handleSaveTrip} 
+                       disabled={!results}
+                       className="h-14 flex-1 rounded-2xl bg-emerald-600 dark:bg-emerald-500 hover:opacity-90 transition-opacity text-white dark:text-zinc-950 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
+                     >
+                       Archive Trip
+                     </Button>
+                   </div>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* Right Column: Results Display */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="grid grid-cols-1 gap-6">
-                {/* Main Result Card */}
-                <Card className="border-2 shadow-2xl bg-gradient-to-br from-primary/5 via-background to-background relative overflow-hidden rounded-[2.5rem]">
-                  <div className="absolute top-0 right-0 p-6 opacity-[0.02] pointer-events-none">
-                    <Navigation className="h-48 w-48 rotate-12" />
-                  </div>
-                  <CardContent className="p-8 sm:p-12 space-y-8">
-                    <div className="flex flex-col items-center text-center space-y-2">
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Estimated Trip Cost</p>
-                      <h3 className="text-7xl sm:text-8xl font-black text-primary tracking-tighter leading-none">
-                        ₹{results ? results.totalCost.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '0'}
-                      </h3>
-                    </div>
+            {/* Results Side */}
+            <div className="lg:col-span-12 space-y-8">
+               <Card className="relative border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[3.5rem] text-foreground dark:text-zinc-100">
+                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-emerald-500 to-violet-600" />
+                 
+                 <CardContent className="p-12 sm:p-20 space-y-12">
+                   <div className="flex flex-col items-center text-center space-y-6">
+                     <div className="flex items-center gap-3 bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/20">
+                       <Zap className="h-4 w-4 text-blue-600 dark:text-blue-400 fill-blue-600 dark:fill-blue-400 shadow-[0_0_15px_blue]" />
+                       <span className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Total Expenditure</span>
+                     </div>
+                     
+                     <div className="relative">
+                       <div className="absolute inset-0 blur-3xl bg-blue-500/20 rounded-full" />
+                       <h3 className="relative text-8xl sm:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-blue-700 dark:via-blue-300 to-blue-900 dark:to-blue-600 drop-shadow-2xl">
+                         ₹{results ? Math.round(results.totalCost).toLocaleString() : '0'}
+                       </h3>
+                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div className="p-5 bg-background rounded-[1.5rem] border-2 shadow-sm space-y-1 hover:border-primary/20 transition-colors">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Fuel Used</p>
-                        <p className="text-2xl font-black tracking-tight">{results ? results.fuelReq.toFixed(2) : '0.00'} <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-0.5">L</span></p>
-                      </div>
-                      <div className="p-5 bg-background rounded-[1.5rem] border-2 shadow-sm space-y-1 hover:border-primary/20 transition-colors">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Total Cost</p>
-                        <p className="text-2xl font-black tracking-tight">₹{results ? results.totalCost.toFixed(0) : '0'}</p>
-                      </div>
-                      <div className="p-5 bg-background rounded-[1.5rem] border-2 shadow-sm space-y-1 hover:border-primary/20 transition-colors">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">Cost / KM</p>
-                        <p className="text-2xl font-black tracking-tight">₹{results ? results.costPerKm.toFixed(2) : '0.00'}</p>
-                      </div>
-                    </div>
+                     <div className="flex items-center gap-2 p-3 bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 rounded-2xl w-fit">
+                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <p className="text-[10px] font-black text-muted-foreground dark:text-zinc-500 uppercase tracking-widest">
+                          Requires {results ? results.fuelReq.toFixed(2) : '0.0'} Liters
+                        </p>
+                     </div>
+                   </div>
 
-                    {results && fuelType && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex justify-center pt-2"
-                      >
-                        <ExportActions
-                          title="VehicleHub Trip Plan"
-                          inputs={[
-                            { label: 'Fuel Type', value: fuelType.toUpperCase() },
-                            { label: 'Distance', value: `${fuelDistance} km` },
-                            { label: 'Mileage', value: `${fuelMileage} km/L` },
-                            { label: 'Entered Price', value: `₹${results.enteredPrice}/L` },
-                          ]}
-                          results={[
-                            { label: 'Fuel Needed', value: `${results.fuelReq.toFixed(2)} L` },
-                            { label: 'Total Trip Cost', value: `₹${results.totalCost.toFixed(2)}` },
-                          ]}
-                        />
-                      </motion.div>
-                    )}
-                  </CardContent>
-                </Card>
+                   <div className="grid grid-cols-2 gap-6">
+                     <div className="p-8 rounded-[2.5rem] bg-muted/20 dark:bg-zinc-900 border border-border dark:border-zinc-800/50 hover:border-blue-500/30 transition-colors group">
+                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-600 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Cost Efficiency</p>
+                       <p className="text-4xl font-black text-foreground dark:text-zinc-100">
+                         ₹{results ? results.costPerKm.toFixed(2) : '0.00'}
+                       </p>
+                       <span className="text-[9px] font-black text-muted-foreground dark:text-zinc-700 uppercase tracking-widest">Per Kilometer</span>
+                     </div>
+                     <div className="p-8 rounded-[2.5rem] bg-muted/20 dark:bg-zinc-900 border border-border dark:border-zinc-800/50 hover:border-emerald-500/30 transition-colors group text-right">
+                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-zinc-600 mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Fuel Index</p>
+                       <p className="text-4xl font-black text-foreground dark:text-zinc-100">
+                         {results ? results.fuelReq.toFixed(1) : '0.0'}L
+                       </p>
+                       <span className="text-[9px] font-black text-muted-foreground dark:text-zinc-700 uppercase tracking-widest">Total Volume</span>
+                     </div>
+                   </div>
 
-                {/* Quick Info Card */}
-                <div className="p-6 bg-muted/30 rounded-[2rem] border-2 border-dashed border-muted-foreground/20 flex items-start gap-4">
-                  <div className="p-3 bg-primary/10 rounded-xl shadow-inner shrink-0">
-                    <Info className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em]">Calculation Logic</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">
-                      Costs are calculated based on your <span className="font-black text-foreground underline decoration-primary/30 underline-offset-4">manually entered fuel price</span>. 
-                    </p>
-                  </div>
-                </div>
-              </div>
+                   <div className="pt-8 border-t border-border dark:border-zinc-800 flex flex-wrap justify-between items-center gap-6">
+                     <div className="flex items-center gap-3">
+                        <div className="p-2 bg-muted dark:bg-zinc-900 rounded-xl">
+                          <Info className="h-4 w-4 text-muted-foreground dark:text-zinc-700" />
+                        </div>
+                        <p className="text-[9px] font-bold text-muted-foreground dark:text-zinc-600 uppercase tracking-widest leading-tight max-w-[180px]">
+                          Derived using market standard consumption algorithms.
+                        </p>
+                     </div>
+                     
+                     <div className="flex gap-3 ml-auto">
+                        {results && fuelType && (
+                          <ExportActions
+                            title="VehicleHub Trip Plan"
+                            inputs={[
+                              { label: 'Type', value: fuelType.toUpperCase() },
+                              { label: 'Dist', value: `${fuelDistance} km` },
+                              { label: 'M', value: `${fuelMileage} km/L` },
+                            ]}
+                            results={[
+                              { label: 'Cost', value: `₹${results.totalCost.toFixed(0)}` },
+                              { label: 'Fuel', value: `${results.fuelReq.toFixed(2)} L` },
+                            ]}
+                          />
+                        )}
+                        <Button variant="ghost" className="h-14 px-6 rounded-2xl border border-border dark:border-zinc-800 text-muted-foreground dark:text-zinc-500 hover:text-foreground dark:hover:text-zinc-100 font-black uppercase text-[10px] tracking-widest bg-muted/10 dark:bg-zinc-950/50">
+                          <Share2 className="h-4 w-4" />
+                        </Button>
+                     </div>
+                   </div>
+                 </CardContent>
+               </Card>
+
+               <div className="p-8 rounded-[2rem] bg-card dark:bg-zinc-900/40 border border-border dark:border-zinc-800 flex items-start gap-4 backdrop-blur-sm">
+                 <div className="p-3 bg-blue-500/10 rounded-2xl shrink-0">
+                    <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                 </div>
+                 <div className="space-y-1">
+                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground dark:text-zinc-100">Advanced Insights</p>
+                   <p className="text-xs text-muted-foreground dark:text-zinc-500 leading-relaxed font-medium">
+                     Your trip cost index is <span className="text-emerald-600 dark:text-emerald-400 font-black">₹{results ? results.costPerKm.toFixed(2) : '0.00'}/KM</span>. Optimize your mileage by maintaining steady speeds and checking tire pressure Matrix regularly.
+                   </p>
+                 </div>
+               </div>
             </div>
           </div>
         </motion.section>
+
+        <CalculationHistory 
+          history={history} 
+          onClear={clearHistory} 
+          onReuse={handleReuse} 
+          title="Audit Log: Transit Ledger"
+        />
       </div>
-
-
-      <CalculationHistory 
-        history={history} 
-        onClear={clearHistory} 
-        onReuse={handleReuse} 
-      />
     </TooltipProvider>
   );
 };

@@ -4,6 +4,7 @@ import { collection, query, orderBy, where, Timestamp, getDocs, writeBatch, dele
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -190,28 +191,31 @@ export const AdminDashboard = () => {
           transition={{ duration: 0.3 }}
           className="max-w-md w-full"
         >
-          <Card className="border-2 shadow-2xl overflow-hidden">
-            <CardHeader className="bg-muted/30 pb-8 text-center">
-              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20">
-                <Lock className="h-8 w-8" />
+          <Card className="border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600" />
+            <CardHeader className="pb-8 pt-10 px-10 text-center">
+              <div className="w-20 h-20 bg-blue-500 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/20 group hover:rotate-12 transition-transform">
+                <Lock className="h-10 w-10" />
               </div>
-              <CardTitle className="text-2xl font-black tracking-tight uppercase">Admin Login</CardTitle>
+              <CardTitle className="text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Neural Gate</CardTitle>
+              <CardDescription className="text-muted-foreground font-medium">Authentication required to access the central terminal.</CardDescription>
             </CardHeader>
-            <CardContent className="pt-8 pb-10 space-y-6">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <CardContent className="px-10 pb-12 space-y-8">
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Access Key</Label>
+                  <div className="relative group">
+                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
                     <Input
                       type="password"
-                      placeholder="Enter Password"
+                      placeholder="ENTER KEYCODE"
                       value={password}
                       onChange={(e) => {
                         setPassword(e.target.value);
                         setLoginError(false);
                       }}
-                      className={`pl-11 h-12 rounded-2xl border-2 transition-all ${
-                        loginError ? 'border-destructive focus:ring-destructive' : 'focus:ring-primary'
+                      className={`pl-12 h-16 bg-muted/20 dark:bg-zinc-950 border-2 transition-all font-black text-lg text-foreground dark:text-zinc-100 uppercase tracking-[0.3em] rounded-2xl outline-none ${
+                        loginError ? 'border-red-500 focus:ring-red-500/20' : 'border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
                       }`}
                       autoFocus
                     />
@@ -222,15 +226,15 @@ export const AdminDashboard = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="text-[10px] font-black text-destructive uppercase tracking-widest text-center"
+                        className="text-[10px] font-black text-red-500 uppercase tracking-widest text-center"
                       >
-                        Invalid Password
+                        Access Denied: Invalid Keycode
                       </motion.p>
                     )}
                   </AnimatePresence>
                 </div>
-                <Button type="submit" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-xs gap-3 shadow-lg shadow-primary/20">
-                  Login
+                <Button type="submit" className="w-full h-16 rounded-3xl font-black uppercase tracking-[0.2em] text-[11px] bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-500 hover:to-purple-600 text-white shadow-2xl shadow-blue-500/20 transition-all hover:scale-[1.01] active:scale-[0.99]">
+                  Decrypt & Authorize
                 </Button>
               </form>
             </CardContent>
@@ -246,132 +250,180 @@ export const AdminDashboard = () => {
   );
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-700">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-primary text-primary-foreground rounded-lg shadow-lg shadow-primary/20">
-              <ShieldCheck className="h-5 w-5" />
+    <div className="space-y-10 animate-in fade-in duration-700 max-w-[90rem] mx-auto pb-20">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-white/5 pb-8">
+        <div className="space-y-2">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/20">
+              <ShieldCheck className="h-6 w-6" />
             </div>
-            <h2 className="text-2xl font-black tracking-tighter uppercase">Admin Dashboard</h2>
+            <h2 className="text-4xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Central <span className="text-blue-500">Terminal</span></h2>
           </div>
-          <p className="text-muted-foreground text-xs font-medium">Monitoring user feedback and system suggestions.</p>
+          <p className="text-muted-foreground text-sm font-medium">Monitoring real-time neural feedback and system performance matrix.</p>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsLoggedIn(false)}
-          className="h-10 rounded-xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:text-destructive transition-colors"
-        >
-          Logout
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsLoggedIn(false)}
+            className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] text-muted-foreground hover:text-foreground dark:hover:text-zinc-100 border border-transparent hover:border-border dark:hover:border-zinc-800 transition-all bg-muted/50 dark:bg-zinc-900/50"
+          >
+            Terminal Logout
+          </Button>
+        </div>
       </div>
 
       {/* Visitor Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="border-2 shadow-sm bg-primary/5 border-primary/10 overflow-hidden relative">
-          <div className="absolute right-0 top-0 p-4 opacity-10">
-            <Users className="h-16 w-16" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden relative rounded-[2rem] p-1">
+          <div className="absolute right-0 top-0 p-6 opacity-[0.05]">
+            <Users className="h-20 w-20 text-blue-500" />
           </div>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Total Visitors</CardTitle>
+          <CardHeader className="pb-2 pt-6 px-6 relative z-10">
+            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Core Visitors</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-black tracking-tighter text-foreground">
+          <CardContent className="px-6 pb-6 relative z-10">
+            <div className="text-5xl font-black tracking-tighter text-foreground dark:text-zinc-100">
               {visitorStats.totalCount.toLocaleString()}
             </div>
-            <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Unique lifetime visits</p>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="h-1 w-1 rounded-full bg-blue-500 animate-pulse" />
+              <p className="text-[9px] font-black text-blue-500 uppercase tracking-widest">Lifetime Instances</p>
+            </div>
           </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600" />
         </Card>
 
-        <Card className="border-2 shadow-sm bg-emerald-500/5 border-emerald-500/10 overflow-hidden relative">
-          <div className="absolute right-0 top-0 p-4 opacity-10">
-            <CalendarDays className="h-16 w-16 text-emerald-500" />
+        <Card className="border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden relative rounded-[2rem] p-1">
+          <div className="absolute right-0 top-0 p-6 opacity-[0.05]">
+            <CalendarDays className="h-20 w-20 text-emerald-500" />
           </div>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Today's Visitors</CardTitle>
+          <CardHeader className="pb-2 pt-6 px-6 relative z-10">
+            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Active Cycle Sessions</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-black tracking-tighter text-foreground">
+          <CardContent className="px-6 pb-6 relative z-10">
+            <div className="text-5xl font-black tracking-tighter text-foreground dark:text-zinc-100">
               {visitorStats.dailyCount.toLocaleString()}
             </div>
-            <p className="text-[9px] font-bold text-muted-foreground uppercase mt-1">Unique visits today</p>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
+              <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Current 24h Window</p>
+            </div>
           </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-600" />
         </Card>
 
+        <Card className="border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden relative rounded-[2rem] p-1">
+          <div className="absolute right-0 top-0 p-6 opacity-[0.05]">
+            <MessageSquare className="h-20 w-20 text-purple-500" />
+          </div>
+          <CardHeader className="pb-2 pt-6 px-6 relative z-10">
+            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Feedback Packets</CardTitle>
+          </CardHeader>
+          <CardContent className="px-6 pb-6 relative z-10">
+            <div className="text-5xl font-black tracking-tighter text-foreground dark:text-zinc-100">
+              {feedback.length}
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="h-1 w-1 rounded-full bg-purple-500 animate-pulse" />
+              <p className="text-[9px] font-black text-purple-500 uppercase tracking-widest">Awaiting Analysis</p>
+            </div>
+          </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-600" />
+        </Card>
+
+        <Card className="border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden relative rounded-[2rem] p-1">
+          <div className="absolute right-0 top-0 p-6 opacity-[0.05]">
+            <RefreshCcw className="h-20 w-20 text-amber-500" />
+          </div>
+          <CardHeader className="pb-2 pt-6 px-6 relative z-10">
+            <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Sync Status</CardTitle>
+          </CardHeader>
+          <CardContent className="px-6 pb-6 relative z-10">
+            <div className="text-4xl font-black tracking-tighter text-foreground dark:text-zinc-100 uppercase italic">
+              ONLINE
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="h-1 w-1 rounded-full bg-amber-500 animate-pulse" />
+              <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Real-time Datastream</p>
+            </div>
+          </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-600" />
+        </Card>
       </div>
 
       {/* Unified Clear Button */}
-      <div className="pt-0">
+      <div className="pt-4">
         {!showConfirm ? (
           <Button
             variant="destructive"
             onClick={() => setShowConfirm(true)}
             disabled={isClearing || feedback.length === 0}
-            className="w-full h-12 rounded-xl font-black uppercase tracking-widest text-xs gap-3 shadow-lg shadow-destructive/20 transition-all hover:scale-[1.005] active:scale-[0.995]"
+            className="w-full h-16 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] gap-4 shadow-2xl shadow-red-500/10 transition-all hover:scale-[1.005] active:scale-[0.995] bg-red-950/20 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white"
           >
-            <Trash2 className="h-5 w-5" />
-            Clear All Reports
+            <Trash2 className="h-6 w-6" />
+            Purge All Neural Records
           </Button>
         ) : (
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-destructive/5 border-2 border-destructive/20 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4"
+            className="bg-red-950/40 border-2 border-red-500/20 p-6 rounded-[2.5rem] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl"
           >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-destructive/10 rounded-lg">
-                <AlertTriangle className="h-5 w-5 text-destructive" />
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-red-500/10 rounded-2xl">
+                <AlertTriangle className="h-6 w-6 text-red-500 animate-bounce" />
               </div>
-              <p className="text-sm font-bold text-destructive">
-                Are you sure you want to clear all bugs and suggestions?
-              </p>
+              <div className="space-y-1">
+                <p className="text-base font-black text-red-500 uppercase tracking-tight">Destructive Protocol Initialized</p>
+                <p className="text-xs font-bold text-red-400 opacity-60">This action will irreversibly wipe all user feedback and logs.</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex items-center gap-4 w-full sm:w-auto">
               <Button 
                 variant="outline" 
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 sm:flex-none h-10 rounded-xl font-bold uppercase tracking-widest text-[10px] border-2"
+                className="flex-1 sm:flex-none h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-[11px] border-2 border-zinc-800 bg-muted/20 dark:bg-zinc-950 text-muted-foreground hover:text-foreground dark:hover:text-zinc-100"
               >
-                Cancel
+                Abort Protocol
               </Button>
               <Button 
                 variant="destructive" 
                 onClick={handleClearAllReports}
                 disabled={isClearing}
-                className="flex-1 sm:flex-none h-10 rounded-xl font-black uppercase tracking-widest text-[10px] gap-2 shadow-lg shadow-destructive/20"
+                className="flex-1 sm:flex-none h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-3 shadow-2xl shadow-red-500/20 bg-red-600 hover:bg-red-700 text-white"
               >
-                {isClearing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                Confirm Clear
+                {isClearing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Trash2 className="h-5 w-5" />}
+                Confirm Purge
               </Button>
             </div>
           </motion.div>
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+      <div className="flex flex-wrap items-center gap-4 pt-10">
+        <div className="relative flex-1 min-w-[300px] group">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
           <input
             type="text"
-            placeholder="Search feedback..."
+            placeholder="SCAN FEEDBACK MATRIX..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-10 pl-9 pr-4 rounded-xl border-2 bg-card focus:ring-2 focus:ring-primary outline-none text-xs font-medium transition-all"
+            className="w-full h-14 pl-14 pr-6 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-black uppercase tracking-widest text-foreground dark:text-zinc-100 transition-all"
           />
         </div>
         
         <Select value={filterType} onValueChange={(v: any) => setFilterType(v)}>
-          <SelectTrigger className="h-10 w-32 rounded-xl border-2 font-bold text-[10px] uppercase tracking-widest">
-            <Filter className="h-3.5 w-3.5 mr-2" />
-            <SelectValue placeholder="Filter" />
+          <SelectTrigger className="h-14 w-44 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 font-black text-[11px] uppercase tracking-widest text-foreground dark:text-zinc-100 focus:ring-blue-500">
+            <Filter className="h-4 w-4 mr-3 text-blue-500" />
+            <SelectValue placeholder="Matrix Filter" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="All" className="rounded-lg">All Types</SelectItem>
-            <SelectItem value="Suggestion" className="rounded-lg">Suggestions</SelectItem>
-            <SelectItem value="Bug" className="rounded-lg">Bugs</SelectItem>
-            <SelectItem value="Improvement" className="rounded-lg">Improvements</SelectItem>
+          <SelectContent className="rounded-2xl bg-card dark:bg-zinc-900 border-border dark:border-zinc-800 text-foreground dark:text-zinc-100">
+            <SelectItem value="All">All Entities</SelectItem>
+            <SelectItem value="Suggestion">Suggestions</SelectItem>
+            <SelectItem value="Bug">System Anomalies</SelectItem>
+            <SelectItem value="Improvement">Optimizations</SelectItem>
           </SelectContent>
         </Select>
 
@@ -379,10 +431,10 @@ export const AdminDashboard = () => {
           variant="outline"
           size="sm"
           onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-          className="h-10 rounded-xl border-2 font-black uppercase tracking-widest text-[10px] gap-2"
+          className="h-14 px-6 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 font-black uppercase tracking-widest text-[11px] gap-3 text-foreground dark:text-zinc-100 hover:bg-muted dark:hover:bg-zinc-900 shadow-xl"
         >
-          <ArrowUpDown className="h-3.5 w-3.5" />
-          {sortOrder === 'desc' ? 'New' : 'Old'}
+          <ArrowUpDown className="h-4 w-4 text-blue-500" />
+          {sortOrder === 'desc' ? 'Chronological' : 'Reverse'}
         </Button>
       </div>
 
@@ -392,160 +444,184 @@ export const AdminDashboard = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-green-500/10 border border-green-500/20 p-3 rounded-xl flex items-center justify-center gap-2 text-green-600 text-[10px] font-black uppercase tracking-widest"
+            className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl flex items-center justify-center gap-3 text-emerald-500 text-[11px] font-black uppercase tracking-widest"
           >
-            <CheckCircle2 className="h-4 w-4" />
-            All reports cleared successfully ✅
+            <CheckCircle2 className="h-5 w-5" />
+            Neural Wipe Completed Successfully
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Visitor Activity Log */}
-      <Card className="border-2 shadow-sm overflow-hidden bg-muted/30">
-        <CardHeader className="pb-2 border-b bg-muted/50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-primary" />
-              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em]">Recent Visitor Activity</CardTitle>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Live Tracking</span>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="max-h-[200px] overflow-y-auto divide-y">
-            {recentVisitors.length === 0 ? (
-              <div className="py-8 text-center text-muted-foreground text-[10px] font-bold uppercase">No activity logged yet</div>
-            ) : (
-              recentVisitors.map((visitor, idx) => (
-                <div key={idx} className="p-3 flex items-center justify-between hover:bg-muted/50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary">
-                      {visitor.name?.[0]?.toUpperCase() || 'U'}
-                    </div>
-                    <div>
-                      <h4 className="text-[11px] font-black uppercase tracking-tighter truncate max-w-[150px]">{visitor.name || 'Anonymous User'}</h4>
-                      <p className="text-[8px] font-bold text-muted-foreground uppercase opacity-60">ID: {visitor.userId?.substring(0, 8)}...</p>
-                    </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        {/* Left Column: Activity Log */}
+        <div className="lg:col-span-4 space-y-8">
+           <Card className="border-none shadow-2xl overflow-hidden bg-card dark:bg-zinc-950 rounded-[2.5rem]">
+            <CardHeader className="pb-6 pt-10 px-10 border-b border-border dark:border-zinc-800 relative bg-muted/30 dark:bg-zinc-950/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 bg-blue-500/10 rounded-xl">
+                    <Users className="h-5 w-5 text-blue-500" />
                   </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1.5 text-primary text-[9px] font-bold uppercase">
-                      <Clock className="h-3 w-3" />
-                      {visitor.timestamp ? format(visitor.timestamp.toDate(), 'HH:mm:ss') : 'Just now'}
-                    </div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase">{visitor.date || 'Today'}</p>
-                  </div>
+                  <CardTitle className="text-[11px] font-black uppercase tracking-[0.25em] text-foreground dark:text-zinc-100">Live Node Activity</CardTitle>
                 </div>
-              ))
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {loading ? (
-        <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="h-12 w-12 text-primary animate-spin" />
-          <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Loading Feedback...</p>
-        </div>
-      ) : error ? (
-        <Card className="border-2 border-destructive/20 bg-destructive/5">
-          <CardContent className="py-20 text-center space-y-4">
-            <AlertTriangle className="h-12 w-12 text-destructive mx-auto" />
-            <p className="text-lg font-bold text-destructive">{error}</p>
-            <Button onClick={() => window.location.reload()} variant="outline" className="rounded-xl">Retry Connection</Button>
-          </CardContent>
-        </Card>
-      ) : filteredFeedback.length === 0 ? (
-        <Card className="border-2 border-dashed">
-          <CardContent className="py-32 text-center space-y-4">
-            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto">
-              <MessageSquare className="h-10 w-10 text-muted-foreground/30" />
-            </div>
-            <div className="space-y-1">
-              <p className="text-xl font-black tracking-tight uppercase">No Feedback Found</p>
-              <p className="text-muted-foreground font-medium">When users submit feedback, it will appear here instantly.</p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AnimatePresence mode="popLayout">
-            {filteredFeedback.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="h-full border-2 hover:border-primary/30 transition-all shadow-lg hover:shadow-xl bg-card group">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-xl ${
-                          item.type === 'Bug' ? 'bg-red-500/10 text-red-600' : 
-                          item.type === 'Improvement' ? 'bg-blue-500/10 text-blue-600' :
-                          'bg-amber-500/10 text-amber-600'
-                        }`}>
-                          {item.type === 'Bug' ? <Bug className="h-5 w-5" /> : 
-                           item.type === 'Improvement' ? <Rocket className="h-5 w-5" /> :
-                           <Lightbulb className="h-5 w-5" />}
+                <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 rounded-full">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[8px] font-black uppercase tracking-widest text-emerald-500">Stream Active</span>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="max-h-[600px] overflow-y-auto divide-y divide-border dark:divide-zinc-800 scrollbar-hide">
+                {recentVisitors.length === 0 ? (
+                  <div className="py-20 text-center text-muted-foreground text-[11px] font-black uppercase italic tracking-widest">No activity log detected</div>
+                ) : (
+                  recentVisitors.map((visitor, idx) => (
+                    <div key={idx} className="p-6 flex items-center justify-between hover:bg-muted/50 dark:hover:bg-zinc-900/50 transition-colors border-l-2 border-transparent hover:border-blue-500 group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 flex items-center justify-center text-sm font-black text-blue-500 shadow-xl group-hover:scale-110 transition-transform">
+                          {visitor.name?.[0]?.toUpperCase() || 'U'}
                         </div>
                         <div>
-                          <Badge variant="outline" className={`rounded-lg font-black uppercase tracking-widest text-[10px] ${
-                            item.type === 'Bug' ? 'border-red-200 text-red-600 bg-red-50' : 
-                            item.type === 'Improvement' ? 'border-blue-200 text-blue-600 bg-blue-50' :
-                            'border-amber-200 text-amber-600 bg-amber-50'
-                          }`}>
-                            {item.type}
-                          </Badge>
-                          <div className="flex items-center gap-2 mt-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                            <Clock className="h-3 w-3" />
-                            {item.createdAt ? format(item.createdAt.toDate(), 'MMM d, yyyy • HH:mm') : 'Just now'}
+                          <h4 className="text-[13px] font-black uppercase tracking-tighter text-foreground dark:text-zinc-100 truncate max-w-[140px]">{visitor.name || 'Anonymous Node'}</h4>
+                          <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ID: {visitor.userId?.substring(0, 12)}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-2 text-blue-400 text-[10px] font-black uppercase tracking-widest mb-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          {visitor.timestamp ? format(visitor.timestamp.toDate(), 'HH:mm') : 'NOW'}
+                        </div>
+                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-60">{visitor.date || 'CYCLE T0'}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column: Feedback List */}
+        <div className="lg:col-span-8">
+          {loading ? (
+            <div className="h-[600px] flex flex-col items-center justify-center space-y-6">
+              <div className="relative">
+                <div className="h-20 w-20 rounded-full border-4 border-muted dark:border-zinc-900 border-t-blue-500 animate-spin" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                   <RefreshCcw className="h-8 w-8 text-blue-500 animate-pulse" />
+                </div>
+              </div>
+              <p className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground animate-pulse">Syncing Neural Grid...</p>
+            </div>
+          ) : error ? (
+            <Card className="border-2 border-red-500/20 bg-red-950/10 rounded-[3rem]">
+              <CardContent className="py-24 text-center space-y-6">
+                <AlertTriangle className="h-16 w-16 text-red-500 mx-auto animate-bounce" />
+                <p className="text-2xl font-black text-red-500 uppercase tracking-tight italic">{error}</p>
+                <Button onClick={() => window.location.reload()} variant="outline" className="h-14 px-8 rounded-2xl border-2 border-red-500/20 text-red-500 font-black uppercase tracking-widest text-[11px]">Retry Authorization</Button>
+              </CardContent>
+            </Card>
+          ) : filteredFeedback.length === 0 ? (
+            <Card className="border-2 border-dashed border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950/50 rounded-[3rem]">
+              <CardContent className="py-32 text-center space-y-6">
+                <div className="w-24 h-24 bg-card dark:bg-zinc-900 rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl border border-border dark:border-zinc-800">
+                  <MessageSquare className="h-12 w-12 text-muted-foreground/30" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-2xl font-black tracking-tight uppercase text-muted-foreground/40 italic">No Neural Data Captured</p>
+                  <p className="text-muted-foreground/30 font-bold uppercase text-[10px] tracking-widest">Waiting for user broadcasts to populate the matrix.</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 gap-6">
+              <AnimatePresence mode="popLayout">
+                {filteredFeedback.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <Card className="border-none transition-all shadow-2xl bg-card dark:bg-zinc-950 group relative overflow-hidden rounded-[2.5rem] p-1">
+                      <div className={`absolute top-0 left-0 w-1.5 h-full ${
+                        item.type === 'Bug' ? 'bg-red-500' : 
+                        item.type === 'Improvement' ? 'bg-blue-500' :
+                        'bg-amber-500'
+                      }`} />
+                      
+                      <CardHeader className="pb-4 pt-8 px-8">
+                        <div className="flex items-start justify-between gap-6">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-2xl ${
+                              item.type === 'Bug' ? 'bg-red-500/10 text-red-500' : 
+                              item.type === 'Improvement' ? 'bg-blue-500/10 text-blue-500' :
+                              'bg-amber-500/10 text-amber-500'
+                            } shadow-xl`}>
+                              {item.type === 'Bug' ? <Bug className="h-6 w-6" /> : 
+                               item.type === 'Improvement' ? <Rocket className="h-6 w-6" /> :
+                               <Lightbulb className="h-6 w-6" />}
+                            </div>
+                            <div>
+                               <div className="flex items-center gap-2 mb-2">
+                                  <Badge className={`rounded-xl font-black uppercase tracking-widest text-[9px] px-3 py-1 ${
+                                    item.type === 'Bug' ? 'bg-red-600 text-white' : 
+                                    item.type === 'Improvement' ? 'bg-blue-600 text-white' :
+                                    'bg-amber-500 text-white'
+                                  }`}>
+                                    {item.type}
+                                  </Badge>
+                                  {item.rating && (
+                                    <div className="flex items-center gap-1.5 bg-muted dark:bg-zinc-900 px-3 py-1 rounded-xl border border-border dark:border-zinc-800">
+                                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                                      <span className="text-[10px] font-black text-foreground dark:text-zinc-100">{item.rating}</span>
+                                    </div>
+                                  )}
+                               </div>
+                              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                                <Clock className="h-3.5 w-3.5" />
+                                {item.createdAt ? format(item.createdAt.toDate(), 'MMMM d, yyyy • HH:mm') : 'TIME_NULL'}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      {item.rating && (
-                        <div className="flex items-center gap-0.5 bg-amber-500/10 px-2 py-1 rounded-lg">
-                          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
-                          <span className="text-xs font-black text-amber-600">{item.rating}</span>
+                      </CardHeader>
+                      <CardContent className="space-y-8 px-10 pb-10">
+                        <div className="bg-muted/30 dark:bg-zinc-900/50 p-6 rounded-3xl border border-border dark:border-zinc-800 relative group-hover:bg-muted/50 dark:group-hover:bg-zinc-900 transition-colors">
+                          <p className="text-foreground dark:text-zinc-100 font-bold leading-relaxed whitespace-pre-wrap italic text-lg">
+                            "{item.message}"
+                          </p>
                         </div>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <p className="text-foreground font-medium leading-relaxed whitespace-pre-wrap">
-                      {item.message}
-                    </p>
-                    
-                    <div className="pt-6 border-t flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-xs font-black uppercase tracking-tighter border-2 border-background shadow-sm">
-                        {(item.name || 'A').charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Submitted By</span>
-                        <div className="flex items-center gap-1.5 text-sm font-bold text-foreground">
-                          {item.name ? (
-                            <span className="flex items-center gap-1.5">
-                              <User className="h-3.5 w-3.5 text-primary" />
-                              {item.name}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground italic">Anonymous User</span>
-                          )}
+                        
+                        <div className="flex items-center gap-4 border-t border-border dark:border-zinc-800 pt-8">
+                          <div className="w-14 h-14 rounded-2xl bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 flex items-center justify-center text-lg font-black uppercase tracking-widest text-blue-500 shadow-2xl">
+                            {(item.name || 'A').charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-1">Packet Origin</span>
+                            <div className="flex items-center gap-2 text-base font-black text-foreground dark:text-zinc-100 uppercase italic tracking-tight">
+                              {item.name ? (
+                                <>
+                                  <User className="h-4 w-4 text-blue-500" />
+                                  {item.name}
+                                </>
+                              ) : (
+                                <span className="text-muted-foreground italic tracking-[0.3em]">ANONYMOUS_NODE</span>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

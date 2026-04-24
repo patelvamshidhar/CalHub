@@ -36,8 +36,8 @@ const TERMS = [
     title: 'Built-up Area',
     icon: Landmark,
     desc: 'The total area covered by the building, including the thickness of inner and outer walls.',
-    color: 'text-indigo-500',
-    bg: 'bg-indigo-500/10',
+    color: 'text-violet-500',
+    bg: 'bg-violet-500/10',
   },
   {
     title: 'Carpet Area',

@@ -8,6 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import { motion, AnimatePresence } from 'motion/react';
 
 interface ExportActionsProps {
@@ -60,15 +62,15 @@ export const ExportActions = ({ title, inputs, results, disabled }: ExportAction
       </Button>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            disabled={disabled}
-            className="font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-          >
-            <Share2 className="h-4 w-4" />
-            Share Result
-          </Button>
+        <DropdownMenuTrigger
+          disabled={disabled}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+          )}
+        >
+          <Share2 className="h-4 w-4" />
+          Share Result
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48 font-bold uppercase tracking-widest text-[10px]">
           <DropdownMenuItem onClick={handleWhatsApp} className="gap-2 cursor-pointer">

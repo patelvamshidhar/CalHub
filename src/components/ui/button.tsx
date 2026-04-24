@@ -44,6 +44,7 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  asChild, // Extract asChild to prevent passing it to the button element
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   return (

@@ -113,38 +113,39 @@ export const FeedbackForm = () => {
         )}
       </AnimatePresence>
 
-      <Card className="border-2 shadow-xl overflow-hidden">
-        <CardHeader className="bg-muted/30 pb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary text-primary-foreground rounded-xl">
-              <MessageSquare className="h-5 w-5" />
+      <Card className="border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-zinc-500 to-purple-600" />
+        <CardHeader className="pb-8 pt-10 px-10">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-blue-500 font-black text-white rounded-2xl shadow-xl shadow-blue-500/20">
+              <MessageSquare className="h-6 w-6" />
             </div>
-            <CardTitle className="text-2xl font-black tracking-tight uppercase">Submit Feedback</CardTitle>
+            <CardTitle className="text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Feedback Hub</CardTitle>
           </div>
-          <CardDescription className="text-sm font-medium">
-            Help us improve CalHub. Share your suggestions, report bugs, or suggest improvements.
+          <CardDescription className="text-sm font-medium text-muted-foreground">
+            Help us calibrate the future of CalHub. Share your neural feedback or report system anomalies.
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-8 space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Name (Optional)</Label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <CardContent className="px-10 pb-10 space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 gap-8">
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Identity Tag (Optional)</Label>
+                <div className="relative group">
+                  <User className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
                   <Input
-                    placeholder="Your name"
+                    placeholder="ENTER YOUR NAME"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-11 h-12 rounded-2xl border-2 focus:ring-primary"
+                    className="pl-12 h-16 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl font-black text-lg text-foreground dark:text-zinc-100 uppercase tracking-wider transition-all outline-none"
                     disabled={isSubmitting}
                   />
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Rating</Label>
-                <div className="flex items-center gap-2">
+              <div className="space-y-4">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Experience Rating</Label>
+                <div className="flex items-center gap-3 bg-muted/20 dark:bg-zinc-950 p-4 rounded-3xl border border-border dark:border-zinc-800">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -156,42 +157,44 @@ export const FeedbackForm = () => {
                       className="transition-transform hover:scale-125 active:scale-90 disabled:opacity-50"
                     >
                       <Star
-                        className={`h-8 w-8 ${
+                        className={`h-10 w-10 ${
                           (hoveredRating || rating) >= star
-                            ? 'fill-amber-400 text-amber-400'
-                            : 'text-muted-foreground/30'
+                            ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]'
+                            : 'text-zinc-300 dark:text-zinc-800'
                         }`}
                       />
                     </button>
                   ))}
-                  <span className="ml-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
-                    {rating > 0 ? `${rating} / 5` : 'Select Rating'}
-                  </span>
+                  <div className="ml-auto px-4 py-2 bg-muted dark:bg-zinc-900 rounded-xl">
+                    <span className="text-[10px] font-black text-foreground dark:text-zinc-100 uppercase tracking-widest">
+                      {rating > 0 ? `${rating} / 5` : 'UNRATED'}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Feedback Type</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Transmission Category</Label>
               <Select value={type} onValueChange={(v: any) => setType(v)} disabled={isSubmitting}>
-                <SelectTrigger className="h-12 rounded-2xl border-2 focus:ring-primary">
-                  <SelectValue placeholder="Select type" />
+                <SelectTrigger className="h-16 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 rounded-2xl font-black text-sm text-foreground dark:text-zinc-100 focus:ring-blue-500">
+                  <SelectValue placeholder="Selection" />
                 </SelectTrigger>
-                <SelectContent className="rounded-2xl">
-                  <SelectItem value="Suggestion" className="rounded-xl">💡 Suggestion</SelectItem>
-                  <SelectItem value="Bug" className="rounded-xl">🐛 Bug Report</SelectItem>
-                  <SelectItem value="Improvement" className="rounded-xl">🚀 Improvement</SelectItem>
+                <SelectContent className="bg-card dark:bg-zinc-900 border-border dark:border-zinc-800 text-foreground dark:text-zinc-100">
+                  <SelectItem value="Suggestion">💡 Suggestion</SelectItem>
+                  <SelectItem value="Bug">🐛 Bug Report</SelectItem>
+                  <SelectItem value="Improvement">🚀 Improvement</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-xs font-black uppercase tracking-widest text-muted-foreground">Your Message</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">System Feedback</Label>
               <Textarea
-                placeholder="Tell us what's on your mind..."
+                placeholder="DESCRIBE YOUR EXPERIENCE..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="min-h-[150px] rounded-2xl border-2 focus:ring-primary resize-none p-4"
+                className="min-h-[160px] bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl font-bold text-foreground dark:text-zinc-100 p-6 resize-none outline-none transition-all"
                 required
                 disabled={isSubmitting}
               />
@@ -203,9 +206,9 @@ export const FeedbackForm = () => {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-destructive/10 text-destructive p-4 rounded-2xl border border-destructive/20 flex items-center gap-3 text-sm font-bold"
+                  className="bg-red-500/10 text-red-500 p-4 rounded-2xl border border-red-500/20 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest"
                 >
-                  <AlertCircle className="h-5 w-5" />
+                  <AlertCircle className="h-4 w-4" />
                   {errorMessage}
                 </motion.div>
               )}
@@ -214,15 +217,15 @@ export const FeedbackForm = () => {
             <Button 
               type="submit" 
               disabled={isSubmitting || !message.trim()}
-              className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-16 rounded-3xl font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl bg-gradient-to-r from-blue-600 to-zinc-700 hover:from-blue-500 hover:to-zinc-600 shadow-blue-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] text-white"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  Submitting...
+                  <Loader2 className="h-5 w-5 mr-3 animate-spin" />
+                  INITIATING TRANSMISSION...
                 </>
               ) : (
-                'Send Feedback'
+                'SEND TO TERMINAL'
               )}
             </Button>
           </form>
