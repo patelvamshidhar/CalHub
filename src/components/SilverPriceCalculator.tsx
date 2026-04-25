@@ -80,107 +80,97 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-      <Card className="overflow-hidden border-none shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] rounded-[3.5rem] bg-card dark:bg-zinc-950 text-foreground dark:text-zinc-100 relative">
+    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 pb-24">
+      <Card className="overflow-hidden border-none shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] rounded-[2.5rem] bg-card dark:bg-zinc-950 text-foreground dark:text-zinc-100 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Input Section */}
-          <div className="p-12 lg:p-16 space-y-12 border-b lg:border-b-0 lg:border-r border-border/50">
-            <div className="space-y-4">
-              <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-zinc-500/10 border-2 border-zinc-500/20 text-muted-foreground dark:text-zinc-400 text-[11px] font-black uppercase tracking-[0.2em] shadow-lg">
-                <CircleDot className="h-4 w-4" />
-                Metallic Evaluation Protocol
+          <div className="p-6 md:p-8 space-y-6 border-b lg:border-b-0 lg:border-r border-border/50">
+            <div className="space-y-4 pb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-500/10 border border-zinc-500/20 text-muted-foreground dark:text-zinc-400 text-[9px] font-black uppercase tracking-[0.2em]">
+                <CircleDot className="h-3 w-3" />
+                Evaluation Protocol
               </div>
-              <h2 className="text-4xl font-black tracking-tighter uppercase leading-[0.9] italic">
-                Silver <br /><span className="text-zinc-500 dark:text-zinc-400">Appraisal</span>
+              <h2 className="text-4xl font-black tracking-tighter uppercase leading-none italic text-text-primary">
+                Silver <span className="text-zinc-500 dark:text-zinc-400">Appraisal</span>
               </h2>
-              <p className="text-muted-foreground text-sm font-bold opacity-50 uppercase tracking-tight">High-fidelity silver density and market valuation suite.</p>
+              <p className="text-text-muted text-[10px] font-black uppercase tracking-widest leading-relaxed">High-fidelity bullion analysis matrix. Rates indexed globally.</p>
             </div>
 
-            <div className="space-y-10 group/inputs">
+            <div className="space-y-6 group/inputs">
               {/* Weight Input */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between px-2">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-50">Weight Analysis</Label>
-                  <div className="flex gap-2 p-1.5 bg-muted/40 dark:bg-zinc-900 rounded-2xl border-2 border-border/50">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1 mb-2">
+                  <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary">Weight Analysis</Label>
+                  <div className="flex gap-1.5 p-1 bg-secondary dark:bg-zinc-900 rounded-xl border border-border">
                     {(['g', 'kg'] as Unit[]).map((u) => (
                       <button
                         key={u}
                         onClick={() => setUnit(u)}
-                        className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${
+                        className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${
                           unit === u 
-                            ? 'bg-zinc-600 text-white shadow-xl shadow-zinc-500/30 dark:bg-zinc-200 dark:text-zinc-950' 
-                            : 'text-muted-foreground hover:text-foreground'
+                            ? 'bg-zinc-600 text-white shadow-lg' 
+                            : 'text-text-muted hover:text-text-primary'
                         }`}
                       >
-                        {u === 'g' ? 'Grams' : 'KG'}
+                        {u === 'g' ? 'Grams' : 'Kilograms'}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div className="relative group/field">
-                  <div className="absolute left-8 top-1/2 -translate-y-1/2 w-14 h-14 rounded-2xl bg-white dark:bg-zinc-950 border-2 border-border flex items-center justify-center shadow-lg group-focus-within/field:border-zinc-500 transition-all z-10">
-                    <Scale className="h-7 w-7 text-muted-foreground group-focus-within/field:text-zinc-600 dark:group-focus-within/field:text-zinc-300" />
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-background border border-border flex items-center justify-center shadow-sm z-10 transition-transform group-focus-within/field:scale-110">
+                    <Scale className="h-5 w-5 text-text-muted group-focus-within/field:text-zinc-600" />
                   </div>
                   <Input
                     type="number"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    className="text-3xl h-24 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-zinc-500/50 rounded-[2.5rem] pl-28 pr-8 font-black text-foreground transition-all shadow-xl group-hover/field:shadow-2xl group-hover/field:-translate-y-1 outline-none"
+                    className="text-3xl h-20 bg-background border-2 border-border focus-visible:ring-0 focus-visible:border-zinc-500/50 rounded-2xl pl-20 pr-6 font-black text-text-primary transition-all outline-none"
                     placeholder="100.0"
                   />
-                  <div className="absolute right-8 top-1/2 -translate-y-1/2 text-3xl font-black text-muted-foreground/10 uppercase tracking-tighter transition-all group-focus-within/field:text-zinc-500/20">
-                    {unit}
-                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-1">
                 {/* Rate Input */}
-                <div className="space-y-4">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground ml-2 opacity-50">Market Rate (₹/g)</Label>
-                  <div className="relative group/field">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-muted-foreground/30 group-focus-within/field:text-zinc-600 dark:group-focus-within/field:text-zinc-300 transition-colors z-10">₹</div>
-                    <Input
-                      type="number"
-                      value={rate}
-                      onChange={(e) => setRate(e.target.value)}
-                      className="h-20 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-zinc-500/50 rounded-3xl pl-12 pr-6 text-2xl font-black text-foreground shadow-xl group-hover/field:shadow-2xl group-hover/field:-translate-y-1 transition-all outline-none"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">Rate (₹/g)</Label>
+                  <Input
+                    type="number"
+                    value={rate}
+                    onChange={(e) => setRate(e.target.value)}
+                    className="h-11 bg-white dark:bg-zinc-950 border-2 border-border rounded-xl px-4 text-lg font-black text-foreground outline-none"
+                  />
                 </div>
 
                 {/* Making Charges */}
-                <div className="space-y-4">
-                  <Label className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground ml-2 opacity-50">Making (%)</Label>
-                  <div className="relative group/field">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-muted-foreground/30 group-focus-within/field:text-zinc-600 dark:group-focus-within/field:text-zinc-300 transition-colors z-10">%</div>
-                    <Input
-                      type="number"
-                      value={makingPercent}
-                      onChange={(e) => setMakingPercent(e.target.value)}
-                      className="h-20 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-zinc-500/50 rounded-3xl pl-12 pr-6 text-2xl font-black text-foreground shadow-xl group-hover/field:shadow-2xl group-hover/field:-translate-y-1 transition-all outline-none"
-                      placeholder="0"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">Making (%)</Label>
+                  <Input
+                    type="number"
+                    value={makingPercent}
+                    onChange={(e) => setMakingPercent(e.target.value)}
+                    className="h-11 bg-white dark:bg-zinc-950 border-2 border-border rounded-xl px-4 text-lg font-black text-foreground outline-none"
+                  />
                 </div>
               </div>
 
-              <div className="pt-8 flex gap-5">
+              <div className="pt-4 flex gap-4">
                 <Button 
                   onClick={reset}
                   variant="outline" 
-                  className="h-18 flex-1 rounded-2xl border-2 border-border hover:bg-muted dark:text-zinc-400 font-black uppercase tracking-[0.2em] text-[10px] transition-all"
+                  className="h-14 flex-1 rounded-xl border-2 border-border hover:bg-muted dark:text-zinc-500 font-black uppercase tracking-[0.2em] text-[9px] transition-all"
                 >
-                  <RefreshCcw className="h-5 w-5 mr-3" />
+                  <RefreshCcw className="h-4 w-4 mr-2" />
                   Reset
                 </Button>
                 <Button 
                   onClick={copyToClipboard}
                   disabled={!results.isValid}
-                  className="h-18 flex-1 rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-800 dark:from-white dark:to-zinc-200 dark:text-zinc-950 text-white font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:scale-[1.05] active:scale-[0.95] transition-all group"
+                  className="h-14 flex-1 rounded-xl bg-zinc-900 dark:bg-white dark:text-zinc-950 text-white font-black uppercase tracking-[0.2em] text-[9px] shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all group"
                 >
-                  {copied ? <Check className="h-5 w-5 mr-3" /> : <Copy className="h-5 w-5 mr-3 group-hover:rotate-12 transition-transform" />}
-                  {copied ? 'Copied' : 'Export Packet'}
+                  {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform" />}
+                  {copied ? 'Copied' : 'Export'}
                 </Button>
               </div>
             </div>
@@ -203,7 +193,7 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     className="relative block group"
                   >
-                    <h3 className="relative text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-zinc-300 via-zinc-600 to-zinc-900 dark:from-white dark:via-zinc-400 dark:to-zinc-600 italic">
+                    <h3 className="relative text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-zinc-300 via-zinc-600 to-zinc-900 dark:from-white dark:via-zinc-400 dark:to-zinc-600 italic">
                       {results.isValid ? formatCurrency(results.totalPrice) : '₹0'}
                     </h3>
                   </motion.div>

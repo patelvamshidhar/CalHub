@@ -71,45 +71,50 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
         {/* Neon Accent Border */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 shadow-[0_0_20px_rgba(6,182,212,0.5)]" />
         
-        <div className="p-8 pb-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/20 border-2 border-cyan-500/30 flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-              <Percent className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+        <div className="p-6 pb-2 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 dark:bg-cyan-500/20 border-2 border-cyan-500/30 flex items-center justify-center shadow-lg">
+              <Percent className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
               <h3 className="text-xl font-black tracking-tighter text-foreground dark:text-zinc-100 leading-none uppercase italic">Rate <span className="text-cyan-600 dark:text-cyan-400">Converter</span></h3>
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-2 opacity-60">
+              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-1.5 opacity-60">
                 Finance Hub Protocol • 12% = ₹1
               </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={reset}
-              className="h-10 w-10 rounded-full hover:bg-muted dark:hover:bg-white/5 text-muted-foreground transition-all"
+              className="h-9 w-9 rounded-full hover:bg-muted dark:hover:bg-white/5 text-muted-foreground transition-all"
             >
-              <RefreshCcw className="h-5 w-5" />
+              <RefreshCcw className="h-4 w-4" />
             </Button>
-            <div className="flex items-center gap-3 bg-muted/40 dark:bg-zinc-950 p-1.5 rounded-full border-2 border-border/50">
-              <span className={`text-[10px] font-black uppercase tracking-tighter px-2 ${mode === 'pctToRate' ? 'text-cyan-600 dark:text-cyan-400' : 'text-muted-foreground/30'}`}>%</span>
-              <Switch 
-                checked={mode === 'rateToPct'} 
-                onCheckedChange={(checked) => setMode(checked ? 'rateToPct' : 'pctToRate')}
-                className="data-[state=checked]:bg-cyan-600"
-              />
-              <span className={`text-[10px] font-black uppercase tracking-tighter px-2 ${mode === 'rateToPct' ? 'text-cyan-600 dark:text-cyan-400' : 'text-muted-foreground/30'}`}>₹/P</span>
+            <div className="flex items-center gap-2 bg-muted/40 dark:bg-zinc-950 p-1 rounded-full border-2 border-border/50">
+              <button 
+                onClick={() => setMode('pctToRate')}
+                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full ${mode === 'pctToRate' ? 'bg-cyan-600 text-white' : 'text-muted-foreground/50'}`}
+              >
+                %
+              </button>
+              <button 
+                onClick={() => setMode('rateToPct')}
+                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full ${mode === 'rateToPct' ? 'bg-cyan-600 text-white' : 'text-muted-foreground/50'}`}
+              >
+                ₹/P
+              </button>
             </div>
           </div>
         </div>
 
-        <CardContent className="p-10 pt-6 space-y-12">
+        <CardContent className="p-8 pt-4 space-y-8">
           {/* Main Input Area */}
-          <div className="space-y-6 text-center">
-            <div className="space-y-4 inline-block w-full max-w-[320px]">
-              <Label className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-2 opacity-50">
+          <div className="space-y-4 text-center">
+            <div className="space-y-3 inline-block w-full max-w-[280px]">
+              <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-1 opacity-50">
                 {mode === 'pctToRate' ? 'Input Percentage' : 'Monthly Interest'}
               </Label>
               <div className="relative group">
@@ -118,16 +123,15 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   placeholder={mode === 'pctToRate' ? "12" : "1"}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="text-3xl h-24 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[2.5rem] text-center font-black text-foreground dark:text-zinc-100 placeholder:text-muted-foreground/10 transition-all shadow-xl group-hover:shadow-2xl group-hover:-translate-y-1 outline-none"
+                  className="text-5xl h-24 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[2rem] text-center font-black text-foreground dark:text-zinc-100 placeholder:text-muted-foreground/10 transition-all shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none"
                 />
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 z-20">
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-20">
                   {results && (
                     <motion.div 
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="flex items-center gap-2 bg-cyan-600 text-white px-4 py-1.5 rounded-full shadow-[0_10px_20px_rgba(6,182,212,0.4)]"
+                      className="flex items-center gap-2 bg-cyan-600 text-white px-3 py-1 rounded-full shadow-lg"
                     >
-                      <span className="text-[10px] font-black uppercase tracking-widest">Active Pulse</span>
                       <Zap className="h-3 w-3 fill-white animate-pulse" />
                     </motion.div>
                   )}
@@ -164,7 +168,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   <div className="relative inline-block">
                     {/* Neon Glow behind result */}
                     <div className="absolute inset-0 blur-3xl bg-cyan-500/20 -z-10 rounded-full" />
-                    <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-cyan-600 dark:via-cyan-400 to-blue-700 dark:to-blue-500 tracking-tighter px-4 drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+                    <h2 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-cyan-600 dark:via-cyan-400 to-blue-700 dark:to-blue-500 tracking-tighter px-4 drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
                       {results.display}
                     </h2>
                   </div>

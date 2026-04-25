@@ -20,7 +20,8 @@ import {
   Scale,
   Search,
   Lock,
-  Unlock
+  Unlock,
+  Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CalculationHistory, HistoryItem } from './CalculationHistory';
@@ -100,30 +101,32 @@ export const GoldSilverHub = () => {
   };
 
   return (
-    <div className="space-y-12 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-10">
+    <div className="space-y-6 w-full max-w-6xl mx-auto px-4 md:px-6 pb-24">
       {/* Top Status Bar */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row items-center justify-between gap-6 bg-card dark:bg-zinc-950 overflow-hidden p-8 rounded-[2.5rem] border border-border shadow-2xl relative"
+        className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-zinc-950 p-5 md:p-6 rounded-[2rem] border border-border shadow-xl relative overflow-hidden"
       >
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
         <div className="space-y-1 text-center md:text-left">
-          <div className="flex items-center gap-3 justify-center md:justify-start mb-2">
-            <div className="p-1.5 bg-zinc-950 dark:bg-white rounded-lg shadow-lg">
-              <Coins className="h-4 w-4 text-white dark:text-zinc-950" />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground opacity-60">Metallic Evaluation Hub</span>
+          <div className="flex items-center gap-2 justify-center md:justify-start mb-0.5">
+            <Coins className="h-3 w-3 text-amber-600 dark:text-amber-500" />
+            <span className="text-[8px] font-black uppercase tracking-[0.4em] text-muted-foreground">Metallic Evaluation Hub</span>
           </div>
-          <h1 className="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-[0.8] mb-4">
-            Gold & Silver <span className="text-transparent bg-clip-text bg-gradient-to-br from-amber-400 to-orange-600">Hub</span>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground uppercase italic leading-none">
+            Gold & Silver <span className="text-transparent bg-clip-text bg-gradient-to-br from-amber-500 to-orange-600">Hub</span>
           </h1>
-          <p className="text-muted-foreground text-sm font-bold uppercase tracking-tight opacity-50">Precision metallic analysis terminal.</p>
+          <p className="text-muted-foreground text-[9px] font-bold uppercase tracking-tight opacity-60">Precision metallic analysis terminal.</p>
         </div>
 
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 rounded-[2rem] bg-secondary border-2 border-border flex items-center justify-center">
-            <ShieldCheck className="h-7 w-7 text-emerald-500 opacity-60" />
+        <div className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900 px-4 py-2 rounded-xl border border-border/50">
+          <div className="flex flex-col items-end">
+            <span className="text-[8px] font-black uppercase tracking-widest text-emerald-500">System Live</span>
+            <span className="text-[10px] font-black uppercase tracking-tighter text-foreground">Encrypted Node</span>
+          </div>
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <ShieldCheck className="h-4 w-4 text-emerald-600" />
           </div>
         </div>
       </motion.div>
@@ -199,19 +202,17 @@ export const GoldSilverHub = () => {
          />
       </div>
 
-      {/* Info Banner */}
-      <div className="bg-card dark:bg-zinc-950 border border-border p-12 rounded-[3.5rem] flex flex-col md:flex-row items-center gap-10 relative overflow-hidden shadow-2xl group">
-        <div className="absolute top-0 right-0 p-8 opacity-[0.05] pointer-events-none group-hover:rotate-45 transition-transform duration-1000">
-          <ShieldCheck className="h-64 w-64 text-emerald-500" />
+      {/* Market Protocol Banner */}
+      <div className="bg-zinc-50 dark:bg-zinc-950 border border-border p-5 md:p-6 rounded-[2rem] flex items-center gap-5 relative overflow-hidden shadow-sm group">
+        <div className="bg-amber-500/10 dark:bg-white/5 p-3 rounded-xl shrink-0">
+          <Zap className="h-5 w-5 text-amber-600 dark:text-amber-500" />
         </div>
-        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-6 rounded-[2rem] shadow-2xl shadow-emerald-500/20 shrink-0 relative z-10">
-          <ShieldCheck className="h-10 w-10" />
-        </div>
-        <div className="space-y-4 text-center md:text-left relative z-10">
-          <h3 className="text-2xl font-black uppercase tracking-tight text-foreground dark:text-zinc-100 italic">Neural Verification <span className="text-emerald-500">Active</span></h3>
-          <p className="text-muted-foreground text-base font-medium leading-relaxed max-w-4xl">
-            Global bullion markets are monitored via a decentralized neural network. Rates fluctuate based on international sovereign indices. 
-            Displayed metrics are for <span className="text-emerald-400 font-black">informational analysis only</span>. Final trade execution values may optimize based on local fiscal jurisdictions including GST, making charges, and hallmarking protocols.
+        <div className="space-y-1">
+          <h3 className="text-xs font-black uppercase tracking-widest text-foreground flex items-center gap-2">
+            Market Intelligence <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          </h3>
+          <p className="text-muted-foreground text-[10px] font-medium leading-relaxed max-w-3xl opacity-80">
+            Rates are indexed globally. Displays are for informational analysis. Final trade values may vary based on GST, making charges, and local hallmarking protocols.
           </p>
         </div>
       </div>

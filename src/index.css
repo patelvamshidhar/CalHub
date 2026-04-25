@@ -5,6 +5,19 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Typography System */
+  --font-display: 2.5rem;
+  --font-heading-lg: 1.5rem;
+  --font-subhead: 1.125rem;
+  --font-body: 0.9375rem;
+  --font-caption: 0.8125rem;
+
+  /* Refined Color Scale */
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #4a4a6a;
+  --color-text-muted: #6e6e8e;
+  --color-btn-text: #ffffff;
 }
 
 @layer base {
@@ -51,18 +64,93 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+    
+    --color-text-primary: #f0f0f5;
+    --color-text-secondary: #a0a0ba;
+    --color-text-muted: #70708f;
   }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-text-primary font-sans antialiased selection:bg-primary/20;
+  }
+
+  h1 { font-size: var(--font-display); font-weight: 800; @apply font-heading tracking-tighter; }
+  h2 { font-size: var(--font-heading-lg); font-weight: 700; @apply font-heading tracking-tight; }
+  h3 { font-size: var(--font-subhead); font-weight: 600; @apply font-heading; }
+  p  { font-size: var(--font-body); color: var(--color-text-secondary); }
+  
+  .text-muted { color: var(--color-text-muted); }
+  .text-secondary { color: var(--color-text-secondary); }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+@layer components {
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 32px;
   }
-  body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/20;
+
+  .calculator-card {
+    @apply p-6 rounded-2xl bg-card border border-border shadow-sm transition-all duration-300;
   }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight;
+
+  .calculator-card:hover {
+    @apply -translate-y-1 shadow-lg border-primary/20;
+  }
+
+  .btn {
+    @apply min-h-[44px] px-6 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  .btn:hover {
+    @apply -translate-y-0.5;
+  }
+
+  input.error {
+    @apply border-destructive ring-destructive/20;
+  }
+
+  /* Skeleton Loading */
+  .skeleton {
+    @apply overflow-hidden relative bg-muted/40;
+  }
+
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+
+  @media (max-width: 768px) {
+    .calculator-grid {
+      grid-template-columns: 1fr;
+      padding: 16px;
+    }
+    
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.25rem; }
+  }
+
+  @media (max-width: 480px) {
+    input, button, .btn {
+      width: 100%;
+      min-height: 48px;
+    }
   }
 }
 @import "tw-animate-css";
