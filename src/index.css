@@ -7,86 +7,101 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Typography System */
-  --font-display: 2.5rem;
-  --font-heading-lg: 1.5rem;
-  --font-subhead: 1.125rem;
-  --font-body: 0.9375rem;
+  --font-display: clamp(2.5rem, 8vw, 4rem);
+  --font-heading-lg: 2.25rem;
+  --font-subhead: 1.25rem;
+  --font-body: 0.9375rem; /* ~15px */
   --font-caption: 0.8125rem;
 
   /* Refined Color Scale */
-  --color-text-primary: #1a1a2e;
-  --color-text-secondary: #4a4a6a;
-  --color-text-muted: #6e6e8e;
+  --color-primary-brand: #2563eb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
   --color-btn-text: #ffffff;
 }
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 224 71% 4%;
+    --background: 210 40% 98%; /* #f8fafc */
+    --foreground: 222 47% 11%; /* #0f172a */
     --card: 0 0% 100%;
-    --card-foreground: 224 71% 4%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 4%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 210 20% 96%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%; /* #2563eb */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
     --secondary-foreground: 221 83% 53%;
-    --muted: 210 20% 96%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-    --accent: 210 20% 96%;
+    --accent: 210 40% 96%;
     --accent-foreground: 221 83% 53%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive-foreground: 210 40% 98%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 221 83% 53%;
-    --radius: 1rem;
+    --radius: 0.75rem;
+
+    /* Custom Spacing System */
+    --step-0: 4px;
+    --step-1: 8px;
+    --step-2: 12px;
+    --step-3: 16px;
+    --step-4: 24px;
+    --step-5: 32px;
+    --step-6: 48px;
+    --step-7: 64px;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 4.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --background: 222 47% 11%; /* #0f172a */
+    --foreground: 210 40% 98%;
+    --card: 222 47% 13%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
     
-    --color-text-primary: #f0f0f5;
-    --color-text-secondary: #a0a0ba;
-    --color-text-muted: #70708f;
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
   }
 
-  *, *::before, *::after {
+  * {
+    @apply border-border;
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 
   html, body {
     overflow-x: hidden;
     scroll-behavior: smooth;
+    @apply antialiased;
   }
 
   body {
-    @apply bg-background text-text-primary font-sans antialiased selection:bg-primary/20;
+    @apply bg-background text-text-primary font-sans leading-relaxed;
+    font-size: var(--font-body);
   }
 
-  h1 { font-size: var(--font-display); font-weight: 800; @apply font-heading tracking-tighter; }
-  h2 { font-size: var(--font-heading-lg); font-weight: 700; @apply font-heading tracking-tight; }
-  h3 { font-size: var(--font-subhead); font-weight: 600; @apply font-heading; }
-  p  { font-size: var(--font-body); color: var(--color-text-secondary); }
+  h1 { font-size: var(--font-display); font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-4; }
+  h2 { font-size: var(--font-heading-lg); font-weight: 700; @apply font-heading tracking-tight leading-tight mb-2; }
+  h3 { font-size: var(--font-subhead); font-weight: 600; @apply font-heading mb-1; }
+  p  { font-size: var(--font-body); color: var(--color-text-secondary); line-height: var(--line-height-relaxed); }
   
   .text-muted { color: var(--color-text-muted); }
   .text-secondary { color: var(--color-text-secondary); }
@@ -95,9 +110,41 @@
 @layer components {
   .calculator-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 32px;
     padding: 32px;
+  }
+
+  @media (max-width: 1024px) {
+    .calculator-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      padding: 24px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .calculator-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 16px;
+    }
+  }
+
+  .nav-link {
+    @apply px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all duration-300;
+  }
+
+  .nav-link:hover {
+    @apply bg-muted text-primary;
+  }
+
+  .nav-link.active {
+    @apply bg-primary text-white shadow-lg shadow-primary/25;
+  }
+
+  .skip-link {
+    @apply absolute -top-12 left-4 z-[200] bg-primary text-white px-4 py-2 rounded-lg transition-all focus:top-4;
   }
 
   .calculator-card {
@@ -140,16 +187,26 @@
     .calculator-grid {
       grid-template-columns: 1fr;
       padding: 16px;
+      gap: 16px;
+    }
+
+    .calculator-card {
+      padding: 16px;
     }
     
-    h1 { font-size: 2rem; }
+    h1 { font-size: 1.75rem; }
     h2 { font-size: 1.25rem; }
   }
 
   @media (max-width: 480px) {
     input, button, .btn {
       width: 100%;
-      min-height: 48px;
+      min-height: 48px; /* Standardizing for touch accessibility */
+    }
+
+    .navbar {
+      flex-wrap: wrap;
+      gap: 8px;
     }
   }
 }

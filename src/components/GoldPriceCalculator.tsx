@@ -107,7 +107,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
               {/* Weight Input */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between px-1 mb-2">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary">Weight Analysis</Label>
+                  <Label htmlFor="gold-weight" className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary">Weight Analysis</Label>
                   <div className="flex gap-1.5 p-1 bg-secondary dark:bg-zinc-900 rounded-xl border border-border">
                     {(['g', 'kg'] as Unit[]).map((u) => (
                       <button
@@ -129,6 +129,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
                     <Scale className="h-5 w-5 text-text-muted group-focus-within/field:text-amber-600" />
                   </div>
                   <Input
+                    id="gold-weight"
                     type="number"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
@@ -169,8 +170,9 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-1">
                 {/* Rate Input */}
                 <div className="space-y-2">
-                  <Label className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">Rate (₹/g)</Label>
+                  <Label htmlFor="gold-rate" className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">Rate (₹/g)</Label>
                   <Input
+                    id="gold-rate"
                     type="number"
                     value={rate}
                     onChange={(e) => setRate(e.target.value)}
@@ -180,8 +182,9 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
 
                 {/* Making Charges */}
                 <div className="space-y-2">
-                  <Label className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">Making (%)</Label>
+                  <Label htmlFor="gold-making" className="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">Making (%)</Label>
                   <Input
+                    id="gold-making"
                     type="number"
                     value={makingPercent}
                     onChange={(e) => setMakingPercent(e.target.value)}

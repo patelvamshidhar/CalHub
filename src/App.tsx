@@ -25,76 +25,35 @@ import { trackVisitor } from '@/services/analyticsService';
 const LAST_UPDATED = "14-04-2026 09:30";
 const IS_MAINTENANCE = false; // Set to true to show maintenance banner
 
+const CALCULATOR_PROTOCOLS = [
+  { id: 'finance', title: 'Finance', icon: IndianRupee, desc: 'Yield & Fiscal Matrix', color: 'from-blue-500 via-indigo-600 to-purple-700', shadow: 'shadow-blue-500/30', delay: 0.1, category: 'finance' },
+  { id: 'gold-silver', title: 'Metals', icon: Coins, desc: 'Bullion Appraisal Suite', color: 'from-amber-400 via-orange-500 to-yellow-600', shadow: 'shadow-orange-500/30', delay: 0.15, category: 'metals' },
+  { id: 'vehicle', title: 'Transit', icon: Navigation, desc: 'Logistics & Fuel Logic', color: 'from-emerald-400 via-teal-500 to-cyan-600', shadow: 'shadow-emerald-500/30', delay: 0.2, category: 'transit' },
+  { id: 'land', title: 'Estate', icon: MapIcon, desc: 'Spatial Valuation Matrix', color: 'from-rose-400 via-pink-500 to-purple-600', shadow: 'shadow-pink-500/30', delay: 0.3, category: 'estate' },
+];
+
+const CATEGORY_FILTERS = [
+  { id: 'all', label: 'All Protocols' },
+  { id: 'finance', label: 'Finance' },
+  { id: 'metals', label: 'Metals' },
+  { id: 'transit', label: 'Transit' },
+  { id: 'estate', label: 'Estate' },
+];
+
 const HomePage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
 
-  const calculators = [
-    { id: 'finance', title: 'Finance', icon: IndianRupee, desc: 'Yield & Fiscal Matrix', color: 'from-blue-500 via-indigo-600 to-purple-700', shadow: 'shadow-blue-500/30', delay: 0.1 },
-    { id: 'gold-silver', title: 'Metals', icon: Coins, desc: 'Bullion Appraisal Suite', color: 'from-amber-400 via-orange-500 to-yellow-600', shadow: 'shadow-orange-500/30', delay: 0.15 },
-    { id: 'vehicle', title: 'Transit', icon: Navigation, desc: 'Logistics & Fuel Logic', color: 'from-emerald-400 via-teal-500 to-cyan-600', shadow: 'shadow-emerald-500/30', delay: 0.2 },
-    { id: 'land', title: 'Estate', icon: MapIcon, desc: 'Spatial Valuation Matrix', color: 'from-rose-400 via-pink-500 to-purple-600', shadow: 'shadow-pink-500/30', delay: 0.3 },
-  ];
-
-  const filteredCalcs = calculators.filter(c => 
-    c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    c.desc.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCalcs = CALCULATOR_PROTOCOLS.filter(c => {
+    const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         c.desc.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeCategory === 'all' || c.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="text-center space-y-4 max-w-5xl mx-auto pt-12 sm:pt-16 uppercase">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-text-primary text-background text-[11px] font-black uppercase tracking-[0.4em] mb-4 shadow-2xl"
-        >
-          Institutional Grade Utility Suite
-        </motion.div>
-        <h1 className="text-7xl sm:text-8xl lg:text-[10rem] font-black tracking-tighter leading-[0.75] text-text-primary uppercase italic">
-          CAL<span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-violet-600 to-fuchsia-700">HUB</span>
-        </h1>
-        <p className="text-xl sm:text-2xl font-bold leading-tight max-w-4xl mx-auto pt-4 text-text-secondary">
-          The sovereign utility matrix. Engineered for <span className="text-text-primary">precision and speed</span>. 
-        </p>
-        
-        <div className="pt-8 max-w-xl mx-auto">
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-text-muted group-focus-within:text-primary transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Search utility protocols..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-14 pl-12 pr-6 rounded-2xl bg-card border-2 border-border focus:border-primary/50 outline-none transition-all font-bold text-text-primary placeholder:text-text-muted placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
-            />
-          </div>
-        </div>
-
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="pt-10 flex items-center justify-center gap-4 sm:gap-12"
-        >
-          <div className="flex flex-col items-center group">
-            <span className="text-2xl sm:text-4xl font-black text-text-primary group-hover:text-blue-500 transition-colors">100%</span>
-            <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] mt-2">Accuracy</span>
-          </div>
-          <div className="w-px h-10 bg-border" />
-          <div className="flex flex-col items-center group">
-            <span className="text-2xl sm:text-4xl font-black text-text-primary group-hover:text-violet-500 transition-colors">Zero</span>
-            <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] mt-2">Latency</span>
-          </div>
-          <div className="w-px h-10 bg-border" />
-          <div className="flex flex-col items-center group">
-            <span className="text-2xl sm:text-4xl font-black text-text-primary group-hover:text-emerald-500 transition-colors">AES</span>
-            <span className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] mt-2">Ready</span>
-          </div>
-        </motion.div>
-      </div>
-
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-20">
       <div className="calculator-grid pt-12">
         <AnimatePresence mode="popLayout">
           {filteredCalcs.map((item) => (
@@ -114,10 +73,15 @@ const HomePage = () => {
                 <div className={`absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r ${item.color} z-20`} />
                 
                 <div className="p-8 pb-10 space-y-10">
-                  <div className="relative inline-block">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-[40px] opacity-10 group-hover:opacity-30 transition-opacity rounded-full`} />
-                    <div className={`relative w-20 h-20 rounded-2xl bg-secondary dark:bg-zinc-900 border-2 border-border flex items-center justify-center text-text-primary shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                      <item.icon className="h-10 w-10 opacity-80" />
+                  <div className="flex items-center justify-between">
+                    <div className="relative inline-block">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-[40px] opacity-10 group-hover:opacity-30 transition-opacity rounded-full`} />
+                      <div className={`relative w-20 h-20 rounded-2xl bg-secondary dark:bg-zinc-900 border-2 border-border flex items-center justify-center text-text-primary shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                        <item.icon className="h-10 w-10 opacity-80" />
+                      </div>
+                    </div>
+                    <div className="px-3 py-1 rounded-full bg-muted border border-border text-[8px] font-black uppercase tracking-widest text-text-muted">
+                      {item.category}
                     </div>
                   </div>
 
@@ -135,6 +99,9 @@ const HomePage = () => {
                   <div className="inline-flex items-center text-[9px] font-black uppercase tracking-[0.4em] text-text-muted group-hover:text-text-primary transition-all">
                     Initialize <ArrowRight className="h-4 w-4 ml-3 group-hover:translate-x-2 transition-transform" />
                   </div>
+                  <Button variant="outline" size="sm" className="rounded-xl font-black text-[8px] uppercase tracking-widest px-4 border-2">
+                    Open Protocol
+                  </Button>
                 </div>
               </Card>
             </motion.div>
@@ -236,6 +203,8 @@ const MainApp = () => {
 
   const activeTab = getActiveTab();
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <AnimatePresence mode="wait">
       {isLaunching ? (
@@ -248,6 +217,8 @@ const MainApp = () => {
           transition={{ duration: 0.5 }}
           className="min-h-screen bg-background text-foreground transition-colors duration-300 selection:bg-blue-500 selection:text-white"
         >
+          <a href="#main-content" className="skip-link">Skip to Content</a>
+          
           {/* Maintenance Banner */}
           <AnimatePresence>
             {IS_MAINTENANCE && (
@@ -279,18 +250,25 @@ const MainApp = () => {
           </AnimatePresence>
 
           {/* Header */}
-          <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-2xl transition-all duration-300 ${showScrollTop ? 'shadow-lg py-2' : 'py-4'}`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
-              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-                <div className="bg-gradient-to-br from-blue-500 to-violet-600 text-white p-2 rounded-xl shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
+          <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-300 ${showScrollTop ? 'shadow-lg py-2' : 'py-4'}`}>
+            <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
+              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }}>
+                <div className="bg-blue-600 text-white p-2 rounded-xl shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
                   <LayoutGrid className="h-5 w-5" />
                 </div>
-                <div className="flex flex-col">
-                  <h2 className="text-lg font-black tracking-tighter leading-none text-text-primary italic m-0">
-                    CAL<span className="text-blue-500">HUB</span>
-                  </h2>
-                </div>
+                <h2 className="text-lg font-black tracking-tighter leading-none text-text-primary italic m-0">
+                  CAL<span className="text-blue-600">HUB</span>
+                </h2>
               </div>
+
+              {/* Desktop Nav */}
+              <nav className="hidden md:flex items-center gap-2">
+                <button onClick={() => navigate('/')} className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}>Root</button>
+                <button onClick={() => navigate('/finance')} className={`nav-link ${activeTab === 'finance' ? 'active' : ''}`}>Finance</button>
+                <button onClick={() => navigate('/gold-silver')} className={`nav-link ${activeTab === 'gold-silver' ? 'active' : ''}`}>Metals</button>
+                <button onClick={() => navigate('/vehicle')} className={`nav-link ${activeTab === 'vehicle' ? 'active' : ''}`}>Transit</button>
+                <button onClick={() => navigate('/land')} className={`nav-link ${activeTab === 'land' ? 'active' : ''}`}>Estate</button>
+              </nav>
 
               <div className="flex items-center gap-2 sm:gap-4">
                 {isInstallable && (
@@ -299,26 +277,12 @@ const MainApp = () => {
                     variant="outline"
                     size="sm"
                     onClick={installApp}
-                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border-2 border-border bg-background hover:bg-muted text-text-primary"
+                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border-2 border-border bg-background hover:bg-muted text-text-primary hidden sm:flex"
                   >
                     <Download className="h-3.5 w-3.5" />
-                    <span className="hidden md:inline">Install</span>
+                    <span>Install</span>
                   </Button>
                 )}
-
-                {activeTab !== 'home' && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate('/')}
-                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 hover:bg-muted border border-transparent hover:border-border transition-all text-text-muted"
-                  >
-                    <Home className="h-3.5 w-3.5" />
-                    <span className="hidden md:inline">Root</span>
-                  </Button>
-                )}
-
-                <div className="w-px h-6 bg-border mx-1" />
 
                 <Button
                   variant="ghost"
@@ -328,12 +292,54 @@ const MainApp = () => {
                 >
                   {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </Button>
+
+                {/* Mobile Menu Toggle */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden rounded-xl w-9 h-9 border border-border"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
               </div>
             </div>
+
+            {/* Mobile Nav Overlay */}
+            <AnimatePresence>
+              {isMobileMenuOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="md:hidden border-t bg-background overflow-hidden"
+                >
+                  <div className="p-4 space-y-2">
+                    {[
+                      { id: 'home', label: 'Root System', path: '/' },
+                      { id: 'finance', label: 'Finance Protocol', path: '/finance' },
+                      { id: 'gold-silver', label: 'Metals Evaluation', path: '/gold-silver' },
+                      { id: 'vehicle', label: 'Transit Logistics', path: '/vehicle' },
+                      { id: 'land', label: 'Estate Valuation', path: '/land' },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => { navigate(item.path); setIsMobileMenuOpen(false); }}
+                        className={`w-full text-left p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                          activeTab === item.id ? 'bg-primary text-white' : 'hover:bg-muted text-text-secondary'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </header>
 
           {/* Main Content */}
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 outline-none" tabIndex={-1}>
         <AnimatePresence mode="wait">
           {activeTab === 'home' ? (
             <motion.div
@@ -474,32 +480,62 @@ const MainApp = () => {
         </Button>
       </motion.div>
 
-      {/* Footer */}
-      <footer className="border-t bg-background py-4 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-          <div>
-            &copy; 2026 CALHUB
+      <footer className="border-t bg-slate-900 dark:bg-zinc-950 py-12 px-6 mt-20">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-600 text-white p-2 rounded-xl">
+                  <LayoutGrid className="h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-black tracking-tighter text-white italic">CAL<span className="text-blue-500">HUB</span></h3>
+              </div>
+              <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xs">
+                The world's most advanced utility matrix for professional-grade calculations. Built for speed, precision, and privacy.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Protocols</h4>
+                <div className="flex flex-col gap-2">
+                  {CALCULATOR_PROTOCOLS.map(c => (
+                    <button key={c.id} onClick={() => navigate(`/${c.id}`)} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left truncate">
+                      {c.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Core</h4>
+                <div className="flex flex-col gap-2">
+                  <button onClick={() => navigate('/feedback')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter">Feedback</button>
+                  <button onClick={() => navigate('/admin')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter">Admin</button>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Identification</h4>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-[10px]">
+                  {localStorage.getItem('calhub_user_name')?.charAt(0) || <User className="h-4 w-4" />}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-white uppercase tracking-tighter">{localStorage.getItem('calhub_user_name') || 'Guest User'}</span>
+                  <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Active Operator</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => navigate('/feedback')} 
-              className="hover:text-primary transition-colors"
-            >
-              Feedback
-            </button>
-            <span className="opacity-20">|</span>
-            <button 
-              onClick={() => navigate('/admin')} 
-              className="flex items-center gap-1.5 hover:text-primary transition-colors"
-            >
+          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
+            <div>&copy; 2026 CALHUB - All Protocols Reserved</div>
+            <div className="flex items-center gap-2">
               <ShieldCheck className="h-3 w-3" />
-              Admin Access
-            </button>
-          </div>
-
-          <div className="hidden sm:block">
-            Crafted by PATEL VAMSHIDHAR REDDY
+              <span>AES-256 Encrypted Matrix</span>
+            </div>
+            <div>Crafted by PATEL VAMSHIDHAR REDDY</div>
           </div>
         </div>
       </footer>

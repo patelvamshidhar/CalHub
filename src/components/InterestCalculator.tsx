@@ -161,12 +161,13 @@ export const InterestCalculator = () => {
               {/* Principal Input */}
               <div className="space-y-4">
                 <div className="flex justify-between items-end px-1">
-                  <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-50">Principal Capital</Label>
+                  <Label htmlFor="principal-cap" className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-50">Principal Capital</Label>
                   <div className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border-2 border-emerald-500/20">₹{parseFloat(principal).toLocaleString()}</div>
                 </div>
                 <div className="relative group">
                   <div className="absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-black text-muted-foreground/20 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors z-10">₹</div>
                   <Input
+                    id="principal-cap"
                     type="number"
                     value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
@@ -191,12 +192,13 @@ export const InterestCalculator = () => {
                 {/* Interest Rate */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center px-1">
-                    <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Yield % P.A.</Label>
+                    <Label htmlFor="interest-yield" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Yield % P.A.</Label>
                     <span className="text-[10px] font-black text-purple-600 dark:text-purple-400">{rate}%</span>
                   </div>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-muted-foreground/30 dark:text-zinc-700">%</div>
                     <Input
+                      id="interest-yield"
                       type="number"
                       value={rate}
                       onChange={(e) => setRate(e.target.value)}
@@ -207,8 +209,8 @@ export const InterestCalculator = () => {
 
                 {/* Compounding Selector */}
                 <div className="space-y-2">
-                  <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-1">Compounding</Label>
-                  <div className="grid grid-cols-3 gap-1 p-1 bg-muted/20 dark:bg-zinc-950 rounded-xl border border-border dark:border-zinc-800 h-12">
+                  <Label id="compounding-type" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-1">Compounding</Label>
+                  <div role="group" aria-labelledby="compounding-type" className="grid grid-cols-3 gap-1 p-1 bg-muted/20 dark:bg-zinc-950 rounded-xl border border-border dark:border-zinc-800 h-12">
                     {['monthly', 'quarterly', 'yearly'].map(item => (
                       <button
                         key={item}
@@ -225,7 +227,7 @@ export const InterestCalculator = () => {
               {/* Date Selection */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center px-1">
-                  <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Term Range</Label>
+                  <Label htmlFor="start-date" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Term Range</Label>
                   {results && (
                     <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                       {results.duration}
@@ -234,12 +236,14 @@ export const InterestCalculator = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <Input
+                    id="start-date"
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     className="h-12 px-4 bg-muted/20 dark:bg-zinc-950 font-black border-2 border-border rounded-xl text-xs outline-none"
                   />
                   <Input
+                    id="end-date"
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
