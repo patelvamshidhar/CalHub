@@ -63,12 +63,12 @@ export const WelcomePage = ({ onStart }: WelcomePageProps) => {
             { icon: Navigation, title: "Vehicle", desc: "Fuel, Mileage & Travel Cost", color: "text-blue-500", bg: "bg-blue-500/10" },
             { icon: MapIcon, title: "Land", desc: "Indian Units & Costing", color: "text-emerald-500", bg: "bg-emerald-500/10" },
           ].map((feature, i) => (
-            <div key={i} className="p-6 rounded-2xl bg-muted/50 border border-border/50 backdrop-blur-sm hover:border-primary/20 transition-colors group">
-              <div className={`w-12 h-12 rounded-xl ${feature.bg} ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+            <div key={i} className="p-6 rounded-2xl bg-muted/50 border border-border/50 backdrop-blur-sm hover:border-primary/20 transition-colors duration-500 group">
+              <div className={`w-12 h-12 rounded-xl ${feature.bg} ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500`}>
                 <feature.icon className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground">{feature.desc}</p>
+              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{feature.desc}</p>
             </div>
           ))}
         </motion.div>
@@ -83,13 +83,13 @@ export const WelcomePage = ({ onStart }: WelcomePageProps) => {
           <Button 
             size="lg" 
             onClick={onStart}
-            className="h-16 px-12 text-xl font-black rounded-full shadow-2xl hover:scale-105 transition-transform gap-3 group"
+            className="h-16 px-12 text-xl font-black rounded-full shadow-2xl hover:scale-105 transition-transform duration-500 gap-3 group"
           >
             Get Started
-            <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform duration-500" />
           </Button>
 
-          <div className="flex items-center justify-center gap-6 text-muted-foreground">
+          <div className="flex items-center justify-center gap-6 text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-widest">Crafted by PATEL VAMSHIDHAR REDDY</span>
             </div>

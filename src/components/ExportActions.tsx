@@ -50,12 +50,12 @@ export const ExportActions = ({ title, inputs, results, disabled }: ExportAction
   };
 
   return (
-    <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-dashed">
+    <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-dashed border-gray-200 dark:border-gray-700">
       <Button
         variant="outline"
         onClick={handlePDF}
         disabled={disabled || loading}
-        className="font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+        className="font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-all duration-300"
       >
         <FileText className="h-4 w-4" />
         {loading ? 'Generating...' : 'Download PDF'}
@@ -66,18 +66,18 @@ export const ExportActions = ({ title, inputs, results, disabled }: ExportAction
           disabled={disabled}
           className={cn(
             buttonVariants({ variant: "outline" }),
-            "font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            "font-bold uppercase tracking-widest text-[10px] gap-2 h-9 border-2 border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-all duration-300"
           )}
         >
           <Share2 className="h-4 w-4" />
           Share Result
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48 font-bold uppercase tracking-widest text-[10px]">
-          <DropdownMenuItem onClick={handleWhatsApp} className="gap-2 cursor-pointer">
+        <DropdownMenuContent align="end" className="w-48 font-bold uppercase tracking-widest text-[10px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+          <DropdownMenuItem onClick={handleWhatsApp} className="gap-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
             <MessageSquare className="h-4 w-4 text-green-500" />
             WhatsApp
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleCopy} className="gap-2 cursor-pointer">
+          <DropdownMenuItem onClick={handleCopy} className="gap-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
             <AnimatePresence mode="wait">
               {copied ? (
                 <motion.div

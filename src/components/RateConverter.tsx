@@ -67,18 +67,18 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-4">
-      <Card className="relative overflow-hidden border-none shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] rounded-[22px] bg-card dark:bg-zinc-950 group">
+      <Card className="relative overflow-hidden border-none shadow-2xl rounded-[22px] bg-white dark:bg-gray-800 group transition-all duration-500">
         {/* Neon Accent Border */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 shadow-[0_0_20px_rgba(6,182,212,0.5)]" />
         
         <div className="p-6 pb-2 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 dark:bg-cyan-500/20 border-2 border-cyan-500/30 flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border-2 border-cyan-500/30 flex items-center justify-center shadow-lg">
               <Percent className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <h3 className="text-xl font-black tracking-tighter text-foreground dark:text-zinc-100 leading-none uppercase italic">Rate <span className="text-cyan-600 dark:text-cyan-400">Converter</span></h3>
-              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-1.5 opacity-60">
+              <h3 className="text-xl font-black tracking-tighter text-gray-900 dark:text-white leading-none uppercase italic">Rate <span className="text-cyan-600 dark:text-cyan-400">Converter</span></h3>
+              <p className="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] mt-1.5 opacity-80">
                 Finance Hub Protocol • 12% = ₹1
               </p>
             </div>
@@ -89,20 +89,20 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
               variant="ghost" 
               size="icon" 
               onClick={reset}
-              className="h-9 w-9 rounded-full hover:bg-muted dark:hover:bg-white/5 text-muted-foreground transition-all"
+              className="h-9 w-9 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 transition-all duration-500"
             >
               <RefreshCcw className="h-4 w-4" />
             </Button>
-            <div className="flex items-center gap-2 bg-muted/40 dark:bg-zinc-950 p-1 rounded-full border-2 border-border/50">
+            <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900 p-1 rounded-full border border-gray-100 dark:border-gray-700">
               <button 
                 onClick={() => setMode('pctToRate')}
-                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full ${mode === 'pctToRate' ? 'bg-cyan-600 text-white' : 'text-muted-foreground/50'}`}
+                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full transition-all ${mode === 'pctToRate' ? 'bg-cyan-600 text-white' : 'text-gray-400 dark:text-gray-400'}`}
               >
                 %
               </button>
               <button 
                 onClick={() => setMode('rateToPct')}
-                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full ${mode === 'rateToPct' ? 'bg-cyan-600 text-white' : 'text-muted-foreground/50'}`}
+                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full transition-all ${mode === 'rateToPct' ? 'bg-cyan-600 text-white' : 'text-gray-400 dark:text-gray-400'}`}
               >
                 ₹/P
               </button>
@@ -114,7 +114,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
           {/* Main Input Area */}
           <div className="space-y-4 text-center">
             <div className="space-y-3 inline-block w-full max-w-[280px]">
-              <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-1 opacity-50">
+              <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400 block mb-1 opacity-80">
                 {mode === 'pctToRate' ? 'Input Percentage' : 'Monthly Interest'}
               </Label>
               <div className="relative group space-y-3">
@@ -123,7 +123,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   placeholder={mode === 'pctToRate' ? "12" : "1"}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="text-3xl sm:text-5xl h-20 sm:h-24 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[1.5rem] sm:rounded-[2rem] text-center font-black text-foreground dark:text-zinc-100 placeholder:text-muted-foreground/10 transition-all shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none"
+                  className="text-3xl sm:text-5xl h-20 sm:h-24 bg-gray-50 dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-700 focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[1.5rem] sm:rounded-[2rem] text-center font-black text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-700 transition-all duration-500 shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none"
                 />
                 
                 {/* Unit Label for Rate mode - Responsive placement */}
@@ -131,7 +131,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   <div className="flex justify-center">
                     <button 
                       onClick={() => setRateUnit(u => u === 'paise' ? 'rupees' : 'paise')}
-                      className="h-10 px-4 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:-right-14 rounded-xl border border-border dark:border-zinc-800 bg-muted/30 dark:bg-zinc-950 text-[9px] font-black uppercase text-muted-foreground hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all shadow-lg"
+                      className="h-10 px-4 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:-right-14 rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-[9px] font-black uppercase text-gray-500 dark:text-gray-400 hover:text-cyan-600 transition-all duration-500 shadow-lg"
                     >
                       {rateUnit}
                     </button>
@@ -149,18 +149,6 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                     </motion.div>
                   )}
                 </div>
-                
-                {/* Unit Label for Rate mode */}
-                {mode === 'rateToPct' && (
-                  <div className="absolute top-1/2 -translate-y-1/2 -right-14">
-                    <button 
-                      onClick={() => setRateUnit(u => u === 'paise' ? 'rupees' : 'paise')}
-                      className="h-10 px-3 rounded-xl border border-border dark:border-zinc-800 bg-muted/30 dark:bg-zinc-950 text-[9px] font-black uppercase text-muted-foreground hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all shadow-xl"
-                    >
-                      {rateUnit}
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -177,30 +165,30 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   transition={{ type: 'spring', damping: 15 }}
                   className="text-center space-y-2"
                 >
-                  <div className="text-[11px] font-black text-muted-foreground/60 dark:text-zinc-600 uppercase tracking-[0.4em] mb-2">Equivalent Rate</div>
+                  <div className="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.4em] mb-2">Equivalent Rate</div>
                   <div className="relative inline-block">
                     {/* Neon Glow behind result */}
-                    <div className="absolute inset-0 blur-3xl bg-cyan-500/20 -z-10 rounded-full" />
-                    <h2 className="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-cyan-600 dark:via-cyan-400 to-blue-700 dark:to-blue-500 tracking-tighter px-4 drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+                    <div className="absolute inset-0 blur-3xl bg-cyan-500/10 -z-10 rounded-full" />
+                    <h2 className="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 dark:from-white via-cyan-600 dark:via-cyan-400 to-blue-700 tracking-tighter px-4 italic">
                       {results.display}
                     </h2>
                   </div>
-                  <p className="text-sm font-bold text-muted-foreground mt-2 lowercase">{results.unit}</p>
+                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2 lowercase">{results.unit}</p>
                 </motion.div>
               ) : (
                 <div className="text-center opacity-10 select-none">
-                  <ArrowLeftRight className="h-14 w-14 text-foreground dark:text-zinc-100 mx-auto mb-4" />
-                  <p className="text-[11px] font-black uppercase tracking-[0.5em] text-foreground dark:text-zinc-100">Enter Signal Value</p>
+                  <ArrowLeftRight className="h-14 w-14 text-gray-900 dark:text-white mx-auto mb-4" />
+                  <p className="text-[11px] font-black uppercase tracking-[0.5em] text-gray-900 dark:text-white">Enter Signal Value</p>
                 </div>
               )}
             </AnimatePresence>
           </div>
 
           {/* Bottom Info Bar */}
-          <div className="pt-6 sm:p-8 sm:pt-4 border-t border-border dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-8 pb-6 sm:pb-8">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/20 dark:bg-zinc-950 border border-border dark:border-zinc-800">
-              <Info className="h-3 w-3 text-muted-foreground/40 dark:text-zinc-700" />
-              <span className="text-[9px] font-bold text-muted-foreground/40 dark:text-zinc-700 uppercase tracking-tight">
+          <div className="pt-6 sm:p-8 sm:pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-8 pb-6 sm:pb-8">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700">
+              <Info className="h-3 w-3 text-gray-400 dark:text-gray-400" />
+              <span className="text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-tight">
                 Synced with Indian Financial Standards
               </span>
             </div>
@@ -226,10 +214,10 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
         <motion.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
-          className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-card dark:bg-zinc-950 border border-border dark:border-zinc-800 py-3 px-6 rounded-full w-fit mx-auto shadow-xl"
+          className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 py-3 px-6 rounded-full w-fit mx-auto shadow-xl"
         >
           <TrendingUp className="h-3 w-3 text-cyan-600 dark:text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
-          <span className="text-foreground dark:text-zinc-300">{results.explanation}</span>
+          <span className="text-gray-900 dark:text-gray-200">{results.explanation}</span>
         </motion.div>
       )}
     </div>

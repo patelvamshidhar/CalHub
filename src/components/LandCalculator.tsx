@@ -79,7 +79,7 @@ export const LandCalculator = () => {
     if (!results) return;
     const newItem: HistoryItem = {
       id: Date.now().toString(),
-      type: 'Asset',
+      type: 'Land',
       inputs: { length, width, unit: inputUnit, price: pricePerUnit, priceUnit },
       result: `Valuation: ${formatCurrency(results.totalPrice, currency)} (${results.area.toLocaleString()} ${inputUnit})`,
       timestamp: new Date().toISOString()
@@ -111,25 +111,25 @@ export const LandCalculator = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 transition-colors duration-500">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-7 space-y-8">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-black uppercase tracking-[0.2em]">
               <MapPin className="h-3 w-3" />
-              Logistics Protocol
+              Estate Protocol
             </div>
-            <h2 className="text-4xl font-black tracking-tighter text-text-primary uppercase italic leading-none">
+            <h2 className="text-4xl font-black tracking-tighter text-gray-900 dark:text-white uppercase italic leading-none">
               Estate <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-cyan-500">Hub</span>
             </h2>
-            <p className="text-text-muted text-[10px] font-black uppercase tracking-widest leading-relaxed">Precision spatial valuation terminal. Rates indexed locally.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest leading-relaxed">Precision spatial valuation terminal. Rates indexed locally.</p>
           </div>
 
           <div className="grid grid-cols-1 gap-6">
-            <Card className="relative border-none shadow-xl bg-card dark:bg-zinc-950 overflow-hidden rounded-[2rem]">
+            <Card className="relative border-none shadow-xl bg-white dark:bg-gray-800 overflow-hidden rounded-[2rem] transition-colors duration-500">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-emerald-600" />
               <CardHeader className="pb-2 pt-6 px-6">
-                <CardTitle className="text-sm font-black flex items-center gap-2 uppercase tracking-tight">
+                <CardTitle className="text-sm font-black flex items-center gap-2 uppercase tracking-tight text-gray-900 dark:text-white">
                   <Maximize className="h-4 w-4 text-emerald-600" />
                   Dimensions
                 </CardTitle>
@@ -137,33 +137,33 @@ export const LandCalculator = () => {
               <CardContent className="space-y-6 pb-6 px-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Length</Label>
+                    <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 ml-1">Length</Label>
                     <Input
                       type="number"
                       value={length}
                       onChange={(e) => setLength(e.target.value)}
-                      className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xl outline-none"
+                      className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none transition-all duration-500"
                       placeholder="50"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Width</Label>
+                    <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 ml-1">Width</Label>
                     <Input
                       type="number"
                       value={width}
                       onChange={(e) => setWidth(e.target.value)}
-                      className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xl outline-none"
+                      className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none transition-all duration-500"
                       placeholder="30"
                     />
                   </div>
                 </div>
-                <div className="flex gap-2 p-1 bg-muted/20 rounded-xl h-10">
+                <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-900 rounded-xl h-10">
                   {['SQ_FT', 'SQ_M'].map((u) => (
                     <button
                       key={u}
                       onClick={() => setInputUnit(u as any)}
-                      className={`flex-1 rounded-lg text-[9px] font-black uppercase transition-all ${
-                        inputUnit === u ? 'bg-emerald-600 text-white shadow-md' : 'text-muted-foreground hover:text-foreground'
+                      className={`flex-1 rounded-lg text-[9px] font-black uppercase transition-all duration-500 ${
+                        inputUnit === u ? 'bg-emerald-600 text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                       }`}
                     >
                       {u === 'SQ_FT' ? 'Feet' : 'Meters'}
@@ -173,10 +173,10 @@ export const LandCalculator = () => {
               </CardContent>
             </Card>
 
-            <Card className="relative border-none shadow-xl bg-card dark:bg-zinc-950 overflow-hidden rounded-[2rem]">
+            <Card className="relative border-none shadow-xl bg-white dark:bg-gray-800 overflow-hidden rounded-[2rem] transition-colors duration-500">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-amber-500" />
               <CardHeader className="pb-2 pt-6 px-6">
-                <CardTitle className="text-sm font-black flex items-center gap-2 uppercase tracking-tight">
+                <CardTitle className="text-sm font-black flex items-center gap-2 uppercase tracking-tight text-gray-900 dark:text-white">
                   <Banknote className="h-4 w-4 text-amber-500" />
                   Valuation Logic
                 </CardTitle>
@@ -187,14 +187,14 @@ export const LandCalculator = () => {
                      type="number"
                      value={pricePerUnit}
                      onChange={(e) => setPricePerUnit(e.target.value)}
-                     className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xl outline-none"
+                     className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none"
                      placeholder="Rate"
                    />
                    <Select value={priceUnit} onValueChange={(v: any) => setPriceUnit(v)}>
-                     <SelectTrigger className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xs">
+                     <SelectTrigger className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xs transition-all duration-500">
                        <SelectValue />
                      </SelectTrigger>
-                     <SelectContent>
+                     <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                        <SelectItem value="SQ_FT">Sq. Ft</SelectItem>
                        <SelectItem value="SQ_M">Sq. M</SelectItem>
                        <SelectItem value="ACRE">Acre</SelectItem>
@@ -203,10 +203,10 @@ export const LandCalculator = () => {
                  </div>
 
                 <div className="flex gap-2 pt-2">
-                  <Button variant="ghost" onClick={reset} className="flex-1 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest bg-secondary">
+                  <Button variant="ghost" onClick={reset} className="flex-1 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-500">
                     Reset
                   </Button>
-                  <Button onClick={handleSaveToHistory} disabled={!results} className="flex-1 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest bg-emerald-600 text-white">
+                  <Button onClick={handleSaveToHistory} disabled={!results} className="flex-1 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest bg-emerald-600 text-white transition-all duration-500">
                     Archive
                   </Button>
                 </div>
@@ -216,31 +216,31 @@ export const LandCalculator = () => {
         </div>
 
         <div className="lg:col-span-5 space-y-8">
-            <Card className="relative border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden rounded-[2rem] sm:rounded-[2.5rem]">
+            <Card className="relative border-none shadow-2xl bg-white dark:bg-gray-800 overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] transition-colors duration-500">
              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-amber-500" />
              <CardHeader className="pb-4 pt-8 sm:pt-10 px-6 sm:px-10 text-center">
                 <div className="flex items-center justify-center gap-3 mb-4">
                   <Target className="h-5 w-5 text-emerald-600" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary">Est. Valuation</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400">Est. Valuation</span>
                 </div>
-                <CardTitle className="text-4xl sm:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-text-primary via-emerald-600 to-emerald-800 italic leading-none">
+                <CardTitle className="text-4xl sm:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-gray-900 dark:from-white via-emerald-600 to-emerald-800 italic leading-none">
                  {results ? formatCurrency(results.totalPrice, currency) : '---'}
                 </CardTitle>
              </CardHeader>
              <CardContent className="space-y-6 px-6 sm:px-10 pb-8 sm:pb-10">
                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-2xl bg-muted/20 border border-border">
-                  <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Coverage</span>
-                  <p className="text-xl font-black">{results ? results.area.toLocaleString() : '0'} <small className="text-[9px] opacity-50 uppercase">{inputUnit === 'SQ_FT' ? 'ft²' : 'm²'}</small></p>
+                <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 transition-all duration-500">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 block mb-1">Coverage</span>
+                  <p className="text-xl font-black text-gray-900 dark:text-white">{results ? results.area.toLocaleString() : '0'} <small className="text-[9px] opacity-50 uppercase">{inputUnit === 'SQ_FT' ? 'ft²' : 'm²'}</small></p>
                 </div>
-                <div className="p-4 rounded-2xl bg-muted/20 border border-border">
-                  <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Index</span>
-                  <p className="text-xl font-black">{currency}{parseFloat(pricePerUnit || '0').toLocaleString()}</p>
+                <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 transition-all duration-500">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 block mb-1">Index</span>
+                  <p className="text-xl font-black text-gray-900 dark:text-white">{currency}{parseFloat(pricePerUnit || '0').toLocaleString()}</p>
                 </div>
               </div>
 
               {results && (
-                <div className="pt-6 border-t border-border flex justify-between items-center">
+                <div className="pt-6 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
                   <ExportActions
                     title="EstateHub Valuation"
                     inputs={[
@@ -252,7 +252,7 @@ export const LandCalculator = () => {
                       { label: 'Acreage', value: `${results.conversions.acre.toFixed(4)} Ac` },
                     ]}
                   />
-                  <Button variant="ghost" size="icon" className="rounded-full">
+                  <Button variant="ghost" size="icon" className="rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white">
                     <Share2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -278,9 +278,9 @@ export const LandCalculator = () => {
 
 const LocalLandTerminology = () => {
   return (
-    <Card className="border-none bg-muted/10 dark:bg-zinc-900/50 rounded-[2.5rem] overflow-hidden">
+    <Card className="border-none bg-gray-50 dark:bg-gray-900 rounded-[2.5rem] overflow-hidden">
       <CardHeader className="pt-8 px-8 pb-4">
-        <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+        <CardTitle className="text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 flex items-center gap-2">
           <Info className="h-4 w-4" />
           Unit Lexicon
         </CardTitle>
@@ -294,7 +294,7 @@ const LocalLandTerminology = () => {
         ].map((item, i) => (
           <div key={i} className="flex flex-col gap-0.5">
             <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">{item.term}</span>
-            <span className="text-[10px] font-medium text-muted-foreground leading-relaxed">{item.def}</span>
+            <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed">{item.def}</span>
           </div>
         ))}
       </CardContent>

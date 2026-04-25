@@ -73,7 +73,7 @@ export const LandTerminology = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase">
+        <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 dark:text-white">
           Land <span className="text-primary">Terminology</span>
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base">
@@ -95,7 +95,7 @@ export const LandTerminology = () => {
                 <div className={`w-12 h-12 rounded-2xl ${term.bg} ${term.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform shadow-inner`}>
                   <term.icon className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-xl font-black tracking-tight">{term.title}</CardTitle>
+                <CardTitle className="text-xl font-black tracking-tight text-gray-900 dark:text-white">{term.title}</CardTitle>
               </CardHeader>
               <CardContent className="px-6 pb-6">
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">
@@ -113,7 +113,7 @@ export const LandTerminology = () => {
             <Info className="h-6 w-6" />
           </div>
           <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-lg font-black uppercase tracking-tight">Expert Tip for Buyers</h3>
+            <h3 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white">Expert Tip for Buyers</h3>
             <p className="text-sm text-muted-foreground font-medium max-w-2xl leading-relaxed">
               Always verify the <span className="font-bold text-foreground">RERA registration</span> of a project and check the <span className="font-bold text-foreground">Encumbrance Certificate (EC)</span> of the land to ensure a clear title and legal ownership.
             </p>

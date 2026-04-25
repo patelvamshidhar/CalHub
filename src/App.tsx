@@ -28,17 +28,43 @@ const IS_MAINTENANCE = false; // Set to true to show maintenance banner
 const CALCULATOR_PROTOCOLS = [
   { id: 'finance', title: 'Finance', icon: IndianRupee, desc: 'Yield & Fiscal Matrix', color: 'from-blue-500 via-indigo-600 to-purple-700', shadow: 'shadow-blue-500/30', delay: 0.1, category: 'finance' },
   { id: 'gold-silver', title: 'Metals', icon: Coins, desc: 'Bullion Appraisal Suite', color: 'from-amber-400 via-orange-500 to-yellow-600', shadow: 'shadow-orange-500/30', delay: 0.15, category: 'metals' },
-  { id: 'vehicle', title: 'Transit', icon: Navigation, desc: 'Logistics & Fuel Logic', color: 'from-emerald-400 via-teal-500 to-cyan-600', shadow: 'shadow-emerald-500/30', delay: 0.2, category: 'transit' },
+  { id: 'vehicle', title: 'Vehicle', icon: Navigation, desc: 'Logistics & Fuel Logic', color: 'from-emerald-400 via-teal-500 to-cyan-600', shadow: 'shadow-emerald-500/30', delay: 0.2, category: 'vehicle' },
   { id: 'land', title: 'Estate', icon: MapIcon, desc: 'Spatial Valuation Matrix', color: 'from-rose-400 via-pink-500 to-purple-600', shadow: 'shadow-pink-500/30', delay: 0.3, category: 'estate' },
 ];
 
 const CATEGORY_FILTERS = [
   { id: 'all', label: 'All Protocols' },
   { id: 'finance', label: 'Finance' },
-  { id: 'metals', label: 'Metals' },
-  { id: 'transit', label: 'Transit' },
-  { id: 'estate', label: 'Estate' },
+  { id: 'metals', label: 'Gold & Silver' },
+  { id: 'vehicle', label: 'Vehicle' },
+  { id: 'estate', label: 'Land' },
 ];
+
+const AboutSection = () => (
+  <div className="max-w-md mx-auto px-4 pt-4">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-3 transition-colors border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-t-2xl" />
+      <div className="space-y-1">
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
+          SMART CALCULATION HUB
+        </p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white m-0">
+          CalHub
+        </h1>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+        All-in-one platform for finance, gold & silver valuation, vehicle cost analysis, and land calculations. Designed for accuracy, speed, and simplicity.
+      </p>
+      <div className="flex flex-wrap gap-2 pt-2">
+        {['Finance Tools', 'Gold & Silver', 'Vehicle Cost', 'Land Value'].map((tag) => (
+          <span key={tag} className="px-3 py-1 text-[10px] font-bold uppercase rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-transparent dark:border-gray-600">
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -54,6 +80,7 @@ const HomePage = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-20">
+      <AboutSection />
       <div className="calculator-grid pt-12">
         <AnimatePresence mode="popLayout">
           {filteredCalcs.map((item) => (
@@ -76,30 +103,34 @@ const HomePage = () => {
                   <div className="flex items-center justify-between">
                     <div className="relative inline-block">
                       <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-[40px] opacity-10 group-hover:opacity-30 transition-opacity rounded-full`} />
-                      <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-secondary dark:bg-zinc-900 border-2 border-border flex items-center justify-center text-text-primary shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                      <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gray-50 dark:bg-gray-700 border-2 border-gray-100 dark:border-gray-600 flex items-center justify-center text-gray-900 dark:text-gray-100 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
                         <item.icon className="h-8 w-8 sm:h-10 sm:w-10 opacity-80" />
                       </div>
                     </div>
-                    <div className="px-3 py-1 rounded-full bg-muted border border-border text-[8px] font-black uppercase tracking-widest text-text-muted">
+                    <div className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[8px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">
                       {item.category}
                     </div>
                   </div>
 
                   <div className="space-y-2 sm:space-y-3">
-                    <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic leading-none text-text-primary">
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic leading-none text-gray-900 dark:text-white">
                       {item.title}
                     </h2>
-                    <p className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">
+                    <p className="text-[9px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">
                       {item.desc}
                     </p>
                   </div>
                 </div>
 
                 <div className="px-6 sm:px-8 pb-8 sm:pb-10 flex items-center justify-between mt-auto">
-                  <div className="inline-flex items-center text-[8px] sm:text-[9px] font-black uppercase tracking-[0.4em] text-text-muted group-hover:text-text-primary transition-all">
+                  <div className="inline-flex items-center text-[8px] sm:text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-all">
                     Initialize <ArrowRight className="h-4 w-4 ml-2 sm:ml-3 group-hover:translate-x-2 transition-transform" />
                   </div>
-                  <Button variant="outline" size="sm" className="rounded-xl font-black text-[8px] uppercase tracking-widest px-3 sm:px-4 border-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="rounded-xl font-black text-[8px] uppercase tracking-widest px-3 sm:px-4 border border-gray-300 text-gray-800 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
+                  >
                     Open Protocol
                   </Button>
                 </div>
@@ -111,7 +142,7 @@ const HomePage = () => {
 
       {filteredCalcs.length === 0 && (
         <div className="text-center py-20 animate-in fade-in zoom-in-95">
-          <div className="text-text-muted text-xs font-black uppercase tracking-[0.5em] mb-4">No utility protocol found</div>
+          <div className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-[0.5em] mb-4">No utility protocol found</div>
           <Button variant="outline" onClick={() => setSearchQuery('')} className="rounded-full px-8">Reset Directory</Button>
         </div>
       )}
@@ -213,7 +244,7 @@ const MainApp = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="min-h-screen bg-background text-foreground transition-colors duration-300 selection:bg-blue-500 selection:text-white"
+          className="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-blue-500 selection:text-white"
         >
           <a href="#main-content" className="skip-link">Skip to Content</a>
           
@@ -248,24 +279,24 @@ const MainApp = () => {
           </AnimatePresence>
 
           {/* Header */}
-          <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-300 ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
+          <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-colors duration-500 ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
             <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
               <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
                 <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
                   <LayoutGrid className="h-5 w-5" />
                 </div>
-                <h2 className="text-lg font-black tracking-tighter leading-none text-text-primary italic m-0">
+                <h2 className="text-lg font-black tracking-tighter leading-none text-gray-900 dark:text-white italic m-0">
                   CAL<span className="text-blue-600">HUB</span>
                 </h2>
               </div>
 
               {/* Desktop Nav */}
               <nav className="hidden md:flex items-center gap-2">
-                <button onClick={() => navigate('/')} className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}>Root</button>
+                <button onClick={() => navigate('/')} className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}>Home</button>
                 <button onClick={() => navigate('/finance')} className={`nav-link ${activeTab === 'finance' ? 'active' : ''}`}>Finance</button>
-                <button onClick={() => navigate('/gold-silver')} className={`nav-link ${activeTab === 'gold-silver' ? 'active' : ''}`}>Metals</button>
-                <button onClick={() => navigate('/vehicle')} className={`nav-link ${activeTab === 'vehicle' ? 'active' : ''}`}>Transit</button>
-                <button onClick={() => navigate('/land')} className={`nav-link ${activeTab === 'land' ? 'active' : ''}`}>Estate</button>
+                <button onClick={() => navigate('/gold-silver')} className={`nav-link ${activeTab === 'gold-silver' ? 'active' : ''}`}>Gold</button>
+                <button onClick={() => navigate('/vehicle')} className={`nav-link ${activeTab === 'vehicle' ? 'active' : ''}`}>Vehicle</button>
+                <button onClick={() => navigate('/land')} className={`nav-link ${activeTab === 'land' ? 'active' : ''}`}>Land</button>
               </nav>
 
               <div className="flex items-center gap-2 sm:gap-4">
@@ -275,7 +306,7 @@ const MainApp = () => {
                     variant="outline"
                     size="sm"
                     onClick={installApp}
-                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border-2 border-border bg-background hover:bg-muted text-text-primary hidden sm:flex"
+                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hidden sm:flex transition-all duration-200"
                   >
                     <Download className="h-3.5 w-3.5" />
                     <span>Install</span>
@@ -286,33 +317,37 @@ const MainApp = () => {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="rounded-xl w-9 h-9 bg-muted/50 border border-border hover:bg-muted transition-colors text-primary"
+                  className="rounded-xl w-10 h-10 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white shadow-sm transition-all duration-200"
                 >
-                  {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  {isDarkMode ? (
+                    <Sun className="h-5 w-5 text-yellow-500 dark:text-yellow-300" />
+                  ) : (
+                    <Moon className="h-5 w-5 text-gray-700" />
+                  )}
                 </Button>
               </div>
             </div>
           </header>
 
           {/* Mobile Bottom Navigation */}
-          <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-background/80 backdrop-blur-3xl border-t md:hidden pb-safe">
+          <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-white/80 dark:bg-gray-900/80 backdrop-blur-3xl border-t border-gray-100 dark:border-gray-800 md:hidden pb-safe transition-colors duration-500">
             <div className="flex items-center justify-around h-16 px-4">
               {[
-                { id: 'home', icon: Home, path: '/' },
-                { id: 'finance', icon: IndianRupee, path: '/finance' },
-                { id: 'gold-silver', icon: Coins, path: '/gold-silver' },
-                { id: 'vehicle', icon: Navigation, path: '/vehicle' },
-                { id: 'land', icon: MapIcon, path: '/land' },
+                { id: 'home', icon: Home, path: '/', label: 'Home' },
+                { id: 'finance', icon: IndianRupee, path: '/finance', label: 'Finance' },
+                { id: 'gold-silver', icon: Coins, path: '/gold-silver', label: 'Gold' },
+                { id: 'vehicle', icon: Navigation, path: '/vehicle', label: 'Vehicle' },
+                { id: 'land', icon: MapIcon, path: '/land', label: 'Land' },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() => navigate(item.path)}
                   className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
-                    activeTab === item.id ? 'text-blue-600 scale-110' : 'text-text-muted hover:text-text-primary'
+                    activeTab === item.id ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
-                  <span className="text-[8px] font-black uppercase tracking-tighter mt-1">{item.id === 'home' ? 'Root' : item.id.split('-')[0]}</span>
+                  <span className={`text-[8px] font-black uppercase tracking-tighter mt-1 ${activeTab === item.id ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
                 </button>
               ))}
             </div>
@@ -523,7 +558,7 @@ const MainApp = () => {
                       className="w-full h-16 bg-white dark:bg-zinc-950 border-2 border-border focus:border-blue-500/50 rounded-[1.8rem] pl-14 pr-6 font-black uppercase tracking-wider transition-all outline-none shadow-xl group-hover:shadow-2xl group-hover:-translate-y-1 dark:text-white dark:placeholder:text-zinc-600"
                     />
                   </div>
-                  <Button type="submit" className="w-full h-16 rounded-[1.8rem] bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl shadow-blue-500/30 hover:scale-[1.05] active:scale-[0.95] transition-all">
+                  <Button type="submit" className="w-full h-16 rounded-[1.8rem] bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl shadow-blue-500/30 hover:scale-[1.05] active:scale-[0.95] transition-all duration-200">
                     Establish Protocol
                   </Button>
                 </form>

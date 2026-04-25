@@ -123,7 +123,7 @@ export const InterestCalculator = () => {
 
   return (
     <div className="w-full max-w-xl mx-auto">
-      <Card className="relative overflow-hidden border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] rounded-[2.5rem] bg-card dark:bg-zinc-950/60 backdrop-blur-2xl group">
+      <Card className="relative overflow-hidden border-none shadow-2xl rounded-[2.5rem] bg-white dark:bg-gray-800 backdrop-blur-2xl group transition-all duration-500">
         {/* Animated Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-emerald-500/5 -z-10 transition-opacity" />
         
@@ -132,15 +132,15 @@ export const InterestCalculator = () => {
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-500/10 blur-[100px] pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-500/10 blur-[100px] pointer-events-none" />
 
-        <CardContent className="p-0 text-foreground dark:text-zinc-100">
+        <CardContent className="p-0 text-gray-900 dark:text-gray-100">
           <div className="p-6 pb-2 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-purple-500/10 rounded-xl border-2 border-purple-500/30 flex items-center justify-center shadow-lg">
+              <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/30 flex items-center justify-center shadow-lg">
                 <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-foreground dark:text-zinc-100 uppercase tracking-tighter leading-none italic">Interest <span className="text-purple-600 dark:text-purple-400">Planner</span></h3>
-                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-muted-foreground flex items-center gap-1.5 mt-1.5 opacity-60">
+                <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-none italic">Interest <span className="text-purple-600 dark:text-purple-400">Planner</span></h3>
+                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-1.5 opacity-80">
                   <Clock className="h-3 w-3" /> Growth Protocol
                 </p>
               </div>
@@ -149,7 +149,7 @@ export const InterestCalculator = () => {
               variant="ghost" 
               size="icon" 
               onClick={reset}
-              className="h-10 w-10 border-2 border-border/50 rounded-full hover:bg-muted dark:hover:bg-white/5 text-muted-foreground transition-all"
+              className="h-10 w-10 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-all duration-500 font-bold"
             >
               <RefreshCw className="h-4 w-4" />
             </Button>
@@ -161,17 +161,17 @@ export const InterestCalculator = () => {
               {/* Principal Input */}
               <div className="space-y-4">
                 <div className="flex justify-between items-end px-1">
-                  <Label htmlFor="principal-cap" className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-50">Principal Capital</Label>
-                  <div className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border-2 border-emerald-500/20">₹{parseFloat(principal).toLocaleString()}</div>
+                  <Label htmlFor="principal-cap" className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400">Principal Capital</Label>
+                  <div className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">₹{parseFloat(principal).toLocaleString()}</div>
                 </div>
                 <div className="relative group">
-                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-black text-muted-foreground/20 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors z-10">₹</div>
+                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-black text-gray-300 dark:text-gray-400 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors duration-500 z-10">₹</div>
                   <Input
                     id="principal-cap"
                     type="number"
                     value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
-                    className="h-20 sm:h-24 pl-12 sm:pl-16 pr-6 text-3xl sm:text-4xl bg-white dark:bg-zinc-950 font-black border-2 border-border shadow-xl group-hover:shadow-2xl rounded-[1.5rem] sm:rounded-[2rem] focus-visible:ring-0 focus-visible:border-purple-500/50 transition-all text-foreground dark:text-zinc-100 outline-none"
+                    className="h-20 sm:h-24 pl-12 sm:pl-16 pr-6 text-3xl sm:text-4xl bg-gray-50 dark:bg-gray-900 font-black border-2 border-gray-100 dark:border-gray-700 shadow-xl group-hover:shadow-2xl rounded-[1.5rem] sm:rounded-[2rem] focus-visible:ring-0 focus-visible:border-purple-500/50 transition-all duration-500 text-gray-900 dark:text-white outline-none"
                     placeholder="50,000"
                   />
                 </div>
@@ -180,7 +180,7 @@ export const InterestCalculator = () => {
                     <button
                       key={amt}
                       onClick={() => setPrincipal(amt)}
-                      className={`flex-shrink-0 px-4 py-2 bg-muted/40 dark:bg-zinc-900 border-2 border-border rounded-xl text-[10px] font-black transition-all active:scale-95 ${principal === amt ? 'text-white border-purple-600 bg-purple-600' : 'text-muted-foreground hover:text-foreground'}`}
+                      className={`flex-shrink-0 px-4 py-2 bg-gray-100 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-[10px] font-black transition-all duration-500 active:scale-95 ${principal === amt ? 'text-white border-purple-600 bg-purple-600' : 'text-gray-600 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white'}`}
                     >
                       +₹{parseInt(amt).toLocaleString()}
                     </button>
@@ -192,30 +192,30 @@ export const InterestCalculator = () => {
                 {/* Interest Rate */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center px-1">
-                    <Label htmlFor="interest-yield" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Yield % P.A.</Label>
+                    <Label htmlFor="interest-yield" className="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Yield % P.A.</Label>
                     <span className="text-[10px] font-black text-purple-600 dark:text-purple-400">{rate}%</span>
                   </div>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-muted-foreground/30 dark:text-zinc-700">%</div>
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-gray-300 dark:text-gray-400">%</div>
                     <Input
                       id="interest-yield"
                       type="number"
                       value={rate}
                       onChange={(e) => setRate(e.target.value)}
-                      className="h-12 pl-10 pr-4 bg-muted/20 dark:bg-zinc-950 text-lg font-black border-2 border-border dark:border-zinc-800 rounded-xl focus-visible:border-purple-600 dark:focus-visible:border-purple-500 transition-all text-foreground dark:text-zinc-100 outline-none"
+                      className="h-12 pl-10 pr-4 bg-gray-50 dark:bg-gray-900 text-lg font-black border-2 border-gray-100 dark:border-gray-700 rounded-xl focus-visible:border-purple-600 dark:focus-visible:border-purple-500 transition-all duration-500 text-gray-900 dark:text-white outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Compounding Selector */}
                 <div className="space-y-2">
-                  <Label id="compounding-type" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground px-1">Compounding</Label>
-                  <div role="group" aria-labelledby="compounding-type" className="grid grid-cols-3 gap-1 p-1 bg-muted/20 dark:bg-zinc-950 rounded-xl border border-border dark:border-zinc-800 h-12">
+                  <Label id="compounding-type" className="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 px-1">Compounding</Label>
+                  <div role="group" aria-labelledby="compounding-type" className="grid grid-cols-3 gap-1 p-1 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 h-12">
                     {['monthly', 'quarterly', 'yearly'].map(item => (
                       <button
                         key={item}
                         onClick={() => setCompounding(item as any)}
-                        className={`rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${compounding === item ? 'bg-purple-600 text-white shadow-lg' : 'text-muted-foreground hover:text-foreground'}`}
+                        className={`rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${compounding === item ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
                       >
                         {item.charAt(0)}
                       </button>
@@ -227,7 +227,7 @@ export const InterestCalculator = () => {
               {/* Date Selection */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center px-1">
-                  <Label htmlFor="start-date" className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Term Range</Label>
+                  <Label htmlFor="start-date" className="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Term Range</Label>
                   {results && (
                     <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                       {results.duration}
@@ -240,14 +240,14 @@ export const InterestCalculator = () => {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="h-12 px-4 bg-muted/20 dark:bg-zinc-950 font-black border-2 border-border rounded-xl text-xs outline-none"
+                    className="h-12 px-4 bg-gray-50 dark:bg-gray-900 font-black border-2 border-gray-100 dark:border-gray-700 rounded-xl text-xs outline-none text-gray-900 dark:text-white"
                   />
                   <Input
                     id="end-date"
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="h-12 px-4 bg-muted/20 dark:bg-zinc-950 font-black border-2 border-border rounded-xl text-xs outline-none"
+                    className="h-12 px-4 bg-gray-50 dark:bg-gray-900 font-black border-2 border-gray-100 dark:border-gray-700 rounded-xl text-xs outline-none text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -261,22 +261,22 @@ export const InterestCalculator = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   className="space-y-4"
                 >
-                  <div className="relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-muted/10 dark:bg-zinc-950 overflow-hidden border-2 border-purple-500/20 shadow-xl group/result text-center">
+                  <div className="relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-gray-50 dark:bg-gray-900 overflow-hidden border-2 border-purple-500/20 shadow-xl group/result text-center">
                     <div className="space-y-1">
-                       <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-60">Maturity Projection</span>
-                       <h2 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 tracking-tighter">
+                       <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400 opacity-80">Maturity Projection</span>
+                       <h2 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 dark:from-white via-emerald-600 dark:via-emerald-400 to-emerald-800 tracking-tighter italic">
                          ₹{Math.round(results.ciTotal).toLocaleString()}
                        </h2>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-border dark:border-zinc-900">
+                    <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                       <div className="space-y-0.5">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Growth</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 opacity-80">Growth</p>
                         <p className="text-xl font-black text-emerald-600 leading-none">+{Math.round(results.ciInterest).toLocaleString()}</p>
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-60">Timeline</p>
-                        <p className="text-xl font-black text-foreground dark:text-zinc-100 leading-none">{results.totalDays}D</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 opacity-80">Timeline</p>
+                        <p className="text-xl font-black text-gray-900 dark:text-white leading-none">{results.totalDays}D</p>
                       </div>
                     </div>
                   </div>
@@ -285,7 +285,7 @@ export const InterestCalculator = () => {
                     <Button 
                       variant="ghost" 
                       onClick={handleSaveToHistory}
-                      className="h-12 sm:h-10 w-full sm:w-auto px-4 rounded-xl bg-muted/40 dark:bg-white/5 hover:bg-muted dark:hover:bg-white/10 text-muted-foreground hover:text-foreground dark:text-zinc-400 dark:hover:text-zinc-100 font-black uppercase tracking-widest text-[10px] sm:text-[9px] flex items-center justify-center gap-2 transition-all border border-border dark:border-zinc-800"
+                      className="h-12 sm:h-10 w-full sm:w-auto px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-black uppercase tracking-widest text-[10px] sm:text-[9px] flex items-center justify-center gap-2 transition-all border border-gray-200 dark:border-gray-700"
                     >
                       <span>Log Evaluation</span>
                       <ChevronRight className="h-3.5 w-3.5" />
@@ -308,13 +308,13 @@ export const InterestCalculator = () => {
                   </div>
                 </motion.div>
               ) : (
-                <div className="h-[300px] flex flex-col items-center justify-center gap-6 bg-muted/10 dark:bg-zinc-950/40 rounded-[3rem] border-2 border-dashed border-border dark:border-zinc-900">
-                  <div className="w-20 h-20 rounded-[2rem] bg-muted/30 dark:bg-zinc-900 flex items-center justify-center text-muted-foreground/30 dark:text-zinc-800">
-                    <Info className="h-10 w-10 opacity-20" />
+                <div className="h-[300px] flex flex-col items-center justify-center gap-6 bg-gray-50 dark:bg-gray-900 rounded-[3rem] border-2 border-dashed border-gray-200 dark:border-gray-700">
+                  <div className="w-20 h-20 rounded-[2rem] bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-300 dark:text-gray-400">
+                    <Info className="h-10 w-10 opacity-40" />
                   </div>
                   <div className="text-center space-y-2">
-                    <p className="text-[11px] font-black text-muted-foreground/40 dark:text-zinc-700 uppercase tracking-[0.4em]">Awaiting Financial Signal</p>
-                    <p className="text-[9px] font-bold text-muted-foreground/30 dark:text-zinc-800 uppercase tracking-widest">Inputs required for projection</p>
+                    <p className="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.4em]">Awaiting Financial Signal</p>
+                    <p className="text-[9px] font-bold text-gray-300 dark:text-gray-400 uppercase tracking-widest">Inputs required for projection</p>
                   </div>
                 </div>
               )}

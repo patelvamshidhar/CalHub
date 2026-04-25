@@ -194,7 +194,7 @@ export const AdminDashboard = () => {
           <Card className="border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600" />
             <CardHeader className="pb-6 sm:pb-8 pt-8 sm:pt-10 px-6 sm:px-10 text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-500 text-white rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/20 group hover:rotate-12 transition-transform">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-500 text-white rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/20 group hover:rotate-12 transition-transform duration-500">
                 <Lock className="h-8 w-8 sm:h-10 sm:h-10" />
               </div>
               <CardTitle className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Neural Gate</CardTitle>
@@ -205,7 +205,7 @@ export const AdminDashboard = () => {
                 <div className="space-y-3">
                   <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Access Key</Label>
                   <div className="relative group">
-                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors duration-500" />
                     <Input
                       type="password"
                       placeholder="ENTER KEYCODE"
@@ -214,7 +214,7 @@ export const AdminDashboard = () => {
                         setPassword(e.target.value);
                         setLoginError(false);
                       }}
-                      className={`pl-12 h-16 bg-muted/20 dark:bg-zinc-950 border-2 transition-all font-black text-lg text-foreground dark:text-zinc-100 uppercase tracking-[0.3em] rounded-2xl outline-none ${
+                      className={`pl-12 h-16 bg-muted/20 dark:bg-zinc-950 border-2 transition-all duration-500 font-black text-lg text-foreground dark:text-zinc-100 uppercase tracking-[0.3em] rounded-2xl outline-none ${
                         loginError ? 'border-red-500 focus:ring-red-500/20' : 'border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
                       }`}
                       autoFocus
@@ -233,7 +233,10 @@ export const AdminDashboard = () => {
                     )}
                   </AnimatePresence>
                 </div>
-                <Button type="submit" className="w-full h-16 rounded-3xl font-black uppercase tracking-[0.2em] text-[11px] bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-500 hover:to-purple-600 text-white shadow-2xl shadow-blue-500/20 transition-all hover:scale-[1.01] active:scale-[0.99]">
+                <Button 
+                  type="submit" 
+                  className="w-full h-16 rounded-3xl bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:scale-[1.01] active:scale-[0.99]"
+                >
                   Decrypt & Authorize
                 </Button>
               </form>
@@ -267,7 +270,7 @@ export const AdminDashboard = () => {
             variant="ghost"
             size="sm"
             onClick={() => setIsLoggedIn(false)}
-            className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] text-muted-foreground hover:text-foreground dark:hover:text-zinc-100 border border-transparent hover:border-border dark:hover:border-zinc-800 transition-all bg-muted/50 dark:bg-zinc-900/50"
+            className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
           >
             Terminal Logout
           </Button>
@@ -360,7 +363,7 @@ export const AdminDashboard = () => {
             variant="destructive"
             onClick={() => setShowConfirm(true)}
             disabled={isClearing || feedback.length === 0}
-            className="w-full h-16 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] gap-4 shadow-2xl shadow-red-500/10 transition-all hover:scale-[1.005] active:scale-[0.995] bg-red-950/20 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white"
+            className="w-full h-16 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] gap-4 shadow-2xl shadow-red-500/10 transition-all duration-500 hover:scale-[1.005] active:scale-[0.995] bg-red-950/20 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white"
           >
             <Trash2 className="h-6 w-6" />
             Purge All Neural Records
@@ -384,7 +387,7 @@ export const AdminDashboard = () => {
               <Button 
                 variant="outline" 
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 sm:flex-none h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-[11px] border-2 border-zinc-800 bg-muted/20 dark:bg-zinc-950 text-muted-foreground hover:text-foreground dark:hover:text-zinc-100"
+                className="flex-1 sm:flex-none h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-[11px] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
               >
                 Abort Protocol
               </Button>
@@ -404,13 +407,13 @@ export const AdminDashboard = () => {
 
       <div className="flex flex-wrap items-center gap-4 pt-10">
         <div className="relative flex-1 min-w-[300px] group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors duration-500" />
           <input
             type="text"
             placeholder="SCAN FEEDBACK MATRIX..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-14 pl-14 pr-6 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-black uppercase tracking-widest text-foreground dark:text-zinc-100 transition-all"
+            className="w-full h-14 pl-14 pr-6 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-black uppercase tracking-widest text-foreground dark:text-zinc-100 transition-all duration-500"
           />
         </div>
         
@@ -431,7 +434,7 @@ export const AdminDashboard = () => {
           variant="outline"
           size="sm"
           onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-          className="h-14 px-6 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 font-black uppercase tracking-widest text-[11px] gap-3 text-foreground dark:text-zinc-100 hover:bg-muted dark:hover:bg-zinc-900 shadow-xl"
+          className="h-14 px-6 rounded-[1.5rem] border border-gray-300 dark:border-gray-600 font-black uppercase tracking-widest text-[11px] gap-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 shadow-xl"
         >
           <ArrowUpDown className="h-4 w-4 text-blue-500" />
           {sortOrder === 'desc' ? 'Chronological' : 'Reverse'}
@@ -476,9 +479,9 @@ export const AdminDashboard = () => {
                   <div className="py-20 text-center text-muted-foreground text-[11px] font-black uppercase italic tracking-widest">No activity log detected</div>
                 ) : (
                   recentVisitors.map((visitor, idx) => (
-                    <div key={idx} className="p-6 flex items-center justify-between hover:bg-muted/50 dark:hover:bg-zinc-900/50 transition-colors border-l-2 border-transparent hover:border-blue-500 group">
+                    <div key={idx} className="p-6 flex items-center justify-between hover:bg-muted/50 dark:hover:bg-zinc-900/50 transition-colors duration-500 border-l-2 border-transparent hover:border-blue-500 group">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 flex items-center justify-center text-sm font-black text-blue-500 shadow-xl group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 rounded-2xl bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 flex items-center justify-center text-sm font-black text-blue-500 shadow-xl group-hover:scale-110 transition-transform duration-500">
                           {visitor.name?.[0]?.toUpperCase() || 'U'}
                         </div>
                         <div>
@@ -545,7 +548,7 @@ export const AdminDashboard = () => {
                     exit={{ opacity: 0, scale: 0.98 }}
                     transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    <Card className="border-none transition-all shadow-2xl bg-card dark:bg-zinc-950 group relative overflow-hidden rounded-[2.5rem] p-1">
+                    <Card className="border-none transition-all duration-500 shadow-2xl bg-card dark:bg-zinc-950 group relative overflow-hidden rounded-[2.5rem] p-1">
                       <div className={`absolute top-0 left-0 w-1.5 h-full ${
                         item.type === 'Bug' ? 'bg-red-500' : 
                         item.type === 'Improvement' ? 'bg-blue-500' :
@@ -576,11 +579,11 @@ export const AdminDashboard = () => {
                                   {item.rating && (
                                     <div className="flex items-center gap-1.5 bg-muted dark:bg-zinc-900 px-3 py-1 rounded-xl border border-border dark:border-zinc-800">
                                       <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                                      <span className="text-[10px] font-black text-foreground dark:text-zinc-100">{item.rating}</span>
+                                      <span className="text-[10px] font-black text-gray-900 dark:text-zinc-100">{item.rating}</span>
                                     </div>
                                   )}
                                </div>
-                              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground dark:text-zinc-400">
                                 <Clock className="h-3.5 w-3.5" />
                                 {item.createdAt ? format(item.createdAt.toDate(), 'MMMM d, yyyy • HH:mm') : 'TIME_NULL'}
                               </div>
@@ -589,7 +592,7 @@ export const AdminDashboard = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-8 px-10 pb-10">
-                        <div className="bg-muted/30 dark:bg-zinc-900/50 p-6 rounded-3xl border border-border dark:border-zinc-800 relative group-hover:bg-muted/50 dark:group-hover:bg-zinc-900 transition-colors">
+                        <div className="bg-muted/30 dark:bg-zinc-900/50 p-6 rounded-3xl border border-border dark:border-zinc-800 relative group-hover:bg-muted/50 dark:group-hover:bg-zinc-900 transition-colors duration-500">
                           <p className="text-foreground dark:text-zinc-100 font-bold leading-relaxed whitespace-pre-wrap italic text-lg">
                             "{item.message}"
                           </p>
@@ -600,8 +603,8 @@ export const AdminDashboard = () => {
                             {(item.name || 'A').charAt(0).toUpperCase()}
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-1">Packet Origin</span>
-                            <div className="flex items-center gap-2 text-base font-black text-foreground dark:text-zinc-100 uppercase italic tracking-tight">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground dark:text-zinc-500 mb-1">Packet Origin</span>
+                            <div className="flex items-center gap-2 text-base font-black text-gray-900 dark:text-zinc-100 uppercase italic tracking-tight">
                               {item.name ? (
                                 <>
                                   <User className="h-4 w-4 text-blue-500" />

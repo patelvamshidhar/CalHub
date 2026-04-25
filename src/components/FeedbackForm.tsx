@@ -87,22 +87,22 @@ export const FeedbackForm = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="max-w-md w-full bg-emerald-50 border-2 border-emerald-200 rounded-3xl p-8 text-center shadow-2xl"
+              className="max-w-md w-full bg-emerald-50 dark:bg-emerald-950 border-2 border-emerald-200 dark:border-emerald-800 rounded-3xl p-8 text-center shadow-2xl"
             >
-              <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-200">
+              <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-200 dark:shadow-emerald-900/40">
                 <CheckCircle2 className="h-10 w-10 text-white" />
               </div>
-              <h3 className="text-2xl font-black text-emerald-900 mb-2 uppercase tracking-tight">Success!</h3>
-              <p className="text-emerald-700 font-bold mb-8">Thank you for your feedback!</p>
+              <h3 className="text-2xl font-black text-emerald-900 dark:text-emerald-100 mb-2 uppercase tracking-tight">Success!</h3>
+              <p className="text-emerald-700 dark:text-emerald-300 font-bold mb-8">Thank you for your feedback!</p>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-600/60">
+                <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-600/60 dark:text-emerald-400/60">
                   <Loader2 className="h-3 w-3 animate-spin" />
                   Redirecting to home...
                 </div>
                 <Button 
                   onClick={() => navigate('/')}
-                  className="w-full h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase tracking-widest text-xs gap-2"
+                  className="w-full h-12 rounded-2xl bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-widest text-xs gap-2 transition-all duration-200"
                 >
                   <Home className="h-4 w-4" />
                   Go to Home
@@ -132,12 +132,12 @@ export const FeedbackForm = () => {
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Identity Tag (Optional)</Label>
                 <div className="relative group">
-                  <User className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+                  <User className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors duration-500" />
                   <Input
                     placeholder="ENTER YOUR NAME"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-12 h-16 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl font-black text-lg text-foreground dark:text-zinc-100 uppercase tracking-wider transition-all outline-none"
+                    className="pl-12 h-16 bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl font-black text-lg text-foreground dark:text-zinc-100 uppercase tracking-wider transition-all duration-500 outline-none"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -194,7 +194,7 @@ export const FeedbackForm = () => {
                 placeholder="DESCRIBE YOUR EXPERIENCE..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="min-h-[160px] bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl font-bold text-foreground dark:text-zinc-100 p-6 resize-none outline-none transition-all"
+                className="min-h-[160px] bg-muted/20 dark:bg-zinc-950 border-2 border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-2xl font-bold text-foreground dark:text-zinc-100 p-6 resize-none outline-none transition-all duration-500"
                 required
                 disabled={isSubmitting}
               />
@@ -217,7 +217,7 @@ export const FeedbackForm = () => {
             <Button 
               type="submit" 
               disabled={isSubmitting || !message.trim()}
-              className="w-full h-16 rounded-3xl font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl bg-gradient-to-r from-blue-600 to-zinc-700 hover:from-blue-500 hover:to-zinc-600 shadow-blue-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] text-white"
+              className="w-full h-16 rounded-3xl bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl shadow-blue-500/20 transition-all duration-500 hover:scale-[1.01] active:scale-[0.99]"
             >
               {isSubmitting ? (
                 <>
