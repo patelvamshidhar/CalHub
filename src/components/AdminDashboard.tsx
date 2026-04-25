@@ -193,14 +193,14 @@ export const AdminDashboard = () => {
         >
           <Card className="border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600" />
-            <CardHeader className="pb-8 pt-10 px-10 text-center">
-              <div className="w-20 h-20 bg-blue-500 text-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/20 group hover:rotate-12 transition-transform">
-                <Lock className="h-10 w-10" />
+            <CardHeader className="pb-6 sm:pb-8 pt-8 sm:pt-10 px-6 sm:px-10 text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-500 text-white rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/20 group hover:rotate-12 transition-transform">
+                <Lock className="h-8 w-8 sm:h-10 sm:h-10" />
               </div>
-              <CardTitle className="text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Neural Gate</CardTitle>
-              <CardDescription className="text-muted-foreground font-medium">Authentication required to access the central terminal.</CardDescription>
+              <CardTitle className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Neural Gate</CardTitle>
+              <CardDescription className="text-muted-foreground font-medium text-xs sm:text-sm">Authentication required to access the central terminal.</CardDescription>
             </CardHeader>
-            <CardContent className="px-10 pb-12 space-y-8">
+            <CardContent className="px-6 sm:px-10 pb-10 sm:pb-12 space-y-6 sm:space-y-8">
               <form onSubmit={handleLogin} className="space-y-6">
                 <div className="space-y-3">
                   <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Access Key</Label>
@@ -251,15 +251,15 @@ export const AdminDashboard = () => {
 
   return (
     <div className="space-y-10 animate-in fade-in duration-700 max-w-[90rem] mx-auto pb-20">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-white/5 pb-8">
-        <div className="space-y-2">
-          <div className="flex items-center gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-white/5 pb-8 p-4 sm:p-0">
+        <div className="space-y-2 text-center lg:text-left">
+          <div className="flex flex-col lg:flex-row items-center gap-4">
             <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/20">
               <ShieldCheck className="h-6 w-6" />
             </div>
-            <h2 className="text-4xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Central <span className="text-blue-500">Terminal</span></h2>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Central <span className="text-blue-500">Terminal</span></h2>
           </div>
-          <p className="text-muted-foreground text-sm font-medium">Monitoring real-time neural feedback and system performance matrix.</p>
+          <p className="text-muted-foreground text-xs sm:text-sm font-medium">Monitoring real-time neural feedback and system performance matrix.</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -275,7 +275,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Visitor Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-0">
         <Card className="border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden relative rounded-[2rem] p-1">
           <div className="absolute right-0 top-0 p-6 opacity-[0.05]">
             <Users className="h-20 w-20 text-blue-500" />
@@ -354,7 +354,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Unified Clear Button */}
-      <div className="pt-4">
+      <div className="pt-4 px-4 sm:px-0">
         {!showConfirm ? (
           <Button
             variant="destructive"

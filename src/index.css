@@ -96,14 +96,12 @@
   body {
     @apply bg-background text-text-primary font-sans leading-relaxed;
     font-size: var(--font-body);
-    min-width: 1024px;
-    overflow-x: auto;
   }
 
-  h1 { font-size: 2.5rem; font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-4; }
-  h2 { font-size: 1.5rem; font-weight: 700; @apply font-heading tracking-tight leading-tight mb-2; }
-  h3 { font-size: var(--font-subhead); font-weight: 600; @apply font-heading mb-1; }
-  p  { font-size: var(--font-body); color: var(--color-text-secondary); line-height: var(--line-height-relaxed); }
+  h1 { font-size: clamp(2.25rem, 6vw, 3.5rem); font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-6; }
+  h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 700; @apply font-heading tracking-tight leading-tight mb-4; }
+  h3 { font-size: var(--font-subhead); font-weight: 600; @apply font-heading mb-2; }
+  p  { font-size: var(--font-body); color: var(--color-text-secondary); line-height: 1.6; }
   
   .text-muted { color: var(--color-text-muted); }
   .text-secondary { color: var(--color-text-secondary); }
@@ -112,13 +110,29 @@
 @layer components {
   .calculator-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-    padding: 32px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .calculator-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      padding: 24px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .calculator-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      padding: 32px;
+    }
   }
 
   .nav-link {
-    @apply px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all duration-300;
+    @apply px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300;
   }
 
   .nav-link:hover {
@@ -138,15 +152,19 @@
   }
 
   .calculator-card:hover {
-    @apply -translate-y-1 shadow-lg border-primary/20;
+    @apply md:-translate-y-1 md:shadow-lg md:border-primary/20;
   }
 
   .btn {
-    @apply min-h-[44px] px-6 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2;
+    @apply min-h-[48px] px-6 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto;
   }
 
   .btn:hover {
-    @apply -translate-y-0.5;
+    @apply md:-translate-y-0.5;
+  }
+
+  input, select, textarea {
+    @apply w-full h-12 px-4 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all;
   }
 
   .navbar {

@@ -165,13 +165,13 @@ export const InterestCalculator = () => {
                   <div className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border-2 border-emerald-500/20">₹{parseFloat(principal).toLocaleString()}</div>
                 </div>
                 <div className="relative group">
-                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-3xl font-black text-muted-foreground/20 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors z-10">₹</div>
+                  <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-black text-muted-foreground/20 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors z-10">₹</div>
                   <Input
                     id="principal-cap"
                     type="number"
                     value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
-                    className="h-24 pl-16 pr-6 text-4xl bg-white dark:bg-zinc-950 font-black border-2 border-border shadow-xl group-hover:shadow-2xl rounded-[2rem] focus-visible:ring-0 focus-visible:border-purple-500/50 transition-all text-foreground dark:text-zinc-100 outline-none"
+                    className="h-20 sm:h-24 pl-12 sm:pl-16 pr-6 text-3xl sm:text-4xl bg-white dark:bg-zinc-950 font-black border-2 border-border shadow-xl group-hover:shadow-2xl rounded-[1.5rem] sm:rounded-[2rem] focus-visible:ring-0 focus-visible:border-purple-500/50 transition-all text-foreground dark:text-zinc-100 outline-none"
                     placeholder="50,000"
                   />
                 </div>
@@ -261,10 +261,10 @@ export const InterestCalculator = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   className="space-y-4"
                 >
-                  <div className="relative p-8 rounded-[2.5rem] bg-muted/10 dark:bg-zinc-950 overflow-hidden border-2 border-purple-500/20 shadow-xl group/result text-center">
+                  <div className="relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-muted/10 dark:bg-zinc-950 overflow-hidden border-2 border-purple-500/20 shadow-xl group/result text-center">
                     <div className="space-y-1">
-                       <span className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-60">Maturity Projection</span>
-                       <h2 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 tracking-tighter">
+                       <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-60">Maturity Projection</span>
+                       <h2 className="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-emerald-600 dark:via-emerald-400 to-emerald-800 tracking-tighter">
                          ₹{Math.round(results.ciTotal).toLocaleString()}
                        </h2>
                     </div>
@@ -281,28 +281,30 @@ export const InterestCalculator = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between px-3">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-3">
                     <Button 
                       variant="ghost" 
                       onClick={handleSaveToHistory}
-                      className="h-10 px-4 rounded-xl bg-muted/40 dark:bg-white/5 hover:bg-muted dark:hover:bg-white/10 text-muted-foreground hover:text-foreground dark:text-zinc-400 dark:hover:text-zinc-100 font-black uppercase tracking-widest text-[9px] flex items-center gap-2 transition-all border border-border dark:border-zinc-800"
+                      className="h-12 sm:h-10 w-full sm:w-auto px-4 rounded-xl bg-muted/40 dark:bg-white/5 hover:bg-muted dark:hover:bg-white/10 text-muted-foreground hover:text-foreground dark:text-zinc-400 dark:hover:text-zinc-100 font-black uppercase tracking-widest text-[10px] sm:text-[9px] flex items-center justify-center gap-2 transition-all border border-border dark:border-zinc-800"
                     >
                       <span>Log Evaluation</span>
                       <ChevronRight className="h-3.5 w-3.5" />
                     </Button>
                     
-                    <ExportActions
-                      title="Financial Projection"
-                      inputs={[
-                        { label: 'Principal', value: `₹${principal}` },
-                        { label: 'Rate', value: `${rate}%` },
-                        { label: 'Term', value: results.duration }
-                      ]}
-                      results={[
-                        { label: 'Maturity', value: `₹${Math.round(results.ciTotal).toLocaleString()}` },
-                        { label: 'Growth', value: `₹${Math.round(results.ciInterest).toLocaleString()}` }
-                      ]}
-                    />
+                    <div className="w-full sm:w-auto flex justify-center sm:block">
+                      <ExportActions
+                        title="Financial Projection"
+                        inputs={[
+                          { label: 'Principal', value: `₹${principal}` },
+                          { label: 'Rate', value: `${rate}%` },
+                          { label: 'Term', value: results.duration }
+                        ]}
+                        results={[
+                          { label: 'Maturity', value: `₹${Math.round(results.ciTotal).toLocaleString()}` },
+                          { label: 'Growth', value: `₹${Math.round(results.ciInterest).toLocaleString()}` }
+                        ]}
+                      />
+                    </div>
                   </div>
                 </motion.div>
               ) : (

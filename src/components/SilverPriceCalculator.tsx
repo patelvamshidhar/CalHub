@@ -177,13 +177,13 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
           </div>
 
           {/* Result Section */}
-          <div className="relative bg-muted/20 dark:bg-zinc-900 flex flex-col justify-center overflow-hidden min-h-[500px]">
+          <div className="relative bg-muted/20 dark:bg-zinc-900 flex flex-col justify-center overflow-hidden min-h-[400px] sm:min-h-[500px]">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-zinc-400/10 blur-[150px] rounded-full pointer-events-none animate-pulse" />
             
-            <div className="relative z-10 p-12 lg:p-20 space-y-16 text-center">
-              <div className="space-y-6 flex flex-col items-center">
-                <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white dark:bg-zinc-950 border-2 border-border shadow-2xl">
-                  <span className="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-60">Silver Asset Valuation</span>
+            <div className="relative z-10 p-8 sm:p-12 lg:p-20 space-y-10 sm:space-y-16 text-center">
+              <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
+                <div className="inline-flex items-center gap-3 px-4 sm:px-6 py-2 rounded-full bg-white dark:bg-zinc-950 border-2 border-border shadow-2xl">
+                  <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground opacity-60">Silver Asset Valuation</span>
                 </div>
                 
                 <AnimatePresence mode="wait">
@@ -193,61 +193,61 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     className="relative block group"
                   >
-                    <h3 className="relative text-7xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-zinc-300 via-zinc-600 to-zinc-900 dark:from-white dark:via-zinc-400 dark:to-zinc-600 italic">
+                    <h3 className="relative text-5xl sm:text-7xl lg:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-zinc-300 via-zinc-600 to-zinc-900 dark:from-white dark:via-zinc-400 dark:to-zinc-600 italic">
                       {results.isValid ? formatCurrency(results.totalPrice) : '₹0'}
                     </h3>
                   </motion.div>
                 </AnimatePresence>
               </div>
 
-              <div className="space-y-8 pt-6 max-w-md mx-auto">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="p-6 rounded-[2rem] bg-white dark:bg-zinc-950 border-2 border-border text-left space-y-2 shadow-lg group-hover:shadow-2xl transition-all">
-                    <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40">Market Subtotal</span>
-                    <span className="text-2xl font-black text-foreground leading-none">{formatCurrency(results.basePrice)}</span>
+              <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 max-w-md mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-950 border-2 border-border text-left space-y-1 sm:space-y-2 shadow-lg transition-all">
+                    <span className="block text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40">Market Subtotal</span>
+                    <span className="text-xl sm:text-2xl font-black text-foreground leading-none">{formatCurrency(results.basePrice)}</span>
                   </div>
-                  <div className="p-6 rounded-[2rem] bg-white dark:bg-zinc-950 border-2 border-border text-left space-y-2 shadow-lg hover:border-zinc-500/50 transition-all">
-                    <span className="block text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40">GST (3%)</span>
-                    <span className="text-2xl font-black text-zinc-600 dark:text-zinc-400 leading-none">{formatCurrency(results.gstPrice)}</span>
+                  <div className="p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2.5rem] bg-white dark:bg-zinc-950 border-2 border-border text-left space-y-1 sm:space-y-2 shadow-lg hover:border-zinc-500/50 transition-all">
+                    <span className="block text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground opacity-40">GST (3%)</span>
+                    <span className="text-xl sm:text-2xl font-black text-zinc-600 dark:text-zinc-400 leading-none">{formatCurrency(results.gstPrice)}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-zinc-950/20 rounded-2xl border-2 border-border/50 text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground shadow-xl">
+                <div className="flex items-center justify-center gap-3 p-3 sm:p-4 bg-white dark:bg-zinc-950/20 rounded-2xl border-2 border-border/50 text-[9px] sm:text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground shadow-xl">
                   Sovereign fiscal indices applied
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-10 pt-10">
-                <div className="flex flex-col items-center gap-2">
-                   <div className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-950 flex items-center justify-center border-2 border-border shadow-xl font-black text-[11px] uppercase tracking-tighter">
+              <div className="flex items-center justify-center gap-4 sm:gap-10 pt-6 sm:pt-10 overflow-x-auto">
+                <div className="flex flex-col items-center gap-2 shrink-0">
+                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white dark:bg-zinc-950 flex items-center justify-center border-2 border-border shadow-xl font-black text-[9px] sm:text-[11px] uppercase tracking-tighter">
                      {weight}
                    </div>
-                   <span className="text-[10px] font-black uppercase text-muted-foreground opacity-40 tracking-widest">Weight ({unit})</span>
+                   <span className="text-[8px] sm:text-[10px] font-black uppercase text-muted-foreground opacity-40 tracking-widest">Weight ({unit})</span>
                 </div>
-                <div className="w-px h-16 bg-border/50" />
-                <div className="flex flex-col items-center gap-2">
-                   <div className="w-14 h-14 rounded-2xl bg-zinc-400 text-white dark:text-zinc-950 flex items-center justify-center border-2 border-zinc-400 shadow-xl font-black text-[11px] uppercase italic">
+                <div className="w-px h-12 sm:h-16 bg-border/50 shrink-0" />
+                <div className="flex flex-col items-center gap-2 shrink-0">
+                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-zinc-400 text-white dark:text-zinc-950 flex items-center justify-center border-2 border-zinc-400 shadow-xl font-black text-[9px] sm:text-[11px] uppercase italic">
                      Silver
                    </div>
-                   <span className="text-[10px] font-black uppercase text-muted-foreground opacity-40 tracking-widest">Density Std.</span>
+                   <span className="text-[8px] sm:text-[10px] font-black uppercase text-muted-foreground opacity-40 tracking-widest">Density Std.</span>
                 </div>
-                <div className="w-px h-16 bg-border/50" />
-                <div className="flex flex-col items-center gap-2">
-                   <div className="w-14 h-14 rounded-2xl bg-white dark:bg-zinc-950 flex items-center justify-center border-2 border-border shadow-xl font-black text-[11px] uppercase tracking-tighter">
+                <div className="w-px h-12 sm:h-16 bg-border/50 shrink-0" />
+                <div className="flex flex-col items-center gap-2 shrink-0">
+                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white dark:bg-zinc-950 flex items-center justify-center border-2 border-border shadow-xl font-black text-[9px] sm:text-[11px] uppercase tracking-tighter">
                      {makingPercent}%
                    </div>
-                   <span className="text-[10px] font-black uppercase text-muted-foreground opacity-40 tracking-widest">Charges Pct.</span>
+                   <span className="text-[8px] sm:text-[10px] font-black uppercase text-muted-foreground opacity-40 tracking-widest">Charges Pct.</span>
                 </div>
               </div>
 
               {onSave && (
-                <div className="flex justify-center pt-10">
+                <div className="flex justify-center pt-8 sm:pt-10">
                   <Button
                     onClick={() => onSave({ weight, unit, rate: parseFloat(rate), totalPrice: results.totalPrice, gstPrice: results.gstPrice })}
                     disabled={!results.isValid}
-                    className="rounded-[2rem] bg-zinc-600 text-white dark:bg-zinc-200 dark:text-zinc-950 font-black uppercase tracking-[0.4em] text-[11px] h-18 px-12 shadow-2xl shadow-zinc-500/40 hover:scale-[1.05] active:scale-[0.95] transition-all"
+                    className="rounded-[2rem] bg-zinc-600 text-white dark:bg-zinc-200 dark:text-zinc-950 font-black uppercase tracking-[0.4em] text-[10px] sm:text-[11px] h-14 sm:h-18 px-8 sm:px-12 shadow-2xl shadow-zinc-500/40 hover:scale-[1.05] active:scale-[0.95] transition-all w-full sm:w-auto"
                   >
-                    Archive Appraisal <ChevronRight className="h-5 w-5 ml-4" />
+                    Archive Appraisal <ChevronRight className="h-5 w-5 ml-4 hidden sm:inline" />
                   </Button>
                 </div>
               )}

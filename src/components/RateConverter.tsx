@@ -117,14 +117,27 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
               <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-1 opacity-50">
                 {mode === 'pctToRate' ? 'Input Percentage' : 'Monthly Interest'}
               </Label>
-              <div className="relative group">
+              <div className="relative group space-y-3">
                 <Input
                   type="number"
                   placeholder={mode === 'pctToRate' ? "12" : "1"}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="text-5xl h-24 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[2rem] text-center font-black text-foreground dark:text-zinc-100 placeholder:text-muted-foreground/10 transition-all shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none"
+                  className="text-3xl sm:text-5xl h-20 sm:h-24 bg-white dark:bg-zinc-950 border-2 border-border focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[1.5rem] sm:rounded-[2rem] text-center font-black text-foreground dark:text-zinc-100 placeholder:text-muted-foreground/10 transition-all shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none"
                 />
+                
+                {/* Unit Label for Rate mode - Responsive placement */}
+                {mode === 'rateToPct' && (
+                  <div className="flex justify-center">
+                    <button 
+                      onClick={() => setRateUnit(u => u === 'paise' ? 'rupees' : 'paise')}
+                      className="h-10 px-4 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:-right-14 rounded-xl border border-border dark:border-zinc-800 bg-muted/30 dark:bg-zinc-950 text-[9px] font-black uppercase text-muted-foreground hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-500/30 transition-all shadow-lg"
+                    >
+                      {rateUnit}
+                    </button>
+                  </div>
+                )}
+                
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-20">
                   {results && (
                     <motion.div 
@@ -168,7 +181,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   <div className="relative inline-block">
                     {/* Neon Glow behind result */}
                     <div className="absolute inset-0 blur-3xl bg-cyan-500/20 -z-10 rounded-full" />
-                    <h2 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-cyan-600 dark:via-cyan-400 to-blue-700 dark:to-blue-500 tracking-tighter px-4 drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+                    <h2 className="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground dark:from-zinc-100 via-cyan-600 dark:via-cyan-400 to-blue-700 dark:to-blue-500 tracking-tighter px-4 drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
                       {results.display}
                     </h2>
                   </div>
@@ -184,7 +197,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
           </div>
 
           {/* Bottom Info Bar */}
-          <div className="pt-6 border-t border-border dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="pt-6 sm:p-8 sm:pt-4 border-t border-border dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-8 pb-6 sm:pb-8">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/20 dark:bg-zinc-950 border border-border dark:border-zinc-800">
               <Info className="h-3 w-3 text-muted-foreground/40 dark:text-zinc-700" />
               <span className="text-[9px] font-bold text-muted-foreground/40 dark:text-zinc-700 uppercase tracking-tight">

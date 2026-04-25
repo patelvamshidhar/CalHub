@@ -122,7 +122,7 @@ export const VehicleHub = () => {
 
   return (
     <TooltipProvider>
-      <div className="space-y-8 w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="space-y-6 sm:space-y-8 w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 pb-24">
         <motion.section
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -135,7 +135,7 @@ export const VehicleHub = () => {
                 <Navigation className="h-3 w-3" />
                 Transit Logistics
               </div>
-              <h2 className="text-4xl font-black tracking-tighter text-text-primary uppercase italic leading-none mb-1">
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tighter text-text-primary uppercase italic leading-none mb-1">
                 Vehicle <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-cyan-600">Hub</span>
               </h2>
               <p className="text-text-muted text-[10px] font-black uppercase tracking-widest leading-relaxed">Precision transit & fuel efficiency matrix. Engineered for accuracy.</p>
@@ -265,12 +265,12 @@ export const VehicleHub = () => {
             <div className="space-y-6">
                <Card className="relative border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-emerald-500 to-violet-600" />
-                 <CardContent className="p-8 space-y-6 text-center">
+                 <CardContent className="p-6 sm:p-8 space-y-6 text-center">
                     <div className="space-y-2">
                       <span className="text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary">Est. Expenditure</span>
                       <div className="relative">
                         <div className="absolute inset-0 blur-2xl bg-blue-500/10 rounded-full" />
-                        <h3 className="relative text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-text-primary via-blue-700 to-blue-900 italic leading-none py-2">
+                        <h3 className="relative text-5xl sm:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-text-primary via-blue-700 to-blue-900 italic leading-none py-2">
                           ₹{results ? Math.round(results.totalCost).toLocaleString() : '0'}
                         </h3>
                       </div>

@@ -182,25 +182,25 @@ export const LandCalculator = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 pb-6 px-6">
-                <div className="grid grid-cols-[2fr_1fr] gap-2">
-                  <Input
-                    type="number"
-                    value={pricePerUnit}
-                    onChange={(e) => setPricePerUnit(e.target.value)}
-                    className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xl outline-none"
-                    placeholder="Rate"
-                  />
-                  <Select value={priceUnit} onValueChange={(v: any) => setPriceUnit(v)}>
-                    <SelectTrigger className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="SQ_FT">Sq. Ft</SelectItem>
-                      <SelectItem value="SQ_M">Sq. M</SelectItem>
-                      <SelectItem value="ACRE">Acre</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                 <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-2">
+                   <Input
+                     type="number"
+                     value={pricePerUnit}
+                     onChange={(e) => setPricePerUnit(e.target.value)}
+                     className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xl outline-none"
+                     placeholder="Rate"
+                   />
+                   <Select value={priceUnit} onValueChange={(v: any) => setPriceUnit(v)}>
+                     <SelectTrigger className="h-12 bg-muted/20 border-2 border-border rounded-xl font-black text-xs">
+                       <SelectValue />
+                     </SelectTrigger>
+                     <SelectContent>
+                       <SelectItem value="SQ_FT">Sq. Ft</SelectItem>
+                       <SelectItem value="SQ_M">Sq. M</SelectItem>
+                       <SelectItem value="ACRE">Acre</SelectItem>
+                     </SelectContent>
+                   </Select>
+                 </div>
 
                 <div className="flex gap-2 pt-2">
                   <Button variant="ghost" onClick={reset} className="flex-1 h-10 rounded-xl text-[9px] font-black uppercase tracking-widest bg-secondary">
@@ -216,19 +216,19 @@ export const LandCalculator = () => {
         </div>
 
         <div className="lg:col-span-5 space-y-8">
-          <Card className="relative border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-amber-500" />
-            <CardHeader className="pb-4 pt-10 px-10 text-center">
-               <div className="flex items-center justify-center gap-3 mb-4">
-                 <Target className="h-5 w-5 text-emerald-600" />
-                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary">Est. Valuation</span>
-               </div>
-               <CardTitle className="text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-text-primary via-emerald-600 to-emerald-800 italic leading-none">
-                {results ? formatCurrency(results.totalPrice, currency) : '---'}
-               </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6 px-10 pb-10">
-              <div className="grid grid-cols-2 gap-4">
+            <Card className="relative border-none shadow-2xl bg-card dark:bg-zinc-950 overflow-hidden rounded-[2rem] sm:rounded-[2.5rem]">
+             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-amber-500" />
+             <CardHeader className="pb-4 pt-8 sm:pt-10 px-6 sm:px-10 text-center">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Target className="h-5 w-5 text-emerald-600" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-text-secondary">Est. Valuation</span>
+                </div>
+                <CardTitle className="text-4xl sm:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-text-primary via-emerald-600 to-emerald-800 italic leading-none">
+                 {results ? formatCurrency(results.totalPrice, currency) : '---'}
+                </CardTitle>
+             </CardHeader>
+             <CardContent className="space-y-6 px-6 sm:px-10 pb-8 sm:pb-10">
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-2xl bg-muted/20 border border-border">
                   <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground block mb-1">Coverage</span>
                   <p className="text-xl font-black">{results ? results.area.toLocaleString() : '0'} <small className="text-[9px] opacity-50 uppercase">{inputUnit === 'SQ_FT' ? 'ft²' : 'm²'}</small></p>

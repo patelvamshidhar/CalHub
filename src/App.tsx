@@ -72,12 +72,12 @@ const HomePage = () => {
               >
                 <div className={`absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r ${item.color} z-20`} />
                 
-                <div className="p-8 pb-10 space-y-10">
+                <div className="p-6 sm:p-8 space-y-6 sm:space-y-10">
                   <div className="flex items-center justify-between">
                     <div className="relative inline-block">
                       <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-[40px] opacity-10 group-hover:opacity-30 transition-opacity rounded-full`} />
-                      <div className={`relative w-20 h-20 rounded-2xl bg-secondary dark:bg-zinc-900 border-2 border-border flex items-center justify-center text-text-primary shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                        <item.icon className="h-10 w-10 opacity-80" />
+                      <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-secondary dark:bg-zinc-900 border-2 border-border flex items-center justify-center text-text-primary shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                        <item.icon className="h-8 w-8 sm:h-10 sm:w-10 opacity-80" />
                       </div>
                     </div>
                     <div className="px-3 py-1 rounded-full bg-muted border border-border text-[8px] font-black uppercase tracking-widest text-text-muted">
@@ -85,21 +85,21 @@ const HomePage = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <h2 className="text-3xl font-black tracking-tighter uppercase italic leading-none text-text-primary">
+                  <div className="space-y-2 sm:space-y-3">
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic leading-none text-text-primary">
                       {item.title}
                     </h2>
-                    <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">
+                    <p className="text-[9px] sm:text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">
                       {item.desc}
                     </p>
                   </div>
                 </div>
 
-                <div className="px-8 pb-10 flex items-center justify-between mt-auto">
-                  <div className="inline-flex items-center text-[9px] font-black uppercase tracking-[0.4em] text-text-muted group-hover:text-text-primary transition-all">
-                    Initialize <ArrowRight className="h-4 w-4 ml-3 group-hover:translate-x-2 transition-transform" />
+                <div className="px-6 sm:px-8 pb-8 sm:pb-10 flex items-center justify-between mt-auto">
+                  <div className="inline-flex items-center text-[8px] sm:text-[9px] font-black uppercase tracking-[0.4em] text-text-muted group-hover:text-text-primary transition-all">
+                    Initialize <ArrowRight className="h-4 w-4 ml-2 sm:ml-3 group-hover:translate-x-2 transition-transform" />
                   </div>
-                  <Button variant="outline" size="sm" className="rounded-xl font-black text-[8px] uppercase tracking-widest px-4 border-2">
+                  <Button variant="outline" size="sm" className="rounded-xl font-black text-[8px] uppercase tracking-widest px-3 sm:px-4 border-2">
                     Open Protocol
                   </Button>
                 </div>
@@ -216,11 +216,6 @@ const MainApp = () => {
           className="min-h-screen bg-background text-foreground transition-colors duration-300 selection:bg-blue-500 selection:text-white"
         >
           <a href="#main-content" className="skip-link">Skip to Content</a>
-
-          {/* Desktop Only Warning */}
-          <div className="lg:hidden bg-blue-600 text-white px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] sticky top-0 z-[200]">
-            Best viewed on Desktop/Tablet. Use horizontal scroll if needed.
-          </div>
           
           {/* Maintenance Banner */}
           <AnimatePresence>
@@ -253,10 +248,10 @@ const MainApp = () => {
           </AnimatePresence>
 
           {/* Header */}
-          <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-300 ${showScrollTop ? 'shadow-lg py-2' : 'py-4'}`}>
+          <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-300 ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
             <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
-              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { navigate('/'); }}>
-                <div className="bg-blue-600 text-white p-2 rounded-xl shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
+              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
+                <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
                   <LayoutGrid className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-black tracking-tighter leading-none text-text-primary italic m-0">
@@ -265,7 +260,7 @@ const MainApp = () => {
               </div>
 
               {/* Desktop Nav */}
-              <nav className="flex items-center gap-2">
+              <nav className="hidden md:flex items-center gap-2">
                 <button onClick={() => navigate('/')} className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}>Root</button>
                 <button onClick={() => navigate('/finance')} className={`nav-link ${activeTab === 'finance' ? 'active' : ''}`}>Finance</button>
                 <button onClick={() => navigate('/gold-silver')} className={`nav-link ${activeTab === 'gold-silver' ? 'active' : ''}`}>Metals</button>
@@ -273,14 +268,14 @@ const MainApp = () => {
                 <button onClick={() => navigate('/land')} className={`nav-link ${activeTab === 'land' ? 'active' : ''}`}>Estate</button>
               </nav>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 {isInstallable && (
                   <Button
                     id="pwa-install-trigger"
                     variant="outline"
                     size="sm"
                     onClick={installApp}
-                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border-2 border-border bg-background hover:bg-muted text-text-primary"
+                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border-2 border-border bg-background hover:bg-muted text-text-primary hidden sm:flex"
                   >
                     <Download className="h-3.5 w-3.5" />
                     <span>Install</span>
@@ -299,8 +294,32 @@ const MainApp = () => {
             </div>
           </header>
 
+          {/* Mobile Bottom Navigation */}
+          <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-background/80 backdrop-blur-3xl border-t md:hidden pb-safe">
+            <div className="flex items-center justify-around h-16 px-4">
+              {[
+                { id: 'home', icon: Home, path: '/' },
+                { id: 'finance', icon: IndianRupee, path: '/finance' },
+                { id: 'gold-silver', icon: Coins, path: '/gold-silver' },
+                { id: 'vehicle', icon: Navigation, path: '/vehicle' },
+                { id: 'land', icon: MapIcon, path: '/land' },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(item.path)}
+                  className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
+                    activeTab === item.id ? 'text-blue-600 scale-110' : 'text-text-muted hover:text-text-primary'
+                  }`}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="text-[8px] font-black uppercase tracking-tighter mt-1">{item.id === 'home' ? 'Root' : item.id.split('-')[0]}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
+
           {/* Main Content */}
-          <main id="main-content" className="max-w-7xl mx-auto px-8 py-10 outline-none" tabIndex={-1}>
+          <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 outline-none pb-24 md:pb-10" tabIndex={-1}>
         <AnimatePresence mode="wait">
           {activeTab === 'home' ? (
             <motion.div

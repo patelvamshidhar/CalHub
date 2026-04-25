@@ -115,19 +115,19 @@ export const FeedbackForm = () => {
 
       <Card className="border-none shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] bg-card dark:bg-zinc-950 overflow-hidden rounded-[2.5rem]">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-zinc-500 to-purple-600" />
-        <CardHeader className="pb-8 pt-10 px-10">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-blue-500 font-black text-white rounded-2xl shadow-xl shadow-blue-500/20">
+        <CardHeader className="pb-6 sm:pb-8 pt-8 sm:pt-10 px-6 sm:px-10">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
+            <div className="p-3 bg-blue-600 font-black text-white rounded-2xl shadow-xl shadow-blue-500/20 w-fit">
               <MessageSquare className="h-6 w-6" />
             </div>
-            <CardTitle className="text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Feedback Hub</CardTitle>
+            <CardTitle className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Feedback Hub</CardTitle>
           </div>
-          <CardDescription className="text-sm font-medium text-muted-foreground">
+          <CardDescription className="text-xs sm:text-sm font-medium text-muted-foreground">
             Help us calibrate the future of CalHub. Share your neural feedback or report system anomalies.
           </CardDescription>
         </CardHeader>
-        <CardContent className="px-10 pb-10 space-y-8">
-          <form onSubmit={handleSubmit} className="space-y-8">
+        <CardContent className="px-6 sm:px-10 pb-8 sm:pb-10 space-y-6 sm:space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             <div className="grid grid-cols-1 gap-8">
               <div className="space-y-3">
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Identity Tag (Optional)</Label>
@@ -157,7 +157,7 @@ export const FeedbackForm = () => {
                       className="transition-transform hover:scale-125 active:scale-90 disabled:opacity-50"
                     >
                       <Star
-                        className={`h-10 w-10 ${
+                        className={`h-8 w-8 sm:h-10 sm:h-10 ${
                           (hoveredRating || rating) >= star
                             ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]'
                             : 'text-zinc-300 dark:text-zinc-800'
