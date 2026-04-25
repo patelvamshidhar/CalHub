@@ -96,10 +96,12 @@
   body {
     @apply bg-background text-text-primary font-sans leading-relaxed;
     font-size: var(--font-body);
+    min-width: 1024px;
+    overflow-x: auto;
   }
 
-  h1 { font-size: var(--font-display); font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-4; }
-  h2 { font-size: var(--font-heading-lg); font-weight: 700; @apply font-heading tracking-tight leading-tight mb-2; }
+  h1 { font-size: 2.5rem; font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-4; }
+  h2 { font-size: 1.5rem; font-weight: 700; @apply font-heading tracking-tight leading-tight mb-2; }
   h3 { font-size: var(--font-subhead); font-weight: 600; @apply font-heading mb-1; }
   p  { font-size: var(--font-body); color: var(--color-text-secondary); line-height: var(--line-height-relaxed); }
   
@@ -110,25 +112,9 @@
 @layer components {
   .calculator-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 32px;
     padding: 32px;
-  }
-
-  @media (max-width: 1024px) {
-    .calculator-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-      padding: 24px;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .calculator-grid {
-      grid-template-columns: 1fr;
-      gap: 16px;
-      padding: 16px;
-    }
   }
 
   .nav-link {
@@ -163,6 +149,12 @@
     @apply -translate-y-0.5;
   }
 
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
   input.error {
     @apply border-destructive ring-destructive/20;
   }
@@ -181,33 +173,6 @@
 
   @keyframes shimmer {
     100% { transform: translateX(100%); }
-  }
-
-  @media (max-width: 768px) {
-    .calculator-grid {
-      grid-template-columns: 1fr;
-      padding: 16px;
-      gap: 16px;
-    }
-
-    .calculator-card {
-      padding: 16px;
-    }
-    
-    h1 { font-size: 1.75rem; }
-    h2 { font-size: 1.25rem; }
-  }
-
-  @media (max-width: 480px) {
-    input, button, .btn {
-      width: 100%;
-      min-height: 48px; /* Standardizing for touch accessibility */
-    }
-
-    .navbar {
-      flex-wrap: wrap;
-      gap: 8px;
-    }
   }
 }
 @import "tw-animate-css";

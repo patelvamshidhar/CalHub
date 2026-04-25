@@ -203,8 +203,6 @@ const MainApp = () => {
 
   const activeTab = getActiveTab();
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   return (
     <AnimatePresence mode="wait">
       {isLaunching ? (
@@ -218,6 +216,11 @@ const MainApp = () => {
           className="min-h-screen bg-background text-foreground transition-colors duration-300 selection:bg-blue-500 selection:text-white"
         >
           <a href="#main-content" className="skip-link">Skip to Content</a>
+
+          {/* Desktop Only Warning */}
+          <div className="lg:hidden bg-blue-600 text-white px-4 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] sticky top-0 z-[200]">
+            Best viewed on Desktop/Tablet. Use horizontal scroll if needed.
+          </div>
           
           {/* Maintenance Banner */}
           <AnimatePresence>
@@ -252,7 +255,7 @@ const MainApp = () => {
           {/* Header */}
           <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-300 ${showScrollTop ? 'shadow-lg py-2' : 'py-4'}`}>
             <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
-              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }}>
+              <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { navigate('/'); }}>
                 <div className="bg-blue-600 text-white p-2 rounded-xl shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
                   <LayoutGrid className="h-5 w-5" />
                 </div>
@@ -262,7 +265,7 @@ const MainApp = () => {
               </div>
 
               {/* Desktop Nav */}
-              <nav className="hidden md:flex items-center gap-2">
+              <nav className="flex items-center gap-2">
                 <button onClick={() => navigate('/')} className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}>Root</button>
                 <button onClick={() => navigate('/finance')} className={`nav-link ${activeTab === 'finance' ? 'active' : ''}`}>Finance</button>
                 <button onClick={() => navigate('/gold-silver')} className={`nav-link ${activeTab === 'gold-silver' ? 'active' : ''}`}>Metals</button>
@@ -270,14 +273,14 @@ const MainApp = () => {
                 <button onClick={() => navigate('/land')} className={`nav-link ${activeTab === 'land' ? 'active' : ''}`}>Estate</button>
               </nav>
 
-              <div className="flex items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-4">
                 {isInstallable && (
                   <Button
                     id="pwa-install-trigger"
                     variant="outline"
                     size="sm"
                     onClick={installApp}
-                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border-2 border-border bg-background hover:bg-muted text-text-primary hidden sm:flex"
+                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border-2 border-border bg-background hover:bg-muted text-text-primary"
                   >
                     <Download className="h-3.5 w-3.5" />
                     <span>Install</span>
@@ -292,54 +295,12 @@ const MainApp = () => {
                 >
                   {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </Button>
-
-                {/* Mobile Menu Toggle */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden rounded-xl w-9 h-9 border border-border"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                  <LayoutGrid className="h-4 w-4" />
-                </Button>
               </div>
             </div>
-
-            {/* Mobile Nav Overlay */}
-            <AnimatePresence>
-              {isMobileMenuOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="md:hidden border-t bg-background overflow-hidden"
-                >
-                  <div className="p-4 space-y-2">
-                    {[
-                      { id: 'home', label: 'Root System', path: '/' },
-                      { id: 'finance', label: 'Finance Protocol', path: '/finance' },
-                      { id: 'gold-silver', label: 'Metals Evaluation', path: '/gold-silver' },
-                      { id: 'vehicle', label: 'Transit Logistics', path: '/vehicle' },
-                      { id: 'land', label: 'Estate Valuation', path: '/land' },
-                    ].map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => { navigate(item.path); setIsMobileMenuOpen(false); }}
-                        className={`w-full text-left p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                          activeTab === item.id ? 'bg-primary text-white' : 'hover:bg-muted text-text-secondary'
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </header>
 
           {/* Main Content */}
-          <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 outline-none" tabIndex={-1}>
+          <main id="main-content" className="max-w-7xl mx-auto px-8 py-10 outline-none" tabIndex={-1}>
         <AnimatePresence mode="wait">
           {activeTab === 'home' ? (
             <motion.div
@@ -419,46 +380,6 @@ const MainApp = () => {
             >
               <ArrowUp className="h-6 w-6" />
             </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Floating Bottom Navigation (Mobile/Tablet) */}
-      <AnimatePresence>
-        {activeTab !== 'home' && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-[92%] max-w-[420px] sm:hidden"
-          >
-            <div className="bg-text-primary text-background backdrop-blur-3xl rounded-full p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between border border-white/10">
-              {[
-                { id: 'finance', icon: IndianRupee, color: 'text-blue-500' },
-                { id: 'gold-silver', icon: Coins, color: 'text-amber-500' },
-                { id: 'home', icon: Home, color: 'text-zinc-500' },
-                { id: 'vehicle', icon: Navigation, color: 'text-emerald-500' },
-                { id: 'land', icon: MapIcon, color: 'text-rose-500' },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => navigate(item.id === 'home' ? '/' : `/${item.id}`)}
-                  className={`relative p-4 rounded-full transition-all group ${
-                    activeTab === item.id 
-                    ? 'bg-white dark:bg-zinc-950 shadow-2xl scale-110' 
-                    : 'hover:bg-white/10'
-                  }`}
-                >
-                  <item.icon className={`h-6 w-6 ${activeTab === item.id ? item.color : 'text-muted-foreground/60'}`} />
-                  {activeTab === item.id && (
-                    <motion.div
-                      layoutId="nav-active"
-                      className="absolute inset-0 rounded-full border-2 border-white/20"
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
