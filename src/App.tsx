@@ -41,7 +41,7 @@ const CATEGORY_FILTERS = [
 ];
 
 const AboutSection = () => (
-  <div className="max-w-md mx-auto px-4 pt-4">
+  <div className="max-w-2xl mx-auto px-4 pt-4">
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-3 transition-colors border border-gray-100 dark:border-gray-700 relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-t-2xl" />
       <div className="space-y-1">
@@ -244,7 +244,7 @@ const MainApp = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-blue-500 selection:text-white"
+          className="min-h-screen w-full overflow-x-hidden bg-background text-foreground transition-colors duration-500 selection:bg-blue-500 selection:text-white"
         >
           <a href="#main-content" className="skip-link">Skip to Content</a>
           
@@ -280,7 +280,7 @@ const MainApp = () => {
 
           {/* Header */}
           <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-colors duration-500 ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
-            <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
               <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
                 <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
                   <LayoutGrid className="h-5 w-5" />

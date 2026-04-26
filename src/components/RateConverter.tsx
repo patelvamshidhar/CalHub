@@ -113,7 +113,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
         <CardContent className="p-8 pt-4 space-y-8">
           {/* Main Input Area */}
           <div className="space-y-4 text-center">
-            <div className="space-y-3 inline-block w-full max-w-[280px]">
+            <div className="space-y-3 inline-block w-full max-w-xs">
               <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400 block mb-1 opacity-80">
                 {mode === 'pctToRate' ? 'Input Percentage' : 'Monthly Interest'}
               </Label>

@@ -24,7 +24,7 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
     >
       {/* Background Gradient Accent */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/10 -z-10" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl aspect-square bg-primary/5 blur-[120px] rounded-full -z-10" />
 
       <div className="flex flex-col items-center gap-6">
         {/* Animated Logo Wrapper */}

@@ -406,7 +406,7 @@ export const AdminDashboard = () => {
       </div>
 
       <div className="flex flex-wrap items-center gap-4 pt-10">
-        <div className="relative flex-1 min-w-[300px] group">
+        <div className="relative flex-1 w-full sm:min-w-[300px] group">
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors duration-500" />
           <input
             type="text"

@@ -75,6 +75,9 @@
 
   html, body {
     overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     scroll-behavior: smooth;
     @apply antialiased;
   }
@@ -82,12 +85,19 @@
   body {
     @apply bg-background text-gray-900 dark:text-gray-100 font-sans leading-relaxed;
     font-size: var(--font-body);
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
   h1 { font-size: clamp(2.25rem, 6vw, 3.5rem); font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-6 text-gray-900 dark:text-white; }
   h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 700; @apply font-heading tracking-tight leading-tight mb-4 text-gray-900 dark:text-white; }
-  h3 { font-size: var(--font-subhead); font-weight: 600; @apply font-heading mb-2 text-gray-900 dark:text-white; }
-  p  { font-size: var(--font-body); @apply text-gray-600 dark:text-gray-300; line-height: 1.6; }
+  h3 { font-size: clamp(1.125rem, 3vw, 1.25rem); font-weight: 600; @apply font-heading mb-2 text-gray-900 dark:text-white; }
+  p  { font-size: clamp(0.875rem, 2vw, 1rem); @apply text-gray-600 dark:text-gray-300; line-height: 1.6; }
+
+  img, svg {
+    max-width: 100%;
+    height: auto;
+  }
   
   .text-muted { @apply text-gray-400 dark:text-gray-400; }
   .text-secondary { @apply text-gray-500 dark:text-gray-300; }

@@ -87,7 +87,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 pb-24 pt-4">
+    <div className="max-w-xl mx-auto px-4 pb-24 pt-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 space-y-4">
         {/* Header */}
         <div className="space-y-1">
@@ -95,21 +95,27 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white italic">Gold Valuation</h2>
         </div>
 
-        {/* Weight Toggle */}
-        <div className="flex bg-gray-100 dark:bg-gray-900 rounded-xl p-1">
-          {(['g', 'kg'] as Unit[]).map((u) => (
-            <button
-              key={u}
-              onClick={() => setUnit(u)}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-500 ${
-                unit === u 
-                  ? 'bg-white dark:bg-gray-800 shadow text-gray-900 dark:text-white' 
-                  : 'text-gray-500 dark:text-gray-400'
-              }`}
-            >
-              {u === 'g' ? 'Grams' : 'Kilograms'}
-            </button>
-          ))}
+        {/* Weight Unit Selector */}
+        <div className="space-y-2">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 block">Weight Unit</Label>
+          <div className="grid grid-cols-2 gap-2">
+            {(['g', 'kg'] as Unit[]).map((u) => {
+              const active = unit === u;
+              return (
+                <button
+                  key={u}
+                  onClick={() => setUnit(u)}
+                  className={`py-3 rounded-xl border transition-all duration-500 text-sm font-semibold ${
+                    active 
+                      ? 'bg-amber-600 text-white border-amber-600 shadow-sm' 
+                      : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 bg-transparent'
+                  }`}
+                >
+                  {u === 'g' ? 'Grams' : 'Kilograms'}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Input Fields */}
