@@ -185,7 +185,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
           </div>
 
           {/* Bottom Info Bar */}
-          <div className="pt-6 sm:p-8 sm:pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-8 pb-6 sm:pb-8">
+          <div className="pt-6 sm:p-8 sm:pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-8 pb-6 sm:pb-8">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700">
               <Info className="h-3 w-3 text-gray-400 dark:text-gray-400" />
               <span className="text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-tight">

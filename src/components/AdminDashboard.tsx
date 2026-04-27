@@ -254,7 +254,7 @@ export const AdminDashboard = () => {
 
   return (
     <div className="space-y-10 animate-in fade-in duration-700 max-w-[90rem] mx-auto pb-20">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-white/5 pb-8 p-4 sm:p-0">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-8 p-4 sm:p-0">
         <div className="space-y-2 text-center lg:text-left">
           <div className="flex flex-col lg:flex-row items-center gap-4">
             <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/20">
@@ -459,7 +459,7 @@ export const AdminDashboard = () => {
         {/* Left Column: Activity Log */}
         <div className="lg:col-span-4 space-y-8">
            <Card className="border-none shadow-2xl overflow-hidden bg-card dark:bg-zinc-950 rounded-[2.5rem]">
-            <CardHeader className="pb-6 pt-10 px-10 border-b border-border dark:border-zinc-800 relative bg-muted/30 dark:bg-zinc-950/30">
+            <CardHeader className="pb-6 pt-10 px-10 relative bg-muted/30 dark:bg-zinc-950/30">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="p-2 bg-blue-500/10 rounded-xl">
@@ -474,7 +474,7 @@ export const AdminDashboard = () => {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="max-h-[600px] overflow-y-auto divide-y divide-border dark:divide-zinc-800 scrollbar-hide">
+              <div className="max-h-[600px] overflow-y-auto scrollbar-hide">
                 {recentVisitors.length === 0 ? (
                   <div className="py-20 text-center text-muted-foreground text-[11px] font-black uppercase italic tracking-widest">No activity log detected</div>
                 ) : (
@@ -598,7 +598,7 @@ export const AdminDashboard = () => {
                           </p>
                         </div>
                         
-                        <div className="flex items-center gap-4 border-t border-border dark:border-zinc-800 pt-8">
+                        <div className="flex items-center gap-4 pt-8">
                           <div className="w-14 h-14 rounded-2xl bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 flex items-center justify-center text-lg font-black uppercase tracking-widest text-blue-500 shadow-2xl">
                             {(item.name || 'A').charAt(0).toUpperCase()}
                           </div>

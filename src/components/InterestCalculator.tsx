@@ -270,7 +270,7 @@ export const InterestCalculator = () => {
                        </h2>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <div className="grid grid-cols-2 gap-4 mt-6 pt-6">
                       <div className="space-y-0.5">
                         <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 opacity-80">Growth</p>
                         <p className="text-xl font-black text-emerald-600 leading-none">+{Math.round(results.ciInterest).toLocaleString()}</p>
@@ -286,7 +286,7 @@ export const InterestCalculator = () => {
                     <Button 
                       variant="ghost" 
                       onClick={handleSaveToHistory}
-                      className="h-12 sm:h-10 w-full sm:w-auto px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-black uppercase tracking-widest text-[10px] sm:text-[9px] flex items-center justify-center gap-2 transition-all border border-gray-200 dark:border-gray-700"
+                      className="h-12 sm:h-10 w-full sm:w-auto px-4 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-black uppercase tracking-widest text-[10px] sm:text-[9px] flex items-center justify-center gap-2 transition-all"
                     >
                       <span>Log Evaluation</span>
                       <ChevronRight className="h-3.5 w-3.5" />
@@ -309,7 +309,7 @@ export const InterestCalculator = () => {
                   </div>
                 </motion.div>
               ) : (
-                <div className="h-[300px] flex flex-col items-center justify-center gap-6 bg-gray-50 dark:bg-gray-900 rounded-[3rem] border-2 border-dashed border-gray-200 dark:border-gray-700">
+                <div className="h-[300px] flex flex-col items-center justify-center gap-6 bg-gray-50 dark:bg-gray-900 rounded-[3rem] border-2 border-dashed border-gray-200/50 dark:border-gray-700/50">
                   <div className="w-20 h-20 rounded-[2rem] bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-300 dark:text-gray-400">
                     <Info className="h-10 w-10 opacity-40" />
                   </div>

@@ -269,7 +269,7 @@ const MainApp = () => {
           </AnimatePresence>
 
           {/* Header */}
-          <header className={`border-b sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-colors duration-500 ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
+          <header className={`sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-500 ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
               <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
                 <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
@@ -312,8 +312,8 @@ const MainApp = () => {
 
 
           {/* Mobile Bottom Navigation */}
-          <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-background/80 backdrop-blur-3xl border-t border-border md:hidden pb-safe transition-all duration-300">
-            <div className="flex items-center justify-around h-16 px-4">
+          <nav className="navbar fixed bottom-0 left-0 right-0 z-[100] md:hidden pb-safe transition-all duration-300">
+            <div className="flex items-center justify-around h-16 px-4 w-full">
               {[
                 { id: 'home', icon: Home, path: '/', label: 'Home' },
                 { id: 'finance', icon: IndianRupee, path: '/finance', label: 'Finance' },
@@ -324,12 +324,12 @@ const MainApp = () => {
                 <button
                   key={item.id}
                   onClick={() => navigate(item.path)}
-                  className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all p-0 bg-transparent ${
-                    activeTab === item.id ? 'text-primary scale-110' : 'text-muted-foreground hover:text-foreground'
+                  className={`flex flex-col items-center justify-center min-w-[60px] h-14 rounded-xl transition-all p-0 bg-transparent border-none outline-none ${
+                    activeTab === item.id ? 'text-blue-500 scale-105 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-blue-500'
                   }`}
                 >
-                  <item.icon className="h-5 w-5" />
-                  <span className={`text-[8px] font-black uppercase tracking-tighter mt-1 ${activeTab === item.id ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
+                  <item.icon className={`h-5 w-5 mb-1 ${activeTab === item.id ? 'stroke-[2.5px]' : 'stroke-2'}`} />
+                  <span className={`text-[9px] uppercase tracking-wider ${activeTab === item.id ? 'opacity-100' : 'opacity-70'}`}>{item.label}</span>
                 </button>
               ))}
             </div>
@@ -440,7 +440,8 @@ const MainApp = () => {
         </Button>
       </motion.div>
 
-      <footer className="border-t bg-slate-900 dark:bg-zinc-950 py-12 px-6 mt-20">
+      <footer className="bg-slate-900 dark:bg-zinc-950 py-12 px-6 mt-20 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
             <div className="space-y-4">
@@ -489,7 +490,7 @@ const MainApp = () => {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
+          <div className="pt-8 border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
             <div>&copy; 2026 CALHUB - All Protocols Reserved</div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-3 w-3" />

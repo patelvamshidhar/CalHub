@@ -129,7 +129,7 @@ export const VehicleHub = () => {
           transition={{ duration: 0.8 }}
           className="space-y-8"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-4">
             <div className="space-y-4 text-center md:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-500 text-[9px] font-black uppercase tracking-[0.2em]">
                 <Navigation className="h-3 w-3" />

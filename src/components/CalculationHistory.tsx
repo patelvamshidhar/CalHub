@@ -90,7 +90,7 @@ export const CalculationHistory = ({ history, onClear, onReuse, title = "Previou
                       ))}
                     </div>
                   </div>
-                  <div className="pt-3 border-t border-dashed border-gray-200 dark:border-gray-700">
+                  <div className="pt-3">
                     <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-1">Result</p>
                     <p className="text-xl font-black text-gray-900 dark:text-white tracking-tight truncate italic">
                       {typeof item.result === 'object' ? JSON.stringify(item.result) : item.result}

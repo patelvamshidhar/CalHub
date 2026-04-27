@@ -240,7 +240,7 @@ export const LandCalculator = () => {
               </div>
 
               {results && (
-                <div className="pt-6 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                <div className="pt-6 flex justify-between items-center">
                   <ExportActions
                     title="EstateHub Valuation"
                     inputs={[

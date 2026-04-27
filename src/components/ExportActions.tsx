@@ -50,7 +50,7 @@ export const ExportActions = ({ title, inputs, results, disabled }: ExportAction
   };
 
   return (
-    <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-dashed border-gray-200 dark:border-gray-700">
+    <div className="flex flex-wrap gap-3 mt-6 pt-6">
       <Button
         variant="outline"
         onClick={handlePDF}

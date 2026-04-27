@@ -15,11 +15,11 @@
 
   /* Refined Color Scale */
   --color-primary-brand: #2563eb;
-  --color-surface: #ffffff;
-  --color-surface-muted: #f8fafc;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #334155;
-  --color-text-muted: #64748b;
+  --color-surface: var(--bg-primary);
+  --color-surface-muted: var(--bg-secondary);
+  --color-text-primary: hsl(var(--text-primary));
+  --color-text-secondary: hsl(var(--text-secondary));
+  --color-text-muted: hsl(var(--muted-foreground));
   --color-btn-text: #ffffff;
 }
 
@@ -82,7 +82,7 @@
   }
 
   * {
-    @apply border-border outline-ring/50 transition-all duration-300 ease-in-out;
+    @apply outline-ring/50 transition-all duration-300 ease-in-out;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -102,6 +102,7 @@
     @apply bg-background text-foreground font-sans leading-relaxed;
     font-size: var(--font-body);
     min-height: 100vh;
+    padding-bottom: 80px;
   }
 
   .theme-container {
@@ -112,13 +113,9 @@
     transition: all 0.3s ease;
   }
 
-  .theme-container * {
-    color: hsl(var(--text-primary));
-  }
-
-  h1 { font-size: clamp(2.25rem, 6vw, 3.5rem); font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-6 text-gray-900 dark:text-white; }
-  h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 700; @apply font-heading tracking-tight leading-tight mb-4 text-gray-900 dark:text-white; }
-  h3 { font-size: clamp(1.125rem, 3vw, 1.25rem); font-weight: 600; @apply font-heading mb-2 text-gray-900 dark:text-white; }
+  h1 { font-size: clamp(2.25rem, 6vw, 3.5rem); font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-6 text-foreground; }
+  h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 700; @apply font-heading tracking-tight leading-tight mb-4 text-foreground; }
+  h3 { font-size: clamp(1.125rem, 3vw, 1.25rem); font-weight: 600; @apply font-heading mb-2 text-foreground; }
   p  { font-size: clamp(0.875rem, 2vw, 1rem); @apply text-gray-600 dark:text-gray-300; line-height: 1.6; }
 
   img, svg {
@@ -166,7 +163,7 @@
   input, select, textarea, .input {
     background: hsl(var(--input-bg));
     color: hsl(var(--text-primary));
-    border: 1px solid hsl(var(--border-color));
+    border: 1px solid hsl(var(--border-color)) !important;
     padding: 10px;
     border-radius: 10px;
     width: 100%;
@@ -179,7 +176,7 @@
   }
 
   input:focus, .input:focus {
-    border-color: #3B82F6;
+    border-color: #3B82F6 !important;
     @apply ring-2 ring-primary/20;
   }
 
@@ -189,7 +186,7 @@
     border-radius: 10px;
     padding: 10px 16px;
     transition: 0.3s;
-    border: none;
+    border: none !important;
     cursor: pointer;
     font-weight: 600;
   }
@@ -210,7 +207,7 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1px solid hsl(var(--border-color));
+    border: 1px solid hsl(var(--border-color)) !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -223,15 +220,73 @@
   }
 
   .theme-container:not(.dark) #themeToggle {
-    background: #ffffff;
-    color: #0f172a;
+    background: hsl(var(--bg-primary));
+    color: hsl(var(--text-primary));
   }
 
   .navbar {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding: 10px 0 !important;
+    background: hsl(var(--bg-secondary)) !important;
+    border-top: 1px solid hsl(var(--border-color)) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    box-shadow: 0 -1px 3px 0 rgb(0 0 0 / 0.1) !important;
   }
+
+  .navbar button, .navbar a {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    font-size: 12px !important;
+    color: hsl(var(--text-primary)) !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .navbar button.active, .navbar a.active {
+    color: #3B82F6 !important;
+    font-weight: 600 !important;
+  }
+
+  .navbar i,
+  .navbar svg {
+    color: hsl(var(--text-primary)) !important;
+    fill: currentColor !important;
+    width: 20px !important;
+    height: 20px !important;
+    stroke: none !important;
+  }
+
+  .navbar button.active i,
+  .navbar button.active svg,
+  .navbar a.active i,
+  .navbar a.active svg {
+    color: #3B82F6 !important;
+  }
+
+  hr, .divider {
+    display: none !important;
+  }
+
+  /* Remove header/navbar borders as requested in clean UI section */
+  header, .header {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Final Result Verification - No hardcoded dark colors or visibility hidden */
 
   input.error {
     @apply border-destructive ring-destructive/20;
