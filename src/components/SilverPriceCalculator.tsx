@@ -23,10 +23,10 @@ interface SilverPriceCalculatorProps {
 }
 
 export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ initialRate = 100, onSave }) => {
-  const [weight, setWeight] = useState<string>('100');
+  const [weight, setWeight] = useState<string>('');
   const [unit, setUnit] = useState<Unit>('g');
-  const [rate, setRate] = useState<string>(initialRate.toString());
-  const [makingPercent, setMakingPercent] = useState<string>('0');
+  const [rate, setRate] = useState<string>('');
+  const [makingPercent, setMakingPercent] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -73,10 +73,10 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
   };
 
   const reset = () => {
-    setWeight('100');
+    setWeight('');
     setUnit('g');
-    setRate(initialRate.toString());
-    setMakingPercent('0');
+    setRate('');
+    setMakingPercent('');
   };
 
   return (
@@ -114,8 +114,8 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
               type="number"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
-              className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black"
-              placeholder="100.0"
+              className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+              placeholder="Enter weight"
             />
           </div>
 
@@ -127,7 +127,8 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
                 type="number"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
-                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black"
+                placeholder="Enter rate (₹)"
+                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
               />
             </div>
             <div className="relative">
@@ -137,7 +138,8 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
                 type="number"
                 value={makingPercent}
                 onChange={(e) => setMakingPercent(e.target.value)}
-                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black"
+                placeholder="Enter %"
+                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
               />
             </div>
           </div>
@@ -145,23 +147,27 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
 
         {/* Result Section */}
         <AnimatePresence mode="wait">
-          <motion.div 
-            key={results.totalPrice}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-4 text-center border border-gray-100 dark:border-gray-700"
-          >
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Total Asset Value</p>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
-              {results.isValid ? formatCurrency(results.totalPrice) : '₹0'}
-            </h2>
-            {results.isValid && (
+          {results.isValid ? (
+            <motion.div 
+              key={results.totalPrice}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-4 text-center border border-gray-100 dark:border-gray-700"
+            >
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Total Asset Value</p>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+                {formatCurrency(results.totalPrice)}
+              </h2>
               <div className="flex justify-center gap-4 mt-2 text-[10px] text-gray-500 dark:text-gray-400 font-medium">
                 <span>Base: {formatCurrency(results.basePrice)}</span>
                 <span>GST: {formatCurrency(results.gstPrice)}</span>
               </div>
-            )}
-          </motion.div>
+            </motion.div>
+          ) : (
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 text-center border border-dashed border-gray-100 dark:border-gray-700">
+               <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 opacity-60">Enter values to calculate</p>
+            </div>
+          )}
         </AnimatePresence>
 
         {/* Buttons */}

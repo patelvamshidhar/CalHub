@@ -142,8 +142,8 @@ export const LandCalculator = () => {
                       type="number"
                       value={length}
                       onChange={(e) => setLength(e.target.value)}
-                      className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none transition-all duration-500"
-                      placeholder="50"
+                      className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none transition-all duration-500 focus:ring-2 focus:ring-emerald-500/20"
+                      placeholder="Enter length"
                     />
                   </div>
                   <div className="space-y-2">
@@ -152,8 +152,8 @@ export const LandCalculator = () => {
                       type="number"
                       value={width}
                       onChange={(e) => setWidth(e.target.value)}
-                      className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none transition-all duration-500"
-                      placeholder="30"
+                      className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none transition-all duration-500 focus:ring-2 focus:ring-emerald-500/20"
+                      placeholder="Enter width"
                     />
                   </div>
                 </div>
@@ -187,8 +187,8 @@ export const LandCalculator = () => {
                      type="number"
                      value={pricePerUnit}
                      onChange={(e) => setPricePerUnit(e.target.value)}
-                     className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none"
-                     placeholder="Rate"
+                     className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none focus:ring-2 focus:ring-amber-500/20"
+                     placeholder="Enter rate (₹)"
                    />
                    <Select value={priceUnit} onValueChange={(v: any) => setPriceUnit(v)}>
                      <SelectTrigger className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xs transition-all duration-500">

@@ -46,7 +46,7 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
             <motion.div
               animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 bg-white dark:bg-gray-800 rounded-3xl -z-10"
+              className="absolute inset-0 bg-card rounded-3xl -z-10"
             />
           </div>
           

@@ -166,15 +166,15 @@ export const VehicleHub = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                        <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 ml-1">Location Node</Label>
-                       <Input
-                         value={fuelCity}
-                         onChange={(e) => {
-                           setFuelCity(e.target.value);
-                           updatePriceByCity(e.target.value, fuelType);
-                         }}
-                         className="h-10 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-sm outline-none"
-                         placeholder="City"
-                       />
+                        <Input
+                          value={fuelCity}
+                          onChange={(e) => {
+                            setFuelCity(e.target.value);
+                            updatePriceByCity(e.target.value, fuelType);
+                          }}
+                          className="h-10 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-sm outline-none focus:ring-2 focus:ring-blue-500/20"
+                          placeholder="Enter city"
+                        />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 ml-1">Type</Label>
@@ -204,8 +204,8 @@ export const VehicleHub = () => {
                          type="number"
                          value={manualFuelPrice}
                          onChange={(e) => setManualFuelPrice(e.target.value)}
-                         placeholder="110.00"
-                         className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl px-4 text-xl font-black outline-none transition-all"
+                         placeholder="Enter price (₹)"
+                         className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl px-4 text-xl font-black outline-none transition-all focus:ring-2 focus:ring-blue-500/20"
                        />
                        <Button 
                          variant="ghost" 
@@ -231,8 +231,8 @@ export const VehicleHub = () => {
                          type="number"
                          value={fuelDistance}
                          onChange={(e) => setFuelDistance(e.target.value)}
-                         className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none"
-                         placeholder="500"
+                         className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none focus:ring-2 focus:ring-emerald-500/20"
+                         placeholder="Enter distance (km)"
                        />
                      </div>
                      <div className="space-y-2">
@@ -241,8 +241,8 @@ export const VehicleHub = () => {
                          type="number"
                          value={fuelMileage}
                          onChange={(e) => setFuelMileage(e.target.value)}
-                         className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none"
-                         placeholder="18"
+                         className="h-12 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-2 border-gray-100 dark:border-gray-700 rounded-xl font-black text-xl outline-none focus:ring-2 focus:ring-emerald-500/20"
+                         placeholder="Enter mileage"
                        />
                      </div>
                    </div>

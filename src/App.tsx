@@ -8,11 +8,12 @@ import { HashRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, BookOpen, LayoutGrid, ArrowRight, History, Home, Construction, Clock, ShieldCheck, MessageSquarePlus, Github, Coins, Download, WifiOff, Wifi, User, Star, Search, ArrowUp } from 'lucide-react';
+import { Moon, Sun, Calculator, Navigation, Map as MapIcon, IndianRupee, LayoutGrid, ArrowRight, Home, Construction, ShieldCheck, MessageSquarePlus, Coins, Download, WifiOff, ArrowUp } from 'lucide-react';
 import { VehicleHub } from './components/VehicleHub';
 import { LandCalculator } from './components/LandCalculator';
 import { RateConverter } from './components/RateConverter';
 import { InterestCalculator } from './components/InterestCalculator';
+import { DiscountCalculator } from './components/finance/DiscountCalculator';
 import { GoldSilverHub } from './components/GoldSilverHub';
 import { FeedbackForm } from './components/FeedbackForm';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -42,22 +43,22 @@ const CATEGORY_FILTERS = [
 
 const AboutSection = () => (
   <div className="max-w-2xl mx-auto px-4 pt-4">
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4 space-y-3 transition-colors border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+    <div className="bg-card rounded-2xl shadow-sm p-4 space-y-3 transition-all border border-border relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-t-2xl" />
       <div className="space-y-1">
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
           SMART CALCULATION HUB
         </p>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white m-0">
+        <h1 className="text-xl font-bold text-foreground m-0">
           CalHub
         </h1>
       </div>
-      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+      <p className="text-sm text-foreground/80 leading-relaxed">
         All-in-one platform for finance, gold & silver valuation, vehicle cost analysis, and land calculations. Designed for accuracy, speed, and simplicity.
       </p>
       <div className="flex flex-wrap gap-2 pt-2">
         {['Finance Tools', 'Gold & Silver', 'Vehicle Cost', 'Land Value'].map((tag) => (
-          <span key={tag} className="px-3 py-1 text-[10px] font-bold uppercase rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-transparent dark:border-gray-600">
+          <span key={tag} className="px-3 py-1 text-[10px] font-bold uppercase rounded-full bg-muted text-muted-foreground border border-border">
             {tag}
           </span>
         ))}
@@ -103,33 +104,33 @@ const HomePage = () => {
                   <div className="flex items-center justify-between">
                     <div className="relative inline-block">
                       <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-[40px] opacity-10 group-hover:opacity-30 transition-opacity rounded-full`} />
-                      <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gray-50 dark:bg-gray-700 border-2 border-gray-100 dark:border-gray-600 flex items-center justify-center text-gray-900 dark:text-gray-100 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                      <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-muted border-2 border-border flex items-center justify-center text-foreground shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
                         <item.icon className="h-8 w-8 sm:h-10 sm:w-10 opacity-80" />
                       </div>
                     </div>
-                    <div className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[8px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                    <div className="px-3 py-1 rounded-full bg-muted border border-border text-[8px] font-black uppercase tracking-widest text-muted-foreground">
                       {item.category}
                     </div>
                   </div>
 
                   <div className="space-y-2 sm:space-y-3">
-                    <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic leading-none text-gray-900 dark:text-white">
+                    <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic leading-none text-foreground">
                       {item.title}
                     </h2>
-                    <p className="text-[9px] sm:text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">
+                    <p className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       {item.desc}
                     </p>
                   </div>
                 </div>
 
                 <div className="px-6 sm:px-8 pb-8 sm:pb-10 flex items-center justify-between mt-auto">
-                  <div className="inline-flex items-center text-[8px] sm:text-[9px] font-black uppercase tracking-[0.4em] text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-all">
+                  <div className="inline-flex items-center text-[8px] sm:text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground group-hover:text-foreground transition-all">
                     Initialize <ArrowRight className="h-4 w-4 ml-2 sm:ml-3 group-hover:translate-x-2 transition-transform" />
                   </div>
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="rounded-xl font-black text-[8px] uppercase tracking-widest px-3 sm:px-4 border border-gray-300 text-gray-800 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
+                    className="rounded-xl font-black text-[8px] uppercase tracking-widest px-3 sm:px-4 border border-border text-foreground bg-card hover:bg-muted transition-colors duration-200"
                   >
                     Open Protocol
                   </Button>
@@ -154,8 +155,6 @@ const MainApp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
-  const [showNameModal, setShowNameModal] = useState(false);
-  const [userName, setUserName] = useState('');
   const [isLaunching, setIsLaunching] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const isOnline = useOfflineStatus();
@@ -173,24 +172,8 @@ const MainApp = () => {
   };
   const { isInstallable, installApp } = usePWAInstall();
 
-  const handleNameSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userName.trim()) {
-      localStorage.setItem('calhub_user_name', userName.trim());
-      setShowNameModal(false);
-      trackVisitor(userName.trim());
-    }
-  };
-
   // Background Sync for Feedback
   useEffect(() => {
-    const savedName = localStorage.getItem('calhub_user_name');
-    if (!savedName) {
-      setShowNameModal(true);
-    } else {
-      trackVisitor(savedName);
-    }
-
     if (isOnline) {
       const syncFeedback = async () => {
         const pending = JSON.parse(localStorage.getItem('pending-feedback') || '[]');
@@ -213,8 +196,6 @@ const MainApp = () => {
       };
       syncFeedback();
     }
-
-    return () => {};
   }, [isOnline]);
 
   useEffect(() => {
@@ -239,14 +220,24 @@ const MainApp = () => {
       {isLaunching ? (
         <SplashScreen key="splash" onComplete={() => setIsLaunching(false)} />
       ) : (
-        <motion.div
-          key="app-root"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="min-h-screen w-full overflow-x-hidden bg-background text-foreground transition-colors duration-500 selection:bg-blue-500 selection:text-white"
-        >
-          <a href="#main-content" className="skip-link">Skip to Content</a>
+        <div id="app" className={`theme-container ${isDarkMode ? 'dark' : ''}`}>
+          <motion.div
+            key="app-root"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-screen w-full overflow-x-hidden bg-background text-foreground transition-all duration-300 selection:bg-blue-500 selection:text-white"
+          >
+            <a href="#main-content" className="skip-link">Skip to Content</a>
+            
+            {/* Theme Toggle */}
+            <button 
+              id="themeToggle"
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              aria-label="Toggle Theme"
+            >
+              {isDarkMode ? "☀️" : "🌙"}
+            </button>
           
           {/* Maintenance Banner */}
           <AnimatePresence>
@@ -313,24 +304,16 @@ const MainApp = () => {
                   </Button>
                 )}
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsDarkMode(!isDarkMode)}
-                  className="rounded-xl w-10 h-10 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white shadow-sm transition-all duration-200"
-                >
-                  {isDarkMode ? (
-                    <Sun className="h-5 w-5 text-yellow-500 dark:text-yellow-300" />
-                  ) : (
-                    <Moon className="h-5 w-5 text-gray-700" />
-                  )}
-                </Button>
+                {/* Dark mode button placeholder to maintain header layout while the real one is fixed */}
+                <div className="w-10 h-10 hidden sm:block" />
               </div>
             </div>
           </header>
 
+
+
           {/* Mobile Bottom Navigation */}
-          <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-white/80 dark:bg-gray-900/80 backdrop-blur-3xl border-t border-gray-100 dark:border-gray-800 md:hidden pb-safe transition-colors duration-500">
+          <nav className="fixed bottom-0 left-0 right-0 z-[100] bg-background/80 backdrop-blur-3xl border-t border-border md:hidden pb-safe transition-all duration-300">
             <div className="flex items-center justify-around h-16 px-4">
               {[
                 { id: 'home', icon: Home, path: '/', label: 'Home' },
@@ -342,8 +325,8 @@ const MainApp = () => {
                 <button
                   key={item.id}
                   onClick={() => navigate(item.path)}
-                  className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all ${
-                    activeTab === item.id ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  className={`flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all p-0 bg-transparent ${
+                    activeTab === item.id ? 'text-primary scale-110' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
@@ -354,7 +337,7 @@ const MainApp = () => {
           </nav>
 
           {/* Main Content */}
-          <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 outline-none pb-24 md:pb-10" tabIndex={-1}>
+          <main id="main-content" className="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 outline-none pb-24 md:pb-10" tabIndex={-1}>
         <AnimatePresence mode="wait">
           {activeTab === 'home' ? (
             <motion.div
@@ -378,12 +361,15 @@ const MainApp = () => {
               <div className="min-h-[400px]">
                 {activeTab === 'finance' && (
                   <div className="animate-in fade-in zoom-in-95 duration-1000">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-[90rem] mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-12 items-start max-w-[120rem] mx-auto">
                       <div className="space-y-4">
                         <RateConverter onBack={() => navigate('/')} />
                       </div>
                       <div className="space-y-4">
                         <InterestCalculator />
+                      </div>
+                      <div className="space-y-4">
+                        <DiscountCalculator />
                       </div>
                     </div>
                   </div>
@@ -475,7 +461,7 @@ const MainApp = () => {
                 <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Protocols</h4>
                 <div className="flex flex-col gap-2">
                   {CALCULATOR_PROTOCOLS.map(c => (
-                    <button key={c.id} onClick={() => navigate(`/${c.id}`)} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left truncate">
+                    <button key={c.id} onClick={() => navigate(`/${c.id}`)} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left truncate p-0 bg-transparent">
                       {c.title}
                     </button>
                   ))}
@@ -484,21 +470,21 @@ const MainApp = () => {
               <div className="space-y-4">
                 <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Core</h4>
                 <div className="flex flex-col gap-2">
-                  <button onClick={() => navigate('/feedback')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter">Feedback</button>
-                  <button onClick={() => navigate('/admin')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter">Admin</button>
+                  <button onClick={() => navigate('/feedback')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter p-0 bg-transparent">Feedback</button>
+                  <button onClick={() => navigate('/admin')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter p-0 bg-transparent">Admin</button>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Identification</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">System Status</h4>
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-black text-[10px]">
-                  {localStorage.getItem('calhub_user_name')?.charAt(0) || <User className="h-4 w-4" />}
+                <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white">
+                  <ShieldCheck className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white uppercase tracking-tighter">{localStorage.getItem('calhub_user_name') || 'Guest User'}</span>
-                  <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Active Operator</span>
+                  <span className="text-[10px] font-black text-white uppercase tracking-tighter">Operational</span>
+                  <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Core Link Active</span>
                 </div>
               </div>
             </div>
@@ -514,60 +500,8 @@ const MainApp = () => {
           </div>
         </div>
       </footer>
-
-      {/* Name Capture Modal */}
-      <AnimatePresence>
-        {showNameModal && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-md bg-card border-2 border-primary/20 p-8 rounded-[2.5rem] shadow-2xl shadow-primary/10 relative overflow-hidden"
-            >
-              <div className="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
-              <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-secondary/5 rounded-full blur-3xl" />
-              
-              <div className="relative space-y-6">
-                <div className="flex justify-center">
-                  <div className="bg-primary/10 p-4 rounded-3xl">
-                    <User className="h-8 w-8 text-primary" />
-                  </div>
-                </div>
-                
-                <div className="text-center space-y-2">
-                  <h2 className="text-2xl font-black tracking-tighter uppercase">Welcome to CalHub!</h2>
-                  <p className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Please enter your name to personalize your experience.</p>
-                </div>
-
-                <form onSubmit={handleNameSubmit} className="space-y-6">
-                  <div className="relative group">
-                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-blue-500 transition-colors z-10">
-                      <Star className="h-5 w-5" />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Enter Identification Name"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                      required
-                      className="w-full h-16 bg-white dark:bg-zinc-950 border-2 border-border focus:border-blue-500/50 rounded-[1.8rem] pl-14 pr-6 font-black uppercase tracking-wider transition-all outline-none shadow-xl group-hover:shadow-2xl group-hover:-translate-y-1 dark:text-white dark:placeholder:text-zinc-600"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full h-16 rounded-[1.8rem] bg-black text-white dark:bg-white dark:text-black font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl shadow-blue-500/30 hover:scale-[1.05] active:scale-[0.95] transition-all duration-200">
-                    Establish Protocol
-                  </Button>
-                </form>
-              </div>
-            </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

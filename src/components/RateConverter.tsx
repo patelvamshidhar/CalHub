@@ -120,10 +120,10 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
               <div className="relative group space-y-3">
                 <Input
                   type="number"
-                  placeholder={mode === 'pctToRate' ? "12" : "1"}
+                  placeholder={mode === 'pctToRate' ? "Enter percentage (%)" : "Enter amount (₹)"}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="text-3xl sm:text-5xl h-20 sm:h-24 bg-gray-50 dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-700 focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[1.5rem] sm:rounded-[2rem] text-center font-black text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-700 transition-all duration-500 shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none"
+                  className="text-3xl sm:text-5xl h-20 sm:h-24 bg-gray-50 dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-700 focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[1.5rem] sm:rounded-[2rem] text-center font-black text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-700 transition-all duration-500 shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none focus:ring-2 focus:ring-cyan-500/20"
                 />
                 
                 {/* Unit Label for Rate mode - Responsive placement */}

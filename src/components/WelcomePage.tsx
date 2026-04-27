@@ -67,8 +67,8 @@ export const WelcomePage = ({ onStart }: WelcomePageProps) => {
               <div className={`w-12 h-12 rounded-xl ${feature.bg} ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500`}>
                 <feature.icon className="h-6 w-6" />
               </div>
-              <h3 className="font-bold text-lg mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">{feature.desc}</p>
+              <h3 className="font-bold text-lg mb-2 text-foreground">{feature.title}</h3>
+              <p className="text-sm text-muted-foreground">{feature.desc}</p>
             </div>
           ))}
         </motion.div>
@@ -89,7 +89,7 @@ export const WelcomePage = ({ onStart }: WelcomePageProps) => {
             <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform duration-500" />
           </Button>
 
-          <div className="flex items-center justify-center gap-6 text-gray-500 dark:text-gray-400">
+          <div className="flex items-center justify-center gap-6 text-muted-foreground">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-widest">Crafted by PATEL VAMSHIDHAR REDDY</span>
             </div>

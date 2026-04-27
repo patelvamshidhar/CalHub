@@ -43,8 +43,8 @@ const useCountUp = (end: number, duration: number = 500) => {
 };
 
 export const InterestCalculator = () => {
-  const [principal, setPrincipal] = useState<string>('50000');
-  const [rate, setRate] = useState<string>('12');
+  const [principal, setPrincipal] = useState<string>('');
+  const [rate, setRate] = useState<string>('');
   const [startDate, setStartDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [endDate, setEndDate] = useState<string>(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
   const [compounding, setCompounding] = useState<'monthly' | 'quarterly' | 'yearly'>('yearly');
@@ -109,8 +109,8 @@ export const InterestCalculator = () => {
   };
 
   const reset = () => {
-    setPrincipal('50000');
-    setRate('12');
+    setPrincipal('');
+    setRate('');
     setStartDate(format(new Date(), 'yyyy-MM-dd'));
     setEndDate(format(addYears(new Date(), 1), 'yyyy-MM-dd'));
     setCompounding('yearly');
@@ -162,7 +162,7 @@ export const InterestCalculator = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-end px-1">
                   <Label htmlFor="principal-cap" className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400">Principal Capital</Label>
-                  <div className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">₹{parseFloat(principal).toLocaleString()}</div>
+                  <div className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">₹{parseFloat(principal) || 0}</div>
                 </div>
                 <div className="relative group">
                   <div className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-black text-gray-300 dark:text-gray-400 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-500 transition-colors duration-500 z-10">₹</div>
@@ -171,8 +171,8 @@ export const InterestCalculator = () => {
                     type="number"
                     value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
-                    className="h-20 sm:h-24 pl-12 sm:pl-16 pr-6 text-3xl sm:text-4xl bg-gray-50 dark:bg-gray-900 font-black border-2 border-gray-100 dark:border-gray-700 shadow-xl group-hover:shadow-2xl rounded-[1.5rem] sm:rounded-[2rem] focus-visible:ring-0 focus-visible:border-purple-500/50 transition-all duration-500 text-gray-900 dark:text-white outline-none"
-                    placeholder="50,000"
+                    className="h-20 sm:h-24 pl-12 sm:pl-16 pr-6 text-2xl sm:text-4xl bg-gray-50 dark:bg-gray-900 font-black border-2 border-gray-100 dark:border-gray-700 shadow-xl group-hover:shadow-2xl rounded-[1.5rem] sm:rounded-[2rem] focus-visible:ring-0 focus-visible:border-purple-500/50 transition-all duration-500 text-gray-900 dark:text-white outline-none placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:ring-2 focus:ring-purple-500/20"
+                    placeholder="Enter amount (₹)"
                   />
                 </div>
                 <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
@@ -193,16 +193,17 @@ export const InterestCalculator = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center px-1">
                     <Label htmlFor="interest-yield" className="text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400">Yield % P.A.</Label>
-                    <span className="text-[10px] font-black text-purple-600 dark:text-purple-400">{rate}%</span>
+                    <span className="text-[10px] font-black text-purple-600 dark:text-purple-400">{rate || 0}%</span>
                   </div>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-gray-300 dark:text-gray-400">%</div>
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-gray-300 dark:text-gray-400 focus-within:text-purple-600 transition-colors z-10">%</div>
                     <Input
                       id="interest-yield"
                       type="number"
                       value={rate}
                       onChange={(e) => setRate(e.target.value)}
-                      className="h-12 pl-10 pr-4 bg-gray-50 dark:bg-gray-900 text-lg font-black border-2 border-gray-100 dark:border-gray-700 rounded-xl focus-visible:border-purple-600 dark:focus-visible:border-purple-500 transition-all duration-500 text-gray-900 dark:text-white outline-none"
+                      placeholder="Enter rate (%)"
+                      className="h-12 pl-10 pr-4 bg-gray-50 dark:bg-gray-900 text-lg font-black border-2 border-gray-100 dark:border-gray-700 rounded-xl focus-visible:border-purple-600 dark:focus-visible:border-purple-500 transition-all duration-500 text-gray-900 dark:text-white outline-none placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:ring-2 focus:ring-purple-500/20"
                     />
                   </div>
                 </div>

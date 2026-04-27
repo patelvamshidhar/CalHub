@@ -25,13 +25,21 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%; /* #f8fafc */
-    --foreground: 222 47% 11%; /* #0f172a */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%; /* #2563eb */
+    --bg-primary: 0 0% 100%; /* #ffffff */
+    --bg-secondary: 210 40% 98%; /* #f8fafc */
+    --text-primary: 222 47% 11%; /* #0f172a */
+    --text-secondary: 215 16% 47%; /* #475569 approximation */
+    --border-color: 214 32% 91%; /* #e2e8f0 */
+    --input-bg: 0 0% 100%; /* #ffffff */
+    --primary-blue: 221 83% 53%; /* #3B82F6 */
+
+    --background: var(--bg-primary);
+    --foreground: var(--text-primary);
+    --card: var(--bg-secondary);
+    --card-foreground: var(--text-primary);
+    --popover: var(--bg-primary);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--primary-blue);
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 221 83% 53%;
@@ -41,19 +49,26 @@
     --accent-foreground: 221 83% 53%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: var(--border-color);
+    --input: var(--border-color);
     --ring: 221 83% 53%;
     --radius: 0.75rem;
   }
 
   .dark {
-    --background: 215 25% 10%; /* Gray 900 */
-    --foreground: 210 40% 98%;
-    --card: 215 25% 15%; /* Gray 800 */
-    --card-foreground: 210 40% 98%;
-    --popover: 215 25% 10%;
-    --popover-foreground: 210 40% 98%;
+    --bg-primary: 222 47% 11%; /* #0f172a */
+    --bg-secondary: 222 47% 17%; /* #1e293b approximation */
+    --text-primary: 210 40% 98%; /* #f8fafc */
+    --text-secondary: 226 70% 88%; /* #cbd5f1 approximation */
+    --border-color: 217 33% 27%; /* #334155 */
+    --input-bg: 222 47% 11%; /* #111827 approximation */
+
+    --background: var(--bg-primary);
+    --foreground: var(--text-primary);
+    --card: var(--bg-secondary);
+    --card-foreground: var(--text-primary);
+    --popover: var(--bg-primary);
+    --popover-foreground: var(--text-primary);
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 11%;
     --secondary: 217 33% 20%;
@@ -62,12 +77,12 @@
     --muted-foreground: 215 20% 65%;
     --accent: 217 33% 20%;
     --accent-foreground: 210 40% 98%;
-    --border: 215 25% 25%;
-    --input: 215 25% 25%;
+    --border: var(--border-color);
+    --input: var(--border-color);
   }
 
   * {
-    @apply border-border outline-ring/50 transition-colors duration-200 ease-in-out;
+    @apply border-border outline-ring/50 transition-all duration-300 ease-in-out;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -75,6 +90,7 @@
 
   html, body {
     overflow-x: hidden;
+    max-width: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -83,10 +99,21 @@
   }
 
   body {
-    @apply bg-background text-gray-900 dark:text-gray-100 font-sans leading-relaxed;
+    @apply bg-background text-foreground font-sans leading-relaxed;
     font-size: var(--font-body);
     min-height: 100vh;
-    min-height: 100svh;
+  }
+
+  .theme-container {
+    background: hsl(var(--bg-primary));
+    color: hsl(var(--text-primary));
+    min-height: 100vh;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .theme-container * {
+    color: hsl(var(--text-primary));
   }
 
   h1 { font-size: clamp(2.25rem, 6vw, 3.5rem); font-weight: 800; @apply font-heading tracking-tighter leading-[1.1] mb-6 text-gray-900 dark:text-white; }
@@ -109,6 +136,8 @@
     grid-template-columns: 1fr;
     gap: 16px;
     padding: 16px;
+    width: 100%;
+    max-width: 100%;
   }
 
   @media (min-width: 640px) {
@@ -127,40 +156,75 @@
     }
   }
 
-  .nav-link {
-    @apply px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-500;
+  .card {
+    background: hsl(var(--bg-secondary));
+    border: 1px solid hsl(var(--border-color));
+    border-radius: 16px;
+    padding: 16px;
   }
 
-  .nav-link:hover {
-    @apply bg-muted text-primary;
+  input, select, textarea, .input {
+    background: hsl(var(--input-bg));
+    color: hsl(var(--text-primary));
+    border: 1px solid hsl(var(--border-color));
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s;
   }
 
-  .nav-link.active {
-    @apply bg-primary text-white shadow-lg shadow-primary/25;
+  input::placeholder, .input::placeholder {
+    color: #64748B;
   }
 
-  .skip-link {
-    @apply absolute -top-12 left-4 z-[200] bg-primary text-white px-4 py-2 rounded-lg transition-all focus:top-4;
+  input:focus, .input:focus {
+    border-color: #3B82F6;
+    @apply ring-2 ring-primary/20;
   }
 
-  .calculator-card {
-    @apply p-6 rounded-2xl bg-card border border-border shadow-sm transition-all duration-500;
+  button {
+    background: #3B82F6;
+    color: #fff !important; /* Force readable text on primary buttons */
+    border-radius: 10px;
+    padding: 10px 16px;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
   }
 
-  .calculator-card:hover {
-    @apply md:-translate-y-1 md:shadow-lg md:border-primary/20;
+  button:hover {
+    opacity: 0.9;
   }
 
-  .btn {
-    @apply min-h-[48px] px-6 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto;
+  button * {
+    color: inherit !important;
   }
 
-  .btn:hover {
-    @apply md:-translate-y-0.5;
+  #themeToggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid hsl(var(--border-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    background: hsl(var(--bg-secondary));
+    color: hsl(var(--text-primary));
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: all 0.3s ease;
   }
 
-  input, select, textarea {
-    @apply w-full h-12 px-4 rounded-xl border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all;
+  .theme-container:not(.dark) #themeToggle {
+    background: #ffffff;
+    color: #0f172a;
   }
 
   .navbar {
