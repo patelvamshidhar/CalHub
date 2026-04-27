@@ -228,7 +228,6 @@ const MainApp = () => {
             transition={{ duration: 0.5 }}
             className="min-h-screen w-full overflow-x-hidden bg-background text-foreground transition-all duration-300 selection:bg-blue-500 selection:text-white"
           >
-            <a href="#main-content" className="skip-link">Skip to Content</a>
             
             {/* Theme Toggle */}
             <button 
