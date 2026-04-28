@@ -73,7 +73,7 @@ export const LandTerminology = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 dark:text-white">
+        <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-foreground">
           Land <span className="text-primary">Terminology</span>
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto font-medium text-base">
@@ -90,12 +90,12 @@ export const LandTerminology = () => {
             transition={{ delay: i * 0.05 }}
             whileHover={{ y: -8 }}
           >
-            <Card className="h-full border-2 hover:border-primary/30 transition-all hover:shadow-2xl group rounded-[2rem] bg-card/50 backdrop-blur-sm overflow-hidden">
+            <Card className="h-full border-2 hover:border-primary/30 transition-all hover:shadow-2xl group rounded-[2rem] bg-card backdrop-blur-sm overflow-hidden">
               <CardHeader className="pb-3 pt-6 px-6">
                 <div className={`w-12 h-12 rounded-2xl ${term.bg} ${term.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform shadow-inner`}>
                   <term.icon className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-xl font-black tracking-tight text-gray-900 dark:text-white">{term.title}</CardTitle>
+                <CardTitle className="text-xl font-black tracking-tight text-foreground">{term.title}</CardTitle>
               </CardHeader>
               <CardContent className="px-6 pb-6">
                 <p className="text-sm text-muted-foreground leading-relaxed font-medium">
@@ -107,13 +107,13 @@ export const LandTerminology = () => {
         ))}
       </div>
 
-      <Card className="bg-primary/5 border-2 border-primary/10 overflow-hidden rounded-[2.5rem]">
+      <Card className="bg-primary/5 border-2 border-primary/20 overflow-hidden rounded-[2.5rem]">
         <CardContent className="p-6 sm:p-8 flex flex-col md:flex-row items-center gap-6">
           <div className="bg-primary text-primary-foreground p-4 rounded-2xl shadow-xl shrink-0">
             <Info className="h-6 w-6" />
           </div>
           <div className="space-y-1 text-center md:text-left">
-            <h3 className="text-lg font-black uppercase tracking-tight text-gray-900 dark:text-white">Expert Tip for Buyers</h3>
+            <h3 className="text-lg font-black uppercase tracking-tight text-foreground">Expert Tip for Buyers</h3>
             <p className="text-sm text-muted-foreground font-medium max-w-2xl leading-relaxed">
               Always verify the <span className="font-bold text-foreground">RERA registration</span> of a project and check the <span className="font-bold text-foreground">Encumbrance Certificate (EC)</span> of the land to ensure a clear title and legal ownership.
             </p>

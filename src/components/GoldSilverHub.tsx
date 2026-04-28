@@ -106,7 +106,7 @@ export const GoldSilverHub = () => {
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white dark:bg-zinc-950 p-5 md:p-6 rounded-[2rem] border border-border shadow-xl relative overflow-hidden"
+        className="flex flex-col md:flex-row items-center justify-between gap-4 bg-card p-5 md:p-6 rounded-[2rem] border border-border shadow-xl relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
         <div className="space-y-1 text-center md:text-left">
@@ -117,10 +117,10 @@ export const GoldSilverHub = () => {
           <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground uppercase italic leading-none">
             Gold & Silver <span className="text-transparent bg-clip-text bg-gradient-to-br from-amber-500 to-orange-600">Hub</span>
           </h1>
-          <p className="text-muted-foreground text-[9px] font-bold uppercase tracking-tight opacity-60">Precision metallic analysis terminal.</p>
+          <p className="text-muted-foreground text-[9px] font-bold uppercase tracking-tight">Precision metallic analysis terminal.</p>
         </div>
 
-        <div className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900 px-4 py-2 rounded-xl border border-border/50">
+        <div className="flex items-center gap-3 bg-muted px-4 py-2 rounded-xl border border-border/50">
           <div className="flex flex-col items-end">
             <span className="text-[8px] font-black uppercase tracking-widest text-emerald-500">System Live</span>
             <span className="text-[10px] font-black uppercase tracking-tighter text-foreground">Encrypted Node</span>
@@ -203,7 +203,7 @@ export const GoldSilverHub = () => {
       </div>
 
       {/* Market Protocol Banner */}
-      <div className="bg-zinc-50 dark:bg-zinc-950 border border-border p-5 md:p-6 rounded-[2rem] flex items-center gap-5 relative overflow-hidden shadow-sm group">
+      <div className="bg-muted border border-border p-5 md:p-6 rounded-[2rem] flex items-center gap-5 relative overflow-hidden shadow-sm group">
         <div className="bg-amber-500/10 dark:bg-white/5 p-3 rounded-xl shrink-0">
           <Zap className="h-5 w-5 text-amber-600 dark:text-amber-500" />
         </div>
@@ -211,7 +211,7 @@ export const GoldSilverHub = () => {
           <h3 className="text-xs font-black uppercase tracking-widest text-foreground flex items-center gap-2">
             Market Intelligence <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           </h3>
-          <p className="text-muted-foreground text-[10px] font-medium leading-relaxed max-w-3xl opacity-80">
+          <p className="text-muted-foreground text-[10px] font-medium leading-relaxed max-w-3xl">
             Rates are indexed globally. Displays are for informational analysis. Final trade values may vary based on GST, making charges, and local hallmarking protocols.
           </p>
         </div>

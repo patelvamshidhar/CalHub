@@ -6,6 +6,20 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // API routes
+  app.use(express.json());
+
+  app.post('/api/admin/auth', (req, res) => {
+    const { key } = req.body;
+    const adminKey = process.env.ADMIN_ACCESS_KEY || 'Patel@9488';
+    
+    if (key === adminKey) {
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false, message: 'Invalid Key' });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

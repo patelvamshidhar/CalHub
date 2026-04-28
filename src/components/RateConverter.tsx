@@ -67,7 +67,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-4">
-      <Card className="relative overflow-hidden border-none shadow-2xl rounded-[22px] bg-white dark:bg-gray-800 group transition-all duration-500">
+      <Card className="relative overflow-hidden border-none shadow-2xl rounded-[22px] bg-card group transition-all duration-500">
         {/* Neon Accent Border */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 shadow-[0_0_20px_rgba(6,182,212,0.5)]" />
         
@@ -77,8 +77,8 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
               <Percent className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <h3 className="text-xl font-black tracking-tighter text-gray-900 dark:text-white leading-none uppercase italic">Rate <span className="text-cyan-600 dark:text-cyan-400">Converter</span></h3>
-              <p className="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] mt-1.5 opacity-80">
+              <h3 className="text-xl font-black tracking-tighter text-foreground leading-none uppercase italic">Rate <span className="text-cyan-600 dark:text-cyan-400">Converter</span></h3>
+              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-1.5">
                 Finance Hub Protocol • 12% = ₹1
               </p>
             </div>
@@ -89,20 +89,20 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
               variant="ghost" 
               size="icon" 
               onClick={reset}
-              className="h-9 w-9 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 transition-all duration-500"
+              className="h-9 w-9 rounded-full hover:bg-muted text-muted-foreground transition-all duration-500"
             >
               <RefreshCcw className="h-4 w-4" />
             </Button>
-            <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900 p-1 rounded-full border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center gap-2 bg-muted p-1 rounded-full border border-border">
               <button 
                 onClick={() => setMode('pctToRate')}
-                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full transition-all ${mode === 'pctToRate' ? 'bg-cyan-600 text-white' : 'text-gray-400 dark:text-gray-400'}`}
+                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full transition-all ${mode === 'pctToRate' ? 'bg-cyan-600 text-white' : 'text-muted-foreground'}`}
               >
                 %
               </button>
               <button 
                 onClick={() => setMode('rateToPct')}
-                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full transition-all ${mode === 'rateToPct' ? 'bg-cyan-600 text-white' : 'text-gray-400 dark:text-gray-400'}`}
+                className={`text-[9px] font-black uppercase tracking-tighter px-2 py-1 rounded-full transition-all ${mode === 'rateToPct' ? 'bg-cyan-600 text-white' : 'text-muted-foreground'}`}
               >
                 ₹/P
               </button>
@@ -114,7 +114,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
           {/* Main Input Area */}
           <div className="space-y-4 text-center">
             <div className="space-y-3 inline-block w-full max-w-xs">
-              <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400 block mb-1 opacity-80">
+              <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-1">
                 {mode === 'pctToRate' ? 'Input Percentage' : 'Monthly Interest'}
               </Label>
               <div className="relative group space-y-3">
@@ -123,7 +123,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   placeholder={mode === 'pctToRate' ? "Enter percentage (%)" : "Enter amount (₹)"}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="text-3xl sm:text-5xl h-20 sm:h-24 bg-gray-50 dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-700 focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[1.5rem] sm:rounded-[2rem] text-center font-black text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-700 transition-all duration-500 shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none focus:ring-2 focus:ring-cyan-500/20"
+                  className="text-3xl sm:text-5xl h-20 sm:h-24 bg-muted border-2 border-border focus-visible:ring-0 focus-visible:border-cyan-500/50 rounded-[1.5rem] sm:rounded-[2rem] text-center font-black text-foreground placeholder:text-muted-foreground transition-all duration-500 shadow-lg group-hover:shadow-xl group-hover:-translate-y-0.5 outline-none focus:ring-2 focus:ring-cyan-500/20"
                 />
                 
                 {/* Unit Label for Rate mode - Responsive placement */}
@@ -131,7 +131,7 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   <div className="flex justify-center">
                     <button 
                       onClick={() => setRateUnit(u => u === 'paise' ? 'rupees' : 'paise')}
-                      className="h-10 px-4 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:-right-14 rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-[9px] font-black uppercase text-gray-500 dark:text-gray-400 hover:text-cyan-600 transition-all duration-500 shadow-lg"
+                      className="h-10 px-4 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:-right-14 rounded-xl border border-border bg-muted text-[9px] font-black uppercase text-muted-foreground hover:text-cyan-600 transition-all duration-500 shadow-lg"
                     >
                       {rateUnit}
                     </button>
@@ -165,20 +165,20 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
                   transition={{ type: 'spring', damping: 15 }}
                   className="text-center space-y-2"
                 >
-                  <div className="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.4em] mb-2">Equivalent Rate</div>
+                  <div className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-2">Equivalent Rate</div>
                   <div className="relative inline-block">
                     {/* Neon Glow behind result */}
                     <div className="absolute inset-0 blur-3xl bg-cyan-500/10 -z-10 rounded-full" />
-                    <h2 className="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 dark:from-white via-cyan-600 dark:via-cyan-400 to-blue-700 tracking-tighter px-4 italic">
+                    <h2 className="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-foreground via-cyan-600 dark:via-cyan-400 to-blue-700 tracking-tighter px-4 italic">
                       {results.display}
                     </h2>
                   </div>
-                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2 lowercase">{results.unit}</p>
+                  <p className="text-sm font-bold text-muted-foreground mt-2 lowercase">{results.unit}</p>
                 </motion.div>
               ) : (
-                <div className="text-center opacity-10 select-none">
-                  <ArrowLeftRight className="h-14 w-14 text-gray-900 dark:text-white mx-auto mb-4" />
-                  <p className="text-[11px] font-black uppercase tracking-[0.5em] text-gray-900 dark:text-white">Enter Signal Value</p>
+                <div className="text-center select-none">
+                  <ArrowLeftRight className="h-14 w-14 text-foreground mx-auto mb-4" />
+                  <p className="text-[11px] font-black uppercase tracking-[0.5em] text-foreground">Enter Signal Value</p>
                 </div>
               )}
             </AnimatePresence>
@@ -186,9 +186,9 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
 
           {/* Bottom Info Bar */}
           <div className="pt-6 sm:p-8 sm:pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-8 pb-6 sm:pb-8">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700">
-              <Info className="h-3 w-3 text-gray-400 dark:text-gray-400" />
-              <span className="text-[9px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-tight">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted border border-border">
+              <Info className="h-3 w-3 text-muted-foreground" />
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-tight">
                 Synced with Indian Financial Standards
               </span>
             </div>
@@ -214,10 +214,10 @@ export const RateConverter = ({ onBack }: RateConverterProps) => {
         <motion.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
-          className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 py-3 px-6 rounded-full w-fit mx-auto shadow-xl"
+          className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-card border border-border py-3 px-6 rounded-full w-fit mx-auto shadow-xl"
         >
           <TrendingUp className="h-3 w-3 text-cyan-600 dark:text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
-          <span className="text-gray-900 dark:text-gray-200">{results.explanation}</span>
+          <span className="text-foreground">{results.explanation}</span>
         </motion.div>
       )}
     </div>

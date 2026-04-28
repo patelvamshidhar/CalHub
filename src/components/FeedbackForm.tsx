@@ -96,7 +96,7 @@ export const FeedbackForm = () => {
               <p className="text-emerald-700 dark:text-emerald-300 font-bold mb-8">Thank you for your feedback!</p>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-600/60 dark:text-emerald-400/60">
+                <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                   <Loader2 className="h-3 w-3 animate-spin" />
                   Redirecting to home...
                 </div>

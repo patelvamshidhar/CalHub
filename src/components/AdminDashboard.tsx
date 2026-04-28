@@ -172,12 +172,23 @@ export const AdminDashboard = () => {
     return () => unsubscribe();
   }, [isLoggedIn]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'Patel@9488') {
-      setIsLoggedIn(true);
-      setLoginError(false);
-    } else {
+    try {
+      const response = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: password })
+      });
+      const data = await response.json();
+      if (data.success) {
+        setIsLoggedIn(true);
+        setLoginError(false);
+      } else {
+        setLoginError(true);
+      }
+    } catch (err) {
+      console.error('Auth error:', err);
       setLoginError(true);
     }
   };
@@ -197,7 +208,7 @@ export const AdminDashboard = () => {
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-500 text-white rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-500/20 group hover:rotate-12 transition-transform duration-500">
                 <Lock className="h-8 w-8 sm:h-10 sm:h-10" />
               </div>
-              <CardTitle className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Neural Gate</CardTitle>
+              <CardTitle className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic text-foreground">Neural Gate</CardTitle>
               <CardDescription className="text-muted-foreground font-medium text-xs sm:text-sm">Authentication required to access the central terminal.</CardDescription>
             </CardHeader>
             <CardContent className="px-6 sm:px-10 pb-10 sm:pb-12 space-y-6 sm:space-y-8">
@@ -205,7 +216,7 @@ export const AdminDashboard = () => {
                 <div className="space-y-3">
                   <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Access Key</Label>
                   <div className="relative group">
-                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors duration-500" />
+                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors duration-500" />
                     <Input
                       type="password"
                       placeholder="ENTER KEYCODE"
@@ -214,8 +225,8 @@ export const AdminDashboard = () => {
                         setPassword(e.target.value);
                         setLoginError(false);
                       }}
-                      className={`pl-12 h-16 bg-muted/20 dark:bg-zinc-950 border-2 transition-all duration-500 font-black text-lg text-foreground dark:text-zinc-100 uppercase tracking-[0.3em] rounded-2xl outline-none ${
-                        loginError ? 'border-red-500 focus:ring-red-500/20' : 'border-border dark:border-zinc-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
+                      className={`pl-12 h-16 bg-muted border-2 transition-all duration-500 font-black text-lg text-foreground uppercase tracking-[0.3em] rounded-2xl outline-none ${
+                        loginError ? 'border-red-500 focus:ring-red-500/20' : 'border-border focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
                       }`}
                       autoFocus
                     />
@@ -260,7 +271,7 @@ export const AdminDashboard = () => {
             <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/20">
               <ShieldCheck className="h-6 w-6" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase italic text-foreground dark:text-zinc-100">Central <span className="text-blue-500">Terminal</span></h2>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase italic text-foreground">Central <span className="text-blue-500">Terminal</span></h2>
           </div>
           <p className="text-muted-foreground text-xs sm:text-sm font-medium">Monitoring real-time neural feedback and system performance matrix.</p>
         </div>
@@ -270,11 +281,96 @@ export const AdminDashboard = () => {
             variant="ghost"
             size="sm"
             onClick={() => setIsLoggedIn(false)}
-            className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+            className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] border border-border text-foreground hover:bg-muted transition-all duration-200"
           >
             Terminal Logout
           </Button>
         </div>
+      </div>
+
+      {/* Price Intelligence Section */}
+      <div className="px-4 sm:px-0 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Card className="border-none shadow-[0_30px_60px_-15px_rgba(59,130,246,0.15)] bg-[#0B0F1A] dark:bg-black overflow-hidden relative rounded-[2.5rem] p-1 group">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 opacity-50" />
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+            
+            <CardHeader className="pb-4 pt-10 px-10 relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/20 rounded-xl border border-blue-500/30">
+                    <RefreshCcw className="h-4 w-4 text-blue-400 animate-spin" />
+                  </div>
+                  <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-blue-400">Neural Data Health Terminal</CardTitle>
+                </div>
+                <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-9">Price Feed Integrity & Sync Latency Monitoring</CardDescription>
+              </div>
+
+              <div className={`flex items-center gap-3 px-6 py-3 rounded-2xl ${
+                priceHealth?.status === 'Success' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                priceHealth?.status === 'Failed' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                'bg-amber-500/10 text-amber-500 border-amber-500/20'
+              } border-2 backdrop-blur-md`}>
+                <div className="relative">
+                  <div className={`w-3 h-3 rounded-full ${
+                    priceHealth?.status === 'Success' ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]' :
+                    priceHealth?.status === 'Failed' ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' :
+                    'bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                  } animate-pulse`} />
+                </div>
+                <span className="text-sm font-black uppercase tracking-tighter italic">
+                  SYSTEM_{priceHealth?.status?.toUpperCase() || 'SYNCHRONIZING...'}
+                </span>
+              </div>
+            </CardHeader>
+
+            <CardContent className="px-10 pb-12 pt-6 grid grid-cols-1 lg:grid-cols-2 gap-10 relative z-10">
+               <div className="flex items-center gap-8 bg-white/5 dark:bg-white/[0.03] p-6 rounded-[2rem] border border-white/5 group-hover:border-blue-500/20 transition-all duration-500">
+                  <div className="w-16 h-16 rounded-[1.5rem] bg-blue-500/10 flex items-center justify-center text-blue-400 shadow-2xl border border-blue-500/20 transform group-hover:rotate-12 transition-transform duration-500">
+                    <Clock className="h-8 w-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Last Intelligence Sync</p>
+                    <p className="text-2xl font-black text-white uppercase italic tracking-tighter sm:text-3xl">
+                      {priceHealth?.lastFetchTime ? format(priceHealth.lastFetchTime.toDate(), 'HH:mm:ss • MMM d') : 'PENDING_DATA'}
+                    </p>
+                    <p className="text-[8px] font-bold text-blue-400 uppercase tracking-widest">Matrix cycle synchronized</p>
+                  </div>
+               </div>
+
+               <div className="flex items-center gap-8 bg-white/5 dark:bg-white/[0.03] p-6 rounded-[2rem] border border-white/5 group-hover:border-purple-500/20 transition-all duration-500">
+                  <div className="w-16 h-16 rounded-[1.5rem] bg-purple-500/10 flex items-center justify-center text-purple-400 shadow-2xl border border-purple-500/20 transform group-hover:-rotate-12 transition-transform duration-500">
+                    <ShieldCheck className="h-8 w-8" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Relay Latency / Reliability</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-1.5">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                          <motion.div 
+                            key={i} 
+                            initial={{ scaleY: 0.5 }}
+                            animate={{ scaleY: [0.5, 1, 0.5] }}
+                            transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
+                            className={`h-6 w-2 rounded-full ${i <= 5 ? 'bg-gradient-to-t from-blue-500 to-purple-500' : 'bg-zinc-800'}`} 
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xl font-black text-white italic tracking-tighter ml-2">99.9%</span>
+                    </div>
+                  </div>
+               </div>
+            </CardContent>
+            
+            <div className="absolute right-0 bottom-0 p-10 opacity-[0.02] transform translate-x-10 translate-y-10 group-hover:scale-110 group-hover:rotate-45 transition-transform duration-1000">
+               <RefreshCcw className="h-64 w-64 text-blue-500" />
+            </div>
+          </Card>
+        </motion.div>
       </div>
 
       {/* Visitor Stats Cards */}
@@ -287,7 +383,7 @@ export const AdminDashboard = () => {
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Core Visitors</CardTitle>
           </CardHeader>
           <CardContent className="px-6 pb-6 relative z-10">
-            <div className="text-5xl font-black tracking-tighter text-foreground dark:text-zinc-100">
+            <div className="text-5xl font-black tracking-tighter text-foreground">
               {visitorStats.totalCount.toLocaleString()}
             </div>
             <div className="flex items-center gap-2 mt-2">
@@ -306,7 +402,7 @@ export const AdminDashboard = () => {
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Active Cycle Sessions</CardTitle>
           </CardHeader>
           <CardContent className="px-6 pb-6 relative z-10">
-            <div className="text-5xl font-black tracking-tighter text-foreground dark:text-zinc-100">
+            <div className="text-5xl font-black tracking-tighter text-foreground">
               {visitorStats.dailyCount.toLocaleString()}
             </div>
             <div className="flex items-center gap-2 mt-2">
@@ -325,7 +421,7 @@ export const AdminDashboard = () => {
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Feedback Packets</CardTitle>
           </CardHeader>
           <CardContent className="px-6 pb-6 relative z-10">
-            <div className="text-5xl font-black tracking-tighter text-foreground dark:text-zinc-100">
+            <div className="text-5xl font-black tracking-tighter text-foreground">
               {feedback.length}
             </div>
             <div className="flex items-center gap-2 mt-2">
@@ -344,7 +440,7 @@ export const AdminDashboard = () => {
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Sync Status</CardTitle>
           </CardHeader>
           <CardContent className="px-6 pb-6 relative z-10">
-            <div className="text-4xl font-black tracking-tighter text-foreground dark:text-zinc-100 uppercase italic">
+            <div className="text-4xl font-black tracking-tighter text-foreground uppercase italic">
               ONLINE
             </div>
             <div className="flex items-center gap-2 mt-2">
@@ -380,14 +476,14 @@ export const AdminDashboard = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-base font-black text-red-500 uppercase tracking-tight">Destructive Protocol Initialized</p>
-                <p className="text-xs font-bold text-red-400 opacity-60">This action will irreversibly wipe all user feedback and logs.</p>
+                <p className="text-xs font-bold text-red-400">This action will irreversibly wipe all user feedback and logs.</p>
               </div>
             </div>
             <div className="flex items-center gap-4 w-full sm:w-auto">
               <Button 
                 variant="outline" 
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 sm:flex-none h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-[11px] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                className="flex-1 sm:flex-none h-14 px-8 rounded-2xl font-black uppercase tracking-widest text-[11px] border border-border text-foreground hover:bg-muted transition-all duration-200"
               >
                 Abort Protocol
               </Button>
@@ -407,22 +503,22 @@ export const AdminDashboard = () => {
 
       <div className="flex flex-wrap items-center gap-4 pt-10">
         <div className="relative flex-1 w-full sm:min-w-[300px] group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 group-focus-within:text-blue-500 transition-colors duration-500" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors duration-500" />
           <input
             type="text"
             placeholder="SCAN FEEDBACK MATRIX..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-14 pl-14 pr-6 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-black uppercase tracking-widest text-foreground dark:text-zinc-100 transition-all duration-500"
+            className="w-full h-14 pl-14 pr-6 rounded-[1.5rem] border-2 border-border bg-muted/20 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm font-black uppercase tracking-widest text-foreground transition-all duration-500"
           />
         </div>
         
         <Select value={filterType} onValueChange={(v: any) => setFilterType(v)}>
-          <SelectTrigger className="h-14 w-44 rounded-[1.5rem] border-2 border-border dark:border-zinc-800 bg-muted/20 dark:bg-zinc-950 font-black text-[11px] uppercase tracking-widest text-foreground dark:text-zinc-100 focus:ring-blue-500">
+          <SelectTrigger className="h-14 w-44 rounded-[1.5rem] border-2 border-border bg-muted/20 font-black text-[11px] uppercase tracking-widest text-foreground focus:ring-blue-500">
             <Filter className="h-4 w-4 mr-3 text-blue-500" />
             <SelectValue placeholder="Matrix Filter" />
           </SelectTrigger>
-          <SelectContent className="rounded-2xl bg-card dark:bg-zinc-900 border-border dark:border-zinc-800 text-foreground dark:text-zinc-100">
+          <SelectContent className="rounded-2xl bg-card border-border text-foreground">
             <SelectItem value="All">All Entities</SelectItem>
             <SelectItem value="Suggestion">Suggestions</SelectItem>
             <SelectItem value="Bug">System Anomalies</SelectItem>
@@ -434,7 +530,7 @@ export const AdminDashboard = () => {
           variant="outline"
           size="sm"
           onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-          className="h-14 px-6 rounded-[1.5rem] border border-gray-300 dark:border-gray-600 font-black uppercase tracking-widest text-[11px] gap-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 shadow-xl"
+          className="h-14 px-6 rounded-[1.5rem] border border-border font-black uppercase tracking-widest text-[11px] gap-3 text-foreground hover:bg-muted transition-all duration-200 shadow-xl"
         >
           <ArrowUpDown className="h-4 w-4 text-blue-500" />
           {sortOrder === 'desc' ? 'Chronological' : 'Reverse'}
@@ -481,11 +577,11 @@ export const AdminDashboard = () => {
                   recentVisitors.map((visitor, idx) => (
                     <div key={idx} className="p-6 flex items-center justify-between hover:bg-muted/50 dark:hover:bg-zinc-900/50 transition-colors duration-500 border-l-2 border-transparent hover:border-blue-500 group">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 flex items-center justify-center text-sm font-black text-blue-500 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                        <div className="w-12 h-12 rounded-2xl bg-muted border border-border flex items-center justify-center text-sm font-black text-blue-500 shadow-xl group-hover:scale-110 transition-transform duration-500">
                           {visitor.name?.[0]?.toUpperCase() || 'U'}
                         </div>
                         <div>
-                          <h4 className="text-[13px] font-black uppercase tracking-tighter text-foreground dark:text-zinc-100 truncate max-w-[140px]">{visitor.name || 'Anonymous Node'}</h4>
+                          <h4 className="text-[13px] font-black uppercase tracking-tighter text-foreground truncate max-w-[140px]">{visitor.name || 'Anonymous Node'}</h4>
                           <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">ID: {visitor.userId?.substring(0, 12)}</p>
                         </div>
                       </div>
@@ -577,13 +673,13 @@ export const AdminDashboard = () => {
                                     {item.type}
                                   </Badge>
                                   {item.rating && (
-                                    <div className="flex items-center gap-1.5 bg-muted dark:bg-zinc-900 px-3 py-1 rounded-xl border border-border dark:border-zinc-800">
+                                    <div className="flex items-center gap-1.5 bg-muted px-3 py-1 rounded-xl border border-border">
                                       <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                                      <span className="text-[10px] font-black text-gray-900 dark:text-zinc-100">{item.rating}</span>
+                                      <span className="text-[10px] font-black text-foreground">{item.rating}</span>
                                     </div>
                                   )}
                                </div>
-                              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground dark:text-zinc-400">
+                              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                                 <Clock className="h-3.5 w-3.5" />
                                 {item.createdAt ? format(item.createdAt.toDate(), 'MMMM d, yyyy • HH:mm') : 'TIME_NULL'}
                               </div>
@@ -592,19 +688,19 @@ export const AdminDashboard = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-8 px-10 pb-10">
-                        <div className="bg-muted/30 dark:bg-zinc-900/50 p-6 rounded-3xl border border-border dark:border-zinc-800 relative group-hover:bg-muted/50 dark:group-hover:bg-zinc-900 transition-colors duration-500">
-                          <p className="text-foreground dark:text-zinc-100 font-bold leading-relaxed whitespace-pre-wrap italic text-lg">
+                        <div className="bg-muted/30 p-6 rounded-3xl border border-border relative group-hover:bg-muted/50 transition-colors duration-500">
+                          <p className="text-foreground font-bold leading-relaxed whitespace-pre-wrap italic text-lg">
                             "{item.message}"
                           </p>
                         </div>
                         
                         <div className="flex items-center gap-4 pt-8">
-                          <div className="w-14 h-14 rounded-2xl bg-muted dark:bg-zinc-900 border border-border dark:border-zinc-800 flex items-center justify-center text-lg font-black uppercase tracking-widest text-blue-500 shadow-2xl">
+                          <div className="w-14 h-14 rounded-2xl bg-muted border border-border flex items-center justify-center text-lg font-black uppercase tracking-widest text-blue-500 shadow-2xl">
                             {(item.name || 'A').charAt(0).toUpperCase()}
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground dark:text-zinc-500 mb-1">Packet Origin</span>
-                            <div className="flex items-center gap-2 text-base font-black text-gray-900 dark:text-zinc-100 uppercase italic tracking-tight">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-1">Packet Origin</span>
+                            <div className="flex items-center gap-2 text-base font-black text-foreground uppercase italic tracking-tight">
                               {item.name ? (
                                 <>
                                   <User className="h-4 w-4 text-blue-500" />

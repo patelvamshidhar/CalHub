@@ -84,20 +84,20 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 space-y-4">
         {/* Header */}
         <div className="space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-400">Metallic Evaluation Hub</p>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white italic">Silver Valuation</h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Metallic Evaluation Hub</p>
+          <h2 className="text-2xl font-bold text-foreground italic">Silver Valuation</h2>
         </div>
 
         {/* Weight Toggle */}
-        <div className="flex bg-gray-100 dark:bg-gray-900 rounded-xl p-1">
+        <div className="flex bg-muted rounded-xl p-1">
           {(['g', 'kg'] as Unit[]).map((u) => (
             <button
               key={u}
               onClick={() => setUnit(u)}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-500 ${
                 unit === u 
-                  ? 'bg-white dark:bg-gray-800 shadow text-gray-900 dark:text-white' 
-                  : 'text-gray-500 dark:text-gray-400'
+                  ? 'bg-card shadow text-foreground' 
+                  : 'text-muted-foreground'
               }`}
             >
               {u === 'g' ? 'Grams' : 'Kilograms'}
@@ -108,38 +108,38 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
         {/* Input Fields */}
         <div className="space-y-3">
           <div className="relative">
-            <Label htmlFor="silver-weight" className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1 block">Weight</Label>
+            <Label htmlFor="silver-weight" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Weight</Label>
             <Input
               id="silver-weight"
               type="number"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
-              className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+              className="h-12 px-4 rounded-xl border-border bg-card text-foreground focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-muted-foreground"
               placeholder="Enter weight"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="relative">
-              <Label htmlFor="silver-rate" className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1 block">Rate (₹/g)</Label>
+              <Label htmlFor="silver-rate" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Rate (₹/g)</Label>
               <Input
                 id="silver-rate"
                 type="number"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
                 placeholder="Enter rate (₹)"
-                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                className="h-12 px-4 rounded-xl border-border bg-card text-foreground focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-muted-foreground"
               />
             </div>
             <div className="relative">
-              <Label htmlFor="silver-making" className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1 block">Making (%)</Label>
+              <Label htmlFor="silver-making" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Making (%)</Label>
               <Input
                 id="silver-making"
                 type="number"
                 value={makingPercent}
                 onChange={(e) => setMakingPercent(e.target.value)}
                 placeholder="Enter %"
-                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                className="h-12 px-4 rounded-xl border-border bg-card text-foreground focus:ring-2 focus:ring-zinc-400 outline-none transition-all duration-500 font-black placeholder:text-muted-foreground"
               />
             </div>
           </div>
@@ -152,20 +152,20 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
               key={results.totalPrice}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-4 text-center border border-gray-100 dark:border-gray-700"
+              className="bg-muted rounded-2xl p-4 text-center border border-border"
             >
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Total Asset Value</p>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+              <p className="text-xs text-muted-foreground mb-1 font-medium">Total Asset Value</p>
+              <h2 className="text-3xl font-bold text-foreground tabular-nums">
                 {formatCurrency(results.totalPrice)}
               </h2>
-              <div className="flex justify-center gap-4 mt-2 text-[10px] text-gray-500 dark:text-gray-400 font-medium">
+              <div className="flex justify-center gap-4 mt-2 text-[10px] text-muted-foreground font-medium">
                 <span>Base: {formatCurrency(results.basePrice)}</span>
                 <span>GST: {formatCurrency(results.gstPrice)}</span>
               </div>
             </motion.div>
           ) : (
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 text-center border border-dashed border-gray-100 dark:border-gray-700">
-               <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 opacity-60">Enter values to calculate</p>
+            <div className="bg-muted rounded-2xl p-8 text-center border border-dashed border-border">
+               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Enter values to calculate</p>
             </div>
           )}
         </AnimatePresence>
@@ -175,7 +175,7 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
           <button 
             onClick={copyToClipboard}
             disabled={!results.isValid}
-            className="w-full h-12 rounded-xl bg-black text-white dark:bg-white dark:text-black font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-xl bg-foreground text-background font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             {copied ? 'Copied' : 'Export Data'}
@@ -183,7 +183,7 @@ export const SilverPriceCalculator: React.FC<SilverPriceCalculatorProps> = ({ in
           
           <button 
             onClick={reset}
-            className="w-full h-12 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-xl border border-border text-muted-foreground font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 flex items-center justify-center gap-2"
           >
             <RefreshCcw className="h-4 w-4" />
             Reset

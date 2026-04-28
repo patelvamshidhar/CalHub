@@ -18,6 +18,7 @@ import { GoldSilverHub } from './components/GoldSilverHub';
 import { FeedbackForm } from './components/FeedbackForm';
 import { AdminDashboard } from './components/AdminDashboard';
 import { SplashScreen } from './components/SplashScreen';
+import { LandingPage } from './components/LandingPage';
 import { motion, AnimatePresence } from 'motion/react';
 import { useOfflineStatus, usePWAInstall } from '@/lib/pwa';
 import { db } from '@/lib/firebase';
@@ -53,7 +54,7 @@ const AboutSection = () => (
           CalHub
         </h1>
       </div>
-      <p className="text-sm text-foreground/80 leading-relaxed">
+      <p className="text-sm text-foreground leading-relaxed">
         All-in-one platform for finance, gold & silver valuation, vehicle cost analysis, and land calculations. Designed for accuracy, speed, and simplicity.
       </p>
       <div className="flex flex-wrap gap-2 pt-2">
@@ -105,7 +106,7 @@ const HomePage = () => {
                     <div className="relative inline-block">
                       <div className={`absolute inset-0 bg-gradient-to-br ${item.color} blur-[40px] opacity-10 group-hover:opacity-30 transition-opacity rounded-full`} />
                       <div className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-muted border-2 border-border flex items-center justify-center text-foreground shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                        <item.icon className="h-8 w-8 sm:h-10 sm:w-10 opacity-80" />
+                        <item.icon className="h-8 w-8 sm:h-10 sm:w-10" />
                       </div>
                     </div>
                     <div className="px-3 py-1 rounded-full bg-muted border border-border text-[8px] font-black uppercase tracking-widest text-muted-foreground">
@@ -124,7 +125,7 @@ const HomePage = () => {
                 </div>
 
                 <div className="px-6 sm:px-8 pb-8 sm:pb-10 flex items-center justify-between mt-auto">
-                  <div className="inline-flex items-center text-[8px] sm:text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground group-hover:text-foreground transition-all">
+                  <div className="inline-flex items-center text-[8px] sm:text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground group-hover:text-primary transition-all">
                     Initialize <ArrowRight className="h-4 w-4 ml-2 sm:ml-3 group-hover:translate-x-2 transition-transform" />
                   </div>
                   <Button 
@@ -143,7 +144,7 @@ const HomePage = () => {
 
       {filteredCalcs.length === 0 && (
         <div className="text-center py-20 animate-in fade-in zoom-in-95">
-          <div className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-[0.5em] mb-4">No utility protocol found</div>
+          <div className="text-muted-foreground text-xs font-black uppercase tracking-[0.5em] mb-4">No utility protocol found</div>
           <Button variant="outline" onClick={() => setSearchQuery('')} className="rounded-full px-8">Reset Directory</Button>
         </div>
       )}
@@ -157,7 +158,16 @@ const MainApp = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
   const [isLaunching, setIsLaunching] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
   const isOnline = useOfflineStatus();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -201,9 +211,13 @@ const MainApp = () => {
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+      document.body.classList.remove('light');
       localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+      document.body.classList.add('light');
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
@@ -214,6 +228,10 @@ const MainApp = () => {
   };
 
   const activeTab = getActiveTab();
+
+  if (!isLaunching && isDesktop && location.pathname === '/') {
+    return <LandingPage isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />;
+  }
 
   return (
     <AnimatePresence mode="wait">
@@ -269,13 +287,13 @@ const MainApp = () => {
           </AnimatePresence>
 
           {/* Header */}
-          <header className={`sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-500 ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
+          <header className={`sticky top-0 z-[100] bg-background/80 backdrop-blur-3xl transition-all duration-500 border-b border-border ${showScrollTop ? 'shadow-lg py-1' : 'py-3'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
               <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
                 <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-xl shadow-blue-500/20 group-hover:rotate-12 transition-transform duration-500">
                   <LayoutGrid className="h-5 w-5" />
                 </div>
-                <h2 className="text-lg font-black tracking-tighter leading-none text-gray-900 dark:text-white italic m-0">
+                <h2 className="text-lg font-black tracking-tighter leading-none text-foreground italic m-0">
                   CAL<span className="text-blue-600">HUB</span>
                 </h2>
               </div>
@@ -296,7 +314,7 @@ const MainApp = () => {
                     variant="outline"
                     size="sm"
                     onClick={installApp}
-                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hidden sm:flex transition-all duration-200"
+                    className="rounded-xl font-bold uppercase tracking-widest text-[8px] gap-2 px-3 h-9 border border-border text-foreground hover:bg-muted hidden sm:flex transition-all duration-200"
                   >
                     <Download className="h-3.5 w-3.5" />
                     <span>Install</span>
@@ -312,7 +330,7 @@ const MainApp = () => {
 
 
           {/* Mobile Bottom Navigation */}
-          <nav className="navbar fixed bottom-0 left-0 right-0 z-[100] md:hidden pb-safe transition-all duration-300">
+          <nav className="navbar fixed bottom-0 left-0 right-0 z-[100] md:hidden pb-safe transition-all duration-300 bg-card border-t border-border">
             <div className="flex items-center justify-around h-16 px-4 w-full">
               {[
                 { id: 'home', icon: Home, path: '/', label: 'Home' },
@@ -325,11 +343,11 @@ const MainApp = () => {
                   key={item.id}
                   onClick={() => navigate(item.path)}
                   className={`flex flex-col items-center justify-center min-w-[60px] h-14 rounded-xl transition-all p-0 bg-transparent border-none outline-none ${
-                    activeTab === item.id ? 'text-blue-500 scale-105 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-blue-500'
+                    activeTab === item.id ? 'text-primary scale-110 font-bold' : 'text-muted-foreground hover:text-primary'
                   }`}
                 >
                   <item.icon className={`h-5 w-5 mb-1 ${activeTab === item.id ? 'stroke-[2.5px]' : 'stroke-2'}`} />
-                  <span className={`text-[9px] uppercase tracking-wider ${activeTab === item.id ? 'opacity-100' : 'opacity-70'}`}>{item.label}</span>
+                  <span className={`text-[9px] uppercase tracking-wider`}>{item.label}</span>
                 </button>
               ))}
             </div>
@@ -440,8 +458,8 @@ const MainApp = () => {
         </Button>
       </motion.div>
 
-      <footer className="bg-slate-900 dark:bg-zinc-950 py-12 px-6 mt-20 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <footer className="bg-card py-12 px-6 mt-20 relative overflow-hidden border-t border-border">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/10 to-transparent" />
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
             <div className="space-y-4">
@@ -449,48 +467,62 @@ const MainApp = () => {
                 <div className="bg-blue-600 text-white p-2 rounded-xl">
                   <LayoutGrid className="h-5 w-5" />
                 </div>
-                <h3 className="text-xl font-black tracking-tighter text-white italic">CAL<span className="text-blue-500">HUB</span></h3>
+                <h3 className="text-xl font-black tracking-tighter text-foreground italic">CAL<span className="text-blue-500">HUB</span></h3>
               </div>
-              <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xs">
+              <p className="text-muted-foreground text-xs font-medium leading-relaxed max-w-xs">
                 The world's most advanced utility matrix for professional-grade calculations. Built for speed, precision, and privacy.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Protocols</h4>
-                <div className="flex flex-col gap-2">
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">Protocols</h4>
+                <div className="flex flex-col gap-3">
                   {CALCULATOR_PROTOCOLS.map(c => (
-                    <button key={c.id} onClick={() => navigate(`/${c.id}`)} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left truncate p-0 bg-transparent">
+                    <button 
+                      key={c.id} 
+                      onClick={() => navigate(`/${c.id}`)} 
+                      className="menu-pill"
+                    >
                       {c.title}
                     </button>
                   ))}
                 </div>
               </div>
               <div className="space-y-4">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Core</h4>
-                <div className="flex flex-col gap-2">
-                  <button onClick={() => navigate('/feedback')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter p-0 bg-transparent">Feedback</button>
-                  <button onClick={() => navigate('/admin')} className="text-xs font-bold text-slate-400 hover:text-white transition-colors text-left uppercase tracking-tighter p-0 bg-transparent">Admin</button>
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">Core</h4>
+                <div className="flex flex-col gap-3">
+                  <button 
+                    onClick={() => navigate('/feedback')} 
+                    className="menu-pill"
+                  >
+                    Feedback
+                  </button>
+                  <button 
+                    onClick={() => navigate('/admin')} 
+                    className="menu-pill"
+                  >
+                    Admin
+                  </button>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500">System Status</h4>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Status</h4>
+              <div className="p-4 rounded-2xl bg-muted border border-border flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white">
                   <ShieldCheck className="h-4 w-4" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-white uppercase tracking-tighter">Operational</span>
-                  <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Core Link Active</span>
+                  <span className="text-[10px] font-black text-foreground uppercase tracking-tighter">Operational</span>
+                  <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Core Link Active</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="pt-8 border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
+          <div className="pt-8 border-border flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">
             <div>&copy; 2026 CALHUB - All Protocols Reserved</div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-3 w-3" />

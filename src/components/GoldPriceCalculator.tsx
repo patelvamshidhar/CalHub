@@ -91,13 +91,13 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 space-y-4">
         {/* Header */}
         <div className="space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-400">Metallic Evaluation Hub</p>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white italic">Gold Valuation</h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Metallic Evaluation Hub</p>
+          <h2 className="text-2xl font-bold text-foreground italic">Gold Valuation</h2>
         </div>
 
         {/* Weight Unit Selector */}
         <div className="space-y-2">
-          <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 block">Weight Unit</Label>
+          <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block">Weight Unit</Label>
           <div className="grid grid-cols-2 gap-2">
             {(['g', 'kg'] as Unit[]).map((u) => {
               const active = unit === u;
@@ -108,7 +108,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
                   className={`py-3 rounded-xl border transition-all duration-500 text-sm font-semibold ${
                     active 
                       ? 'bg-amber-600 text-white border-amber-600 shadow-sm' 
-                      : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 bg-transparent'
+                      : 'border-border text-muted-foreground bg-transparent'
                   }`}
                 >
                   {u === 'g' ? 'Grams' : 'Kilograms'}
@@ -121,38 +121,38 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
         {/* Input Fields */}
         <div className="space-y-3">
           <div className="relative">
-            <Label htmlFor="gold-weight" className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1 block">Weight</Label>
+            <Label htmlFor="gold-weight" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Weight</Label>
             <Input
               id="gold-weight"
               type="number"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
-              className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+              className="h-12 px-4 rounded-xl border-border bg-card text-foreground focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-500 font-black placeholder:text-muted-foreground"
               placeholder="Enter weight"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="relative">
-              <Label htmlFor="gold-rate" className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1 block">Rate (₹/g)</Label>
+              <Label htmlFor="gold-rate" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Rate (₹/g)</Label>
               <Input
                 id="gold-rate"
                 type="number"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
                 placeholder="Enter rate (₹)"
-                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                className="h-12 px-4 rounded-xl border-border bg-card text-foreground focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-500 font-black placeholder:text-muted-foreground"
               />
             </div>
             <div className="relative">
-              <Label htmlFor="gold-making" className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1 block">Making (%)</Label>
+              <Label htmlFor="gold-making" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 block">Making (%)</Label>
               <Input
                 id="gold-making"
                 type="number"
                 value={makingPercent}
                 onChange={(e) => setMakingPercent(e.target.value)}
                 placeholder="Enter %"
-                className="h-12 px-4 rounded-xl border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-500 font-black placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                className="h-12 px-4 rounded-xl border-border bg-card text-foreground focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-500 font-black placeholder:text-muted-foreground"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
 
         {/* Purity Selector */}
         <div className="space-y-2">
-          <Label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 block">Purity Standard</Label>
+          <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block">Purity Standard</Label>
           <div className="grid grid-cols-3 gap-2">
             {(['24K', '22K', '18K'] as Purity[]).map((p) => {
               const active = purity === p;
@@ -171,7 +171,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
                   className={`py-3 rounded-xl border transition-all duration-500 text-sm font-semibold ${
                     active 
                       ? 'bg-orange-500 text-white border-orange-500 shadow-sm' 
-                      : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 bg-transparent'
+                      : 'border-border text-muted-foreground bg-transparent'
                   }`}
                 >
                   {p}
@@ -188,16 +188,16 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
               key={results.totalPrice}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-4 text-center border border-gray-100 dark:border-gray-700"
+              className="bg-muted rounded-2xl p-4 text-center border border-border"
             >
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Total Asset Value</p>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
+              <p className="text-xs text-muted-foreground mb-1 font-medium">Total Asset Value</p>
+              <h2 className="text-3xl font-bold text-foreground tabular-nums">
                 {formatCurrency(results.totalPrice)}
               </h2>
             </motion.div>
           ) : (
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 text-center border border-dashed border-gray-100 dark:border-gray-700">
-               <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 opacity-60">Enter values to calculate</p>
+            <div className="bg-muted rounded-2xl p-8 text-center border border-dashed border-border">
+               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Enter values to calculate</p>
             </div>
           )}
         </AnimatePresence>
@@ -207,7 +207,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
           <button 
             onClick={copyToClipboard}
             disabled={!results.isValid}
-            className="w-full h-12 rounded-xl bg-black text-white dark:bg-white dark:text-black font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-xl bg-foreground text-background font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             {copied ? 'Copied' : 'Export Data'}
@@ -215,7 +215,7 @@ export const GoldPriceCalculator: React.FC<GoldPriceCalculatorProps> = ({ initia
           
           <button 
             onClick={reset}
-            className="w-full h-12 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-xl border border-border text-muted-foreground font-black uppercase text-[11px] tracking-widest active:scale-95 transition-all duration-500 flex items-center justify-center gap-2"
           >
             <RefreshCcw className="h-4 w-4" />
             Reset
